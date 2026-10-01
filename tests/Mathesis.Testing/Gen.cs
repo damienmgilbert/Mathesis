@@ -1,5 +1,6 @@
 using System.Numerics;
 using Mathesis.Numbers;
+using Mathesis.Polynomials;
 
 namespace Mathesis.Testing;
 
@@ -67,6 +68,16 @@ public sealed class Gen
         {
             var z = GaussianRational(maxBits);
             if (!Complex<BigRational>.IsZero(z)) return z;
+        }
+    }
+
+    /// <summary>A random non-zero polynomial over the rationals with degree at most <paramref name="maxDegree"/>.</summary>
+    public Polynomial<BigRational> RationalPolynomial(int maxDegree = 6, int maxBits = 12)
+    {
+        while (true)
+        {
+            var p = new Polynomial<BigRational>(Enumerable.Range(0, Random.Next(1, maxDegree + 2)).Select(_ => Rational(maxBits)));
+            if (!p.IsZero) return p;
         }
     }
 
