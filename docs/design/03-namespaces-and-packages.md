@@ -17,12 +17,12 @@ Namespaces follow mathematical domains; packages follow layers. A domain can spa
 
 | Namespace | Contents |
 | --- | --- |
-| `Mathesis.Numerics` | Shared result records (`RootResult<T>`, `QuadratureResult<T>`, `OdeSolution<T>` …), `Convergence`, `StoppingCriteria` |
+| `Mathesis.Numerics` | Shared result records (`RootResult<T>`, `QuadratureResult<T>`, `DerivativeResult<T>`, `OdeSolution<T>` …), `Convergence`, `StoppingCriteria`, and the static class `Roots` (see the next row) |
 | `Mathesis.Numerics.FloatingPoint` | Ulp distance, machine constants, compensated (Kahan/Neumaier) and pairwise summation, two-sum/two-product, accurate `Hypot`, `Expm1`, `Log1p` |
-| `Mathesis.Numerics.Roots` | Bisection, false position (Illinois), secant, Newton, Halley, Brent, Ridders, fixed-point iteration, Muller, Aberth–Ehrlich, Jenkins–Traub |
+| `Roots` (static class in `Mathesis.Numerics`; a `Mathesis.Numerics.Roots` namespace would shadow it and break `Roots.Brent(...)`) | Bisection, false position (Illinois), secant, Newton, Halley, Brent, Ridders, fixed-point iteration, Muller, Aberth–Ehrlich, Jenkins–Traub |
 | `Mathesis.Numerics.Differentiation` | Finite differences of any order and accuracy, Richardson extrapolation, complex-step derivative, forward-mode automatic differentiation over `Dual<T>` |
 | `Mathesis.Numerics.Integration` | Newton–Cotes, Romberg, Gauss–Legendre/Laguerre/Hermite/Chebyshev, adaptive Gauss–Kronrod, tanh-sinh, Monte Carlo and quasi-Monte Carlo (Halton, Sobol), multidimensional cubature |
-| `Mathesis.Numerics.Interpolation` | Lagrange, barycentric, Newton divided differences, Neville, Hermite, cubic splines (natural, clamped, not-a-knot), B-splines, Akima, rational (Floater–Hormann) |
+| `Mathesis.Numerics.Interpolation` (factory class `Interpolate`, for the same shadowing reason) | Lagrange, barycentric, Newton divided differences, Neville, Hermite, cubic splines (natural, clamped, not-a-knot), B-splines, Akima, rational (Floater–Hormann) |
 | `Mathesis.Numerics.Approximation` | Least-squares polynomial fit, Chebyshev series, Padé, minimax (Remez) |
 | `Mathesis.Numerics.Ode` | Euler, Heun, midpoint, RK4, RKF45, Cash–Karp, Dormand–Prince 5(4), Adams–Bashforth–Moulton, BDF, Rosenbrock, velocity Verlet, event detection, boundary-value shooting and finite differences |
 | `Mathesis.Numerics.Pde` | Finite-difference heat (FTCS, Crank–Nicolson), wave, Poisson/Laplace (Jacobi, SOR) on rectangular grids |
