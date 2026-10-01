@@ -163,5 +163,6 @@ Core packages take no logging dependency. Derivations are the trace. `Mathesis.E
 | ADR-11 | Numeric compilation | Flat instruction array with a span interpreter | `System.Linq.Expressions.Compile` | AOT-safe and fast enough; avoids reflection emit |
 | ADR-12 | Logging | No logging dependency in core packages | `Microsoft.Extensions.Logging.Abstractions` everywhere | Smallest dependency graph; derivations already trace |
 | ADR-13 | Core result types vs. Expr | `Outcome<T>` and `Provisos` in Core carry `IMathObject` / `IDerivation` marker interfaces that Symbolics implements (2026-10-01) | Move `Outcome<T>` to Symbolics, or an `Outcome<T>` without expressions | Numerics and LinearAlgebra, which sit below Symbolics, can still return `Outcome<T>`; Core stays dependency-free |
+| ADR-14 | Elementary functions on `Dual<T>` and `Complex<T>` | C# 14 extension members constrained on `IFloatingPointIeee754<T>` (2026-10-02) | Implementing `IExponentialFunctions<T>`, `ITrigonometricFunctions<T>`… on the struct | A struct cannot implement an interface only for some `T`; generic code that needs `Dual<T>` takes the operator interfaces and calls `Dual<T>.Sin(x)` directly |
 
 Record new decisions in this table as they are made, with the date in the commit message.

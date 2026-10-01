@@ -28,7 +28,7 @@ public sealed record OdeOptions(
 public static class OdeSolver
 {
     /// <summary>
-    /// Classical fixed-step Runge–Kutta of order 4 (catalog <c>num.ode.rk4</c>) from <paramref name="t0"/> to
+    /// Classical fixed-step Runge–Kutta of order 4 (design entry <c>num.ode.rk4</c>) from <paramref name="t0"/> to
     /// <paramref name="t1"/> in <paramref name="steps"/> equal steps; global error O(h⁴). The result has no dense output.
     /// </summary>
     public static OdeSolution<T> Rk4<T>(OdeFunction<T> f, T t0, T[] y0, T t1, int steps)
@@ -119,7 +119,7 @@ public static class OdeSolver
 
     /// <summary>
     /// Adaptive Dormand–Prince 5(4) integration from <paramref name="t0"/> to <paramref name="t1"/> (either direction), with the
-    /// step size chosen from the embedded error estimate, h ← h·0.9·(1/err)^(1/5) (catalog <c>num.ode.step-control</c>), and a
+    /// step size chosen from the embedded error estimate, h ← h·0.9·(1/err)^(1/5) (design entry <c>num.ode.step-control</c>), and a
     /// continuous extension (<see cref="OdeSolution{T}.Evaluate"/>) of order 4 between steps. The accepted step values are fifth-order
     /// accurate; values between steps come from the dense output, whose error is larger (order 4).
     /// </summary>

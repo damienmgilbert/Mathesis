@@ -10,8 +10,8 @@ All number types are immutable `readonly struct`s unless noted, and implement .N
 | --- | --- | --- | --- | --- |
 | `BigInteger` (BCL) | ℤ | `IBinaryInteger<T>` | Yes | Used as is |
 | `BigRational` | ℚ, always normalized (gcd 1, positive denominator) | `INumber<T>`, `ISignedNumber<T>`, `IExactNumber` | Yes | Parses `3/4`, `-2`, `0.125`, repeating decimals `0.1(6)`; best rational approximation of a `double` (Stern–Brocot) |
-| `Complex<T>` where `T : INumber<T>` | ℚ(i) when `T = BigRational`; ℂ approximations when `T` is floating point | `INumberBase<T>`, `ISignedNumber<T>` | When `T` is exact | `System.Numerics.Complex` is `double`-only; transcendental members exist only when `T : IFloatingPointIeee754<T>` (C# 14 extension members) |
-| `Dual<T>` | a + bε with ε² = 0 | `INumberBase<T>`, elementary-function interfaces when `T` has them | No | Forward-mode automatic differentiation |
+| `Complex<T>` where `T : INumber<T>` | ℚ(i) when `T = BigRational`; ℂ approximations when `T` is floating point | `INumberBase<T>`, `ISignedNumber<T>` | When `T` is exact | `System.Numerics.Complex` is `double`-only; transcendental members exist only when `T : IFloatingPointIeee754<T>` (C# 14 extension members: `Magnitude`, `Phase`, `FromPolar`, `Exp`, `Log`, `Sqrt` so far). `Abs` needs a square root, so it throws `NotSupportedException` for exact `T`; use `NormSquared`. Text form `(re, im)` |
+| `Dual<T>` | a + bε with ε² = 0 | `INumberBase<T>`; elementary functions (`Sin`, `Exp`, `Log`, `Sqrt`, `Pow`, …) as C# 14 extension members when `T : IFloatingPointIeee754<T>` (ADR-14) | No | Forward-mode automatic differentiation. Text form `(value, derivative)` |
 | `HyperDual<T>` | a + bε₁ + cε₂ + dε₁ε₂ | as `Dual<T>` | No | Exact first and second derivatives numerically |
 | `Interval<T>` where `T : IFloatingPointIeee754<T>` | Closed interval [lo, hi] | `INumberBase<T>` | Enclosure | Outward rounding with `T.BitDecrement`/`T.BitIncrement`; guaranteed enclosures for validated numerics and assumption reasoning |
 | `ModInt<TModulus>` where `TModulus : IModulus` | ℤ/nℤ with the modulus fixed at compile time | `INumberBase<T>`, `IExactNumber` | Yes | `UInt128` products; division only when `TModulus.IsPrime` (a field) |
@@ -19,6 +19,8 @@ All number types are immutable `readonly struct`s unless noted, and implement .N
 | `BigFloat` | Arbitrary-precision binary floating point | `IFloatingPoint<T>` and function interfaces | Correctly rounded basic operations | Later milestone; elementary functions with Ziv's rounding test |
 | `AlgebraicNumber` (class) | Root of an irreducible polynomial over ℚ with an isolating interval or box | operators | Yes | Arithmetic via resultants; later milestone |
 | `ContinuedFraction` (class) | Finite or periodic continued fraction | conversions | Yes | Convergents, best approximations, √n expansions |
+
+Components of `Complex<T>` and `Dual<T>` are formatted and parsed with the invariant culture; `BigRational` also ignores the culture and always uses `.` for decimals.
 
 `NumberTraits<T>.IsExact` tells generic algorithms whether to pivot for stability (floating point) or for exactness (first non-zero pivot, fraction-free elimination). It is true for `BigInteger`, `BigRational`, `ModInt<T>`, `Complex<T>` of an exact `T`, and any type implementing the marker interface `IExactNumber`.
 

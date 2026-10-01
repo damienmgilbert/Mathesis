@@ -12,7 +12,7 @@ public interface IInterpolant<T>
 }
 
 /// <summary>
-/// The interpolating polynomial in Newton's divided-difference form (catalog <c>num.interp.newton</c>):
+/// The interpolating polynomial in Newton's divided-difference form (design entry <c>num.interp.newton</c>):
 /// p(x) = f[x₀] + f[x₀, x₁](x − x₀) + f[x₀, x₁, x₂](x − x₀)(x − x₁) + …
 /// </summary>
 /// <typeparam name="T">The floating-point type.</typeparam>
@@ -63,7 +63,7 @@ public sealed class NewtonInterpolant<T> : IInterpolant<T>
 }
 
 /// <summary>
-/// The interpolating polynomial in barycentric form (catalog <c>num.interp.barycentric</c>):
+/// The interpolating polynomial in barycentric form (design entry <c>num.interp.barycentric</c>):
 /// p(x) = Σ wⱼyⱼ/(x − xⱼ) / Σ wⱼ/(x − xⱼ), with wⱼ = 1/∏ₖ≠ⱼ(xⱼ − xₖ). Numerically stable and O(n) per evaluation.
 /// </summary>
 /// <typeparam name="T">The floating-point type.</typeparam>
@@ -121,7 +121,7 @@ public sealed class BarycentricInterpolant<T> : IInterpolant<T>
 }
 
 /// <summary>
-/// A cubic spline (catalog <c>num.interp.cubic-spline</c>): piecewise cubic, with continuous value, first and second derivative
+/// A cubic spline (design entry <c>num.interp.cubic-spline</c>): piecewise cubic, with continuous value, first and second derivative
 /// at the interior knots. Outside the knot range the end pieces are extrapolated.
 /// </summary>
 /// <typeparam name="T">The floating-point type.</typeparam>
@@ -264,7 +264,7 @@ public static class Interpolate
 
     /// <summary>
     /// Interpolates <paramref name="f"/> at the <paramref name="degree"/> + 1 Chebyshev points of the second kind on [a, b]
-    /// (catalog <c>num.interp.chebyshev-nodes</c>), using their closed-form barycentric weights (−1)ʲ, halved at the ends, so
+    /// (design entry <c>num.interp.chebyshev-nodes</c>), using their closed-form barycentric weights (−1)ʲ, halved at the ends, so
     /// construction is O(n). High degrees are stable, unlike interpolation at equispaced nodes (<c>num.interp.runge</c>).
     /// </summary>
     public static BarycentricInterpolant<T> Chebyshev<T>(Func<T, T> f, T a, T b, int degree)

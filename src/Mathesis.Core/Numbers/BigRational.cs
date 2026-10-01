@@ -148,7 +148,7 @@ public readonly struct BigRational : INumber<BigRational>, ISignedNumber<BigRati
             : new BigRational(value.Denominator, value._numerator);
     }
 
-    /// <summary>Raises <paramref name="value"/> to an integer power. 0⁰ is 1 (see catalog convention <c>conv.zero-pow-zero</c>).</summary>
+    /// <summary>Raises <paramref name="value"/> to an integer power. 0⁰ is 1 (see catalog convention <c>conv.zero-to-the-zero</c>).</summary>
     /// <exception cref="DivideByZeroException"><paramref name="value"/> is zero and <paramref name="exponent"/> is negative.</exception>
     public static BigRational Pow(BigRational value, int exponent)
     {

@@ -92,6 +92,8 @@ public class ResultTypesTests
         Assert.AreEqual("Cancelled.", cancellable.ExceededReason);
 
         Assert.IsTrue(Budget.Unlimited.TryCharge(1_000_000));
+        Assert.AreEqual(0, Budget.Unlimited.StepsUsed);
+        Assert.IsFalse(Budget.Unlimited.IsExceeded);
         Assert.Throws<ArgumentOutOfRangeException>(() => new Budget(maxSteps: -1));
     }
 

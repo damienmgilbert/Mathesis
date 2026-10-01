@@ -60,7 +60,7 @@ public static class Quadrature
         T.IsInfinity(a) || T.IsInfinity(b) ? Infinite(f, a, b, stop) : GaussKronrod(f, a, b, stop);
 
     /// <summary>
-    /// Adaptive Simpson's rule with Richardson correction (catalog <c>num.quad.simpson</c>): an interval is accepted when
+    /// Adaptive Simpson's rule with Richardson correction (design entry <c>num.quad.simpson</c>): an interval is accepted when
     /// |S₂ − S₁| ≤ 15·tol, with the tolerance halved at each bisection.
     /// </summary>
     public static QuadratureResult<T> AdaptiveSimpson<T>(Func<T, T> f, T a, T b, StoppingCriteria? stop = null)
@@ -151,7 +151,7 @@ public static class Quadrature
     }
 
     /// <summary>
-    /// Adaptive Gauss–Kronrod G7/K15 quadrature (catalog <c>num.quad.gauss-kronrod</c>): the difference between the nested 7-point
+    /// Adaptive Gauss–Kronrod G7/K15 quadrature (design entry <c>num.quad.gauss-kronrod</c>): the difference between the nested 7-point
     /// Gauss and 15-point Kronrod rules estimates the error, and the interval with the largest error is bisected until the total
     /// meets the tolerance. Error scaling follows QUADPACK (Piessens et al. 1983). The Kronrod rule integrates polynomials of
     /// degree up to 22 exactly and the integrand is never evaluated at the end points, so mild endpoint singularities such as
@@ -342,7 +342,7 @@ public static class Quadrature
     }
 
     /// <summary>
-    /// Romberg integration (catalog <c>num.quad.romberg</c>): Richardson extrapolation of trapezoid sums with 1, 2, 4, … panels.
+    /// Romberg integration (design entry <c>num.quad.romberg</c>): Richardson extrapolation of trapezoid sums with 1, 2, 4, … panels.
     /// Converges quickly for smooth integrands; use <see cref="GaussKronrod"/> for singular ones. <see cref="StoppingCriteria.MaxIterations"/>
     /// is the maximum number of halvings (default 20, at most 30).
     /// </summary>

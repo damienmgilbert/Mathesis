@@ -41,6 +41,9 @@ docs/design/                     # architecture, types, notation, catalog, engin
 eng/policy-check.cs              # file-based app: dotnet run eng/policy-check.cs
 eng/gen-knowledge.cs             # .mlaw files → src/Mathesis.Knowledge/Catalog.g.cs
 eng/check-catalog-coverage.cs    # catalog IDs vs. docs/design/domains tables
+eng/mlaw-lint.cs                 # .mlaw syntax and condition checks
+.github/workflows/ci.yml         # build, test and policy check on ubuntu and windows
+.claude/skills/                  # project skills for Claude Code (catalog, C#, planning)
 knowledge/<domain>/<topic>.mlaw  # catalog source, embedded into Mathesis.Knowledge
 src/Mathesis.Core/               # numbers, polynomials, Outcome, Truth, Budget
 src/Mathesis.Numerics/           # references Core
@@ -84,17 +87,18 @@ samples/AotSmoke/                # NativeAOT smoke console
 - Quadrature: adaptive Simpson, adaptive Gauss–Kronrod 7/15, Romberg, and infinite intervals by substitution.
 - ODEs: fixed-step RK4 and adaptive Dormand–Prince 5(4) with dense output.
 - Interpolation (Newton, barycentric, natural and clamped cubic splines) and finite differences with Richardson extrapolation.
-- Every routine returns a result record (value, error estimate, iterations, converged flag) instead of throwing on non-convergence.
+- Every iterative or adaptive routine returns a result record (value, error estimate, iterations or evaluations, converged flag) instead of throwing on non-convergence. Closed-form finite-difference stencils return a plain value and interpolant factories return interpolant objects. ODE event location and stiffness detection are not part of this phase (Milestone 7, see `domains/d9-numerical-analysis.md`).
 - **Done when:** a tolerance table passes: ∫₀^π sin x dx = 2, ∫₀^∞ e^(−x²) dx = √π/2, y′ = −y matches e^(−t) to 1e−10, and Brent solves the standard test functions within 50 iterations.
 
-### Phase 3: Linear algebra and polynomials
+### Phase 3: Linear algebra, polynomials and optimization
 
-- **Read first:** `domains/d7-linear-algebra.md` (Linear systems, Matrix algebra, Determinants), `domains/d1-algebra.md` (Polynomial division and roots), `04-type-system.md` (Representations).
+- **Read first:** `domains/d7-linear-algebra.md` (Linear systems, Matrix algebra, Determinants), `domains/d1-algebra.md` (Polynomial division and roots), `04-type-system.md` (Representations), `domains/d9-numerical-analysis.md` (Nonlinear systems and optimization: golden-section search, Nelder–Mead).
 - `DenseMatrix<T>` and `DenseVector<T>` (named to avoid `System.Numerics.Vector<T>`), row-major `T[]` storage, span-based kernels, `TensorPrimitives` for `float` and `double` hot loops.
 - Numeric: LU with partial pivoting, Householder QR, Cholesky, solve, determinant, inverse, least squares, symmetric eigenvalues (Jacobi), condition-number estimate.
 - Exact (`Mathesis.LinearAlgebra.Exact`): RREF returning the list of row operations, Bareiss determinant, Gauss–Jordan inverse, rank, null and column space bases, characteristic polynomial (Berkowitz), all with a pluggable zero test so they also work for `Expr` entries later.
 - `Polynomial<T>` and `SparsePolynomial<T>` in `Mathesis.Core` (`Mathesis.Polynomials`): arithmetic, division with remainder, GCD, Yun square-free factorization, Horner evaluation, derivative, all roots by Aberth–Ehrlich, rational roots of integer polynomials.
-- **Done when:** residual ‖Ax − b‖ ≤ 1e−12·‖b‖ on seeded well-conditioned systems, the Hilbert(8) inverse is exact over `BigRational`, the roots of (x−1)(x−2)…(x−10) come back within 1e−8, replaying recorded row operations reproduces each RREF, and `Expand(SquareFree(p)) = p` on 1,000 seeded polynomials.
+- `Mathesis.Numerics.Optimization`: golden-section search (one dimension) and Nelder–Mead (n dimensions), generic over `IFloatingPointIeee754<T>`, returning an `OptimizationResult<T>` (minimizer, minimum, iterations, evaluations, `Converged`).
+- **Done when:** residual ‖Ax − b‖ ≤ 1e−12·‖b‖ on seeded well-conditioned systems, the Hilbert(8) inverse is exact over `BigRational`, the roots of (x−1)(x−2)…(x−10) come back within 1e−8, replaying recorded row operations reproduces each RREF, and `Expand(SquareFree(p)) = p` on 1,000 seeded polynomials, golden-section finds the minimum of (x − 2)² + 1 and of cos x on [3, 4] to 1e−8, and Nelder–Mead minimizes the Rosenbrock function from (−1.2, 1) to within 1e−6 using at most 2,000 evaluations.
 
 ### Phase 4: Expression model, parser, printers
 
@@ -161,7 +165,7 @@ samples/AotSmoke/                # NativeAOT smoke console
 - **Read first:** `08-features-and-abilities.md` (Milestone 1 rows), `09-verification.md` (Tooling and gates).
 - XML docs on every public API (missing docs fail the build), a README with fifteen runnable examples (including step-by-step output and a catalog lookup), package metadata, and `dotnet pack` for all six packages.
 - `Cas` façade covering every Milestone 1 ability in `08-features-and-abilities.md`.
-- A NativeAOT smoke console that runs parse, simplify with steps, differentiate, integrate, solve and a catalog lookup.
+- A NativeAOT smoke console that runs parse, simplify with steps, differentiate, integrate, solve and a catalog lookup, and `samples/repl.cs`, a file-based REPL for manual poking.
 - **Done when:** all six `.nupkg` files build, the AOT smoke app publishes with zero trim or AOT warnings, the policy check is green, and the catalog coverage report is attached to the release notes.
 
 ## Policy check spec

@@ -8,17 +8,17 @@ namespace Mathesis.Numerics;
 /// <see cref="RootResult{T}"/> and reports non-convergence there instead of throwing.
 /// </summary>
 /// <remarks>
-/// <para>Bracketing methods (<see cref="Bisection"/>, <see cref="Brent"/>) use |Δx| ≤ absTol + relTol·|x| (Brent adds 2ε|x|)
-/// with defaults absTol = ε², relTol = 0 (bisection: 4ε). Open methods (<see cref="Newton"/>, <see cref="Secant"/>) use the
-/// rule from catalog entry <c>num.root.stopping</c>: |x<sub>n+1</sub> − x<sub>n</sub>| ≤ absTol + relTol·(1 + |x<sub>n+1</sub>|),
-/// defaults absTol = 0, relTol = 4ε. ε is the machine epsilon of <typeparamref name="T"/>.</para>
+/// <para>Bracketing methods (<see cref="Bisection{T}"/>, <see cref="Brent{T}"/>) use |Δx| ≤ absTol + relTol·|x| (Brent adds 2ε|x|)
+/// with defaults absTol = ε², relTol = 0 (bisection: 4ε). Open methods (<see cref="Newton{T}(Func{T, T}, Func{T, T}, T, StoppingCriteria?)"/>, <see cref="Secant{T}"/>) use the
+/// rule from design-doc entry <c>num.root.stopping</c>: |x<sub>n+1</sub> − x<sub>n</sub>| ≤ absTol + relTol·(1 + |x<sub>n+1</sub>|),
+/// defaults absTol = 0, relTol = 4ε. ε is the machine epsilon of the floating-point type used.</para>
 /// <para>This class lives in <c>Mathesis.Numerics</c> rather than a <c>Mathesis.Numerics.Roots</c> namespace, which would
 /// shadow it and break calls such as <c>Roots.Brent(...)</c>.</para>
 /// </remarks>
 public static class Roots
 {
     /// <summary>
-    /// Bisection on a bracket [a, b] with f(a)·f(b) &lt; 0 (catalog <c>num.root.bisection</c>). After n midpoints the error
+    /// Bisection on a bracket [a, b] with f(a)·f(b) &lt; 0 (design entry <c>num.root.bisection</c>). After n midpoints the error
     /// of the latest midpoint is at most (b − a)/2<sup>n</sup>, so n ≥ log₂((b − a)/tol) iterations suffice.
     /// </summary>
     public static RootResult<T> Bisection<T>(Func<T, T> f, T a, T b, StoppingCriteria? stop = null)
@@ -66,7 +66,7 @@ public static class Roots
     }
 
     /// <summary>
-    /// Brent's method on a bracket [a, b] with f(a)·f(b) &lt; 0 (catalog <c>num.root.brent</c>): inverse quadratic interpolation
+    /// Brent's method on a bracket [a, b] with f(a)·f(b) &lt; 0 (design entry <c>num.root.brent</c>): inverse quadratic interpolation
     /// or the secant step when it is safe, bisection otherwise, so convergence is guaranteed and usually superlinear.
     /// Brent, <i>Algorithms for Minimization without Derivatives</i>, Prentice-Hall 1973, chapter 4.
     /// </summary>
@@ -172,7 +172,7 @@ public static class Roots
     }
 
     /// <summary>
-    /// Newton's method with an analytic derivative (catalog <c>num.root.newton</c>): x ← x − f(x)/f′(x). Quadratic convergence
+    /// Newton's method with an analytic derivative (design entry <c>num.root.newton</c>): x ← x − f(x)/f′(x). Quadratic convergence
     /// at a simple root from a close enough start; there is no bracketing guarantee.
     /// </summary>
     public static RootResult<T> Newton<T>(Func<T, T> f, Func<T, T> derivative, T x0, StoppingCriteria? stop = null)
@@ -184,7 +184,7 @@ public static class Roots
     }
 
     /// <summary>
-    /// Newton's method with a central finite-difference derivative, h = ∛ε · max(1, |x|) (catalog <c>num.diff.optimal-step</c>).
+    /// Newton's method with a central finite-difference derivative, h = ∛ε · max(1, |x|) (design entry <c>num.diff.optimal-step</c>).
     /// Costs three function evaluations per iteration.
     /// </summary>
     public static RootResult<T> Newton<T>(Func<T, T> f, T x0, StoppingCriteria? stop = null)
@@ -250,7 +250,7 @@ public static class Roots
     }
 
     /// <summary>
-    /// The secant method from two starting points (catalog <c>num.root.secant</c>); order of convergence (1 + √5)/2 at a simple
+    /// The secant method from two starting points (design entry <c>num.root.secant</c>); order of convergence (1 + √5)/2 at a simple
     /// root, one function evaluation per iteration.
     /// </summary>
     public static RootResult<T> Secant<T>(Func<T, T> f, T x0, T x1, StoppingCriteria? stop = null)

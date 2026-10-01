@@ -13,6 +13,7 @@ namespace Mathesis;
 public sealed class Budget
 {
     private readonly long _startTimestamp = Stopwatch.GetTimestamp();
+    private readonly bool _track = true;
     private long _stepsUsed;
 
     /// <summary>Creates a budget. A <c>null</c> limit means unlimited.</summary>
@@ -31,8 +32,13 @@ public sealed class Budget
         CancellationToken = cancellationToken;
     }
 
-    /// <summary>A shared budget with no limits. Its step counter is still incremented but never trips.</summary>
-    public static Budget Unlimited { get; } = new(null, null);
+    private Budget() : this(null, null) => _track = false;
+
+    /// <summary>
+    /// A shared budget with no limits. It keeps no state (<see cref="StepsUsed"/> stays 0), so sharing it across calls and
+    /// threads is safe.
+    /// </summary>
+    public static Budget Unlimited { get; } = new();
 
     /// <summary>Maximum number of steps, or <c>null</c> for unlimited.</summary>
     public long? MaxSteps { get; }
@@ -66,6 +72,7 @@ public sealed class Budget
     /// <returns><c>true</c> if work may continue; <c>false</c> once the budget is exceeded.</returns>
     public bool TryCharge(long count = 1)
     {
+        if (!_track) return true;
         Interlocked.Add(ref _stepsUsed, count);
         return !IsExceeded;
     }

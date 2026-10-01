@@ -7,13 +7,13 @@ namespace Mathesis.Numerics.Differentiation;
 /// (<see cref="Mathesis.Numbers.Dual{T}"/>).
 /// </summary>
 /// <remarks>
-/// Default step sizes balance truncation against rounding error (catalog <c>num.diff.optimal-step</c>), each scaled by
+/// Default step sizes balance truncation against rounding error (design entry <c>num.diff.optimal-step</c>), each scaled by
 /// max(1, |x|): √ε for the forward and backward differences, ∛ε for the central difference, ε<sup>1/4</sup> for the second
 /// derivative and ε<sup>1/5</sup> for the five-point stencil.
 /// </remarks>
 public static class FiniteDifferences
 {
-    /// <summary>Forward difference (f(x + h) − f(x))/h, error −h·f″(ξ)/2 (catalog <c>num.diff.forward</c>).</summary>
+    /// <summary>Forward difference (f(x + h) − f(x))/h, error −h·f″(ξ)/2 (design entry <c>num.diff.forward</c>).</summary>
     public static T Forward<T>(Func<T, T> f, T x, T? step = null)
         where T : struct, IFloatingPointIeee754<T>
     {
@@ -31,7 +31,7 @@ public static class FiniteDifferences
         return (f(x) - f(x - h)) / h;
     }
 
-    /// <summary>Central difference (f(x + h) − f(x − h))/(2h), error −h²·f‴(ξ)/6 (catalog <c>num.diff.central</c>).</summary>
+    /// <summary>Central difference (f(x + h) − f(x − h))/(2h), error −h²·f‴(ξ)/6 (design entry <c>num.diff.central</c>).</summary>
     public static T Central<T>(Func<T, T> f, T x, T? step = null)
         where T : struct, IFloatingPointIeee754<T>
     {
@@ -40,7 +40,7 @@ public static class FiniteDifferences
         return (f(x + h) - f(x - h)) / (Num.Two<T>() * h);
     }
 
-    /// <summary>Second derivative (f(x + h) − 2f(x) + f(x − h))/h², error −h²·f⁗(ξ)/12 (catalog <c>num.diff.second</c>).</summary>
+    /// <summary>Second derivative (f(x + h) − 2f(x) + f(x − h))/h², error −h²·f⁗(ξ)/12 (design entry <c>num.diff.second</c>).</summary>
     public static T Second<T>(Func<T, T> f, T x, T? step = null)
         where T : struct, IFloatingPointIeee754<T>
     {
@@ -49,7 +49,7 @@ public static class FiniteDifferences
         return (f(x + h) - Num.Two<T>() * f(x) + f(x - h)) / (h * h);
     }
 
-    /// <summary>Five-point stencil (−f(x + 2h) + 8f(x + h) − 8f(x − h) + f(x − 2h))/(12h), error O(h⁴) (catalog <c>num.diff.five-point</c>).</summary>
+    /// <summary>Five-point stencil (−f(x + 2h) + 8f(x + h) − 8f(x − h) + f(x − 2h))/(12h), error O(h⁴) (design entry <c>num.diff.five-point</c>).</summary>
     public static T FivePoint<T>(Func<T, T> f, T x, T? step = null)
         where T : struct, IFloatingPointIeee754<T>
     {
@@ -60,10 +60,10 @@ public static class FiniteDifferences
     }
 
     /// <summary>
-    /// Richardson extrapolation of the central difference (catalog <c>num.diff.richardson</c>; Ridders 1982): the step is halved
+    /// Richardson extrapolation of the central difference (design entry <c>num.diff.richardson</c>; Ridders 1982): the step is halved
     /// at each level and the tableau D<sub>i,j</sub> = (4<sup>j</sup>·D<sub>i,j−1</sub> − D<sub>i−1,j−1</sub>)/(4<sup>j</sup> − 1)
     /// cancels the h², h⁴, … error terms. The result with the smallest difference-based error estimate is returned, and the reported <see cref="DerivativeResult{T}.ErrorEstimate"/>
-    /// adds twice the round-off level ε·|f|/h of that step; extrapolation stops once the estimate starts to grow (round-off). Typically accurate to a few ulps for smooth f.
+    /// adds twice the round-off level ε·|f|/h of that step (the estimate can still be optimistic when f itself is evaluated with errors larger than ε·|f|, as for log(1 + x²) near 0); extrapolation stops once the estimate starts to grow (round-off). Typically accurate to a few ulps for smooth f.
     /// </summary>
     /// <param name="f">The function.</param>
     /// <param name="x">The point.</param>
