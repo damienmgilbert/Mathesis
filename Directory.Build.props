@@ -17,6 +17,8 @@
 
   <PropertyGroup Condition="$(MSBuildProjectDirectory.Replace('\', '/').Contains('/tests/'))">
     <IsPackable>false</IsPackable>
+    <!-- Parsers ignore the culture by design, so tests may omit IFormatProvider. -->
+    <NoWarn>$(NoWarn);CA1305</NoWarn>
     <EnableMSTestRunner>true</EnableMSTestRunner>
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
   </PropertyGroup>

@@ -8,7 +8,7 @@ Namespaces follow mathematical domains; packages follow layers. A domain can spa
 
 | Namespace | Contents |
 | --- | --- |
-| `Mathesis` | `Outcome<T>`, `Truth`, `MathError`, `Budget`, `Tolerance`, `Provisos`, `NumberField`, `CurriculumLevel` |
+| `Mathesis` | `Outcome<T>`, `Truth`, `MathError`, `Verification`, `Budget`, `Tolerance`, `Provisos`, `IMathObject`, `IDerivation`, `NumberField`, `CurriculumLevel` |
 | `Mathesis.Numbers` | `BigRational`, `Complex<T>`, `Dual<T>`, `HyperDual<T>`, `Interval<T>`, `ModInt<TModulus>`, `IModulus`, `ModInteger` (runtime modulus), `BigFloat`, `ContinuedFraction`, `NumberTraits<T>`, `IExactNumber` |
 | `Mathesis.Polynomials` | `Polynomial<T>` (dense univariate), `SparsePolynomial<T>` (multivariate), `Monomial`, `MonomialOrder` (lex, grlex, grevlex), `RationalFunction<T>`, `PolynomialAlgorithms` (division, GCD, extended GCD, square-free, resultant, discriminant, Sturm sequence, root bounds, Taylor shift) |
 | `Mathesis.Structures` | Runtime algebraic structures: `IMagma<T>`, `IMonoid<T>`, `IGroup<T>`, `IRing<T>`, `IField<T>`, `PermutationGroup`, `CyclicGroup`, `DihedralGroup`, `IntegersModN`, `GaloisField` (later milestone) |

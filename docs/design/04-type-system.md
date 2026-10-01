@@ -139,7 +139,7 @@ public sealed record Step(
     CurriculumLevel Level,
     Derivation? Substeps);          // nested detail, e.g. the inner derivative of a chain rule
 
-public sealed record Derivation(Expr Start, Expr End, ImmutableArray<Step> Steps)
+public sealed record Derivation(Expr Start, Expr End, ImmutableArray<Step> Steps) : IDerivation
 {
     public IEnumerable<Step> Flatten();
     public Outcome<Expr> Replay(MathContext ctx);   // re-applies each step; must reproduce End
