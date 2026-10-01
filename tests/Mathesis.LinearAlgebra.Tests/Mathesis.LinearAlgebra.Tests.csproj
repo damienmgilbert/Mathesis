@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MSTest" />
+    <ProjectReference Include="../../src/Mathesis.LinearAlgebra/Mathesis.LinearAlgebra.csproj" />
+    <ProjectReference Include="../Mathesis.Testing/Mathesis.Testing.csproj" />
+  </ItemGroup>
+
+</Project>

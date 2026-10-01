@@ -111,12 +111,14 @@ Engines never throw for mathematical failure. They return `Outcome<T>`:
 ```csharp
 public abstract record Outcome<T>
 {
-    public sealed record Success(T Value, Derivation? Steps, Provisos Provisos, Verification Check) : Outcome<T>;
-    public sealed record Partial(T Value, string Reason, Derivation? Steps, Provisos Provisos) : Outcome<T>;
-    public sealed record Unevaluated(Expr Original, string Reason) : Outcome<T>;
+    public sealed record Success(T Value, IDerivation? Steps, Provisos Provisos, Verification Check) : Outcome<T>;
+    public sealed record Partial(T Value, string Reason, IDerivation? Steps, Provisos Provisos) : Outcome<T>;
+    public sealed record Unevaluated(IMathObject Original, string Reason) : Outcome<T>;
     public sealed record Failed(MathError Error) : Outcome<T>;
 }
 ```
+
+`Outcome<T>` lives in `Mathesis.Core`, which cannot reference `Expr` or `Derivation` (Symbolics). Core therefore defines the marker interfaces `IMathObject` and `IDerivation : IMathObject`; `Expr` implements `IMathObject`, `Derivation` implements `IDerivation`, and `Provisos` holds `IMathObject` conditions. Callers cast back to the concrete type (ADR-13).
 
 Numeric routines return result records (value, error estimate, iterations, converged flag), as in Plan 1 Phase 2.
 
@@ -160,5 +162,7 @@ Core packages take no logging dependency. Derivations are the trace. `Mathesis.E
 | ADR-10 | 0⁰ | Exactly 1 in arithmetic (consistent with the binomial theorem, power series, IEEE 754 `pow` and `Math.Pow(0, 0)`); indeterminate as a limit form | Undefined everywhere | Keeps polynomial and series algebra uniform |
 | ADR-11 | Numeric compilation | Flat instruction array with a span interpreter | `System.Linq.Expressions.Compile` | AOT-safe and fast enough; avoids reflection emit |
 | ADR-12 | Logging | No logging dependency in core packages | `Microsoft.Extensions.Logging.Abstractions` everywhere | Smallest dependency graph; derivations already trace |
+| ADR-13 | Core result types vs. Expr | `Outcome<T>` and `Provisos` in Core carry `IMathObject` / `IDerivation` marker interfaces that Symbolics implements (2026-10-01) | Move `Outcome<T>` to Symbolics, or an `Outcome<T>` without expressions | Numerics and LinearAlgebra, which sit below Symbolics, can still return `Outcome<T>`; Core stays dependency-free |
+| ADR-14 | Elementary functions on `Dual<T>` and `Complex<T>` | C# 14 extension members constrained on `IFloatingPointIeee754<T>` (2026-10-02) | Implementing `IExponentialFunctions<T>`, `ITrigonometricFunctions<T>`… on the struct | A struct cannot implement an interface only for some `T`; generic code that needs `Dual<T>` takes the operator interfaces and calls `Dual<T>.Sin(x)` directly |
 
 Record new decisions in this table as they are made, with the date in the commit message.

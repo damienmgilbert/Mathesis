@@ -15,8 +15,8 @@ Floating-point arithmetic and error analysis; root finding; interpolation and ap
 | --- | --- |
 | `RootResult<T>` | Root, iterations, function evaluations, estimated error, `Converged`, termination reason |
 | `QuadratureResult<T>` | Value, error estimate, evaluations, subintervals, warnings (suspected singularity, round-off limited) |
-| `OdeSolution<T>` | Accepted steps, dense-output interpolant, events located, step statistics, stiffness detected |
-| `Interpolant<T>` | Evaluate, derivative, integral; Lebesgue-constant estimate |
+| `OdeSolution<T>` | Accepted steps, dense-output interpolant, step statistics; events located and stiffness detected arrive in Milestone 7 |
+| `Interpolant<T>` | `IInterpolant<T>` offers `Evaluate`; the Newton form and splines add derivatives, splines add integrals; Lebesgue-constant estimate in Milestone 7 |
 | `ChebyshevSeries<T>` | Coefficients on [a, b], truncation error estimate, arithmetic, roots |
 | `OptimizationResult<T>` | Minimizer, minimum, gradient norm, iterations, `Converged` |
 | `ConditionReport` | Condition number estimate, backward error, digits likely lost |
@@ -233,7 +233,7 @@ Floating-point arithmetic and error analysis; root finding; interpolation and ap
 | --- | --- | --- |
 | Root finding with bracketing guarantees and convergence diagnostics | `Roots.Brent(x => x*x - 2, 1, 2)` | 1 |
 | Adaptive quadrature with error estimates, including singular and infinite ranges | `integrate(ln(x)/sqrt(x), x, 0, 1) = -4` | 1 (tanh-sinh, cubature: 7) |
-| ODE integration with dense output, events and stiffness detection | Robertson chemical kinetics | 1 (stiff: 7) |
+| ODE integration with dense output | `y' = -y` to 1e−10 | 1 (events, stiffness detection, Robertson kinetics: 7) |
 | Interpolation, splines, Chebyshev approximations | | 1 / 7 |
 | Numerical derivatives (finite differences, Richardson, complex step) and automatic differentiation | | 1 |
 | Dense and sparse linear solvers with condition reports | | 1 / 7 |
