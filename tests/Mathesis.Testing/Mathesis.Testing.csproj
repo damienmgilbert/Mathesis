@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Mathesis.Core/Mathesis.Core.csproj" />
+  </ItemGroup>
+
+</Project>

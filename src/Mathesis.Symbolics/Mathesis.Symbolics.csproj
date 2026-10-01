@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../Mathesis.Core/Mathesis.Core.csproj" />
+    <ProjectReference Include="../Mathesis.Numerics/Mathesis.Numerics.csproj" />
+    <ProjectReference Include="../Mathesis.LinearAlgebra/Mathesis.LinearAlgebra.csproj" />
+  </ItemGroup>
+
+</Project>
