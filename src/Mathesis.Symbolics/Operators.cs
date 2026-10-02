@@ -91,7 +91,7 @@ public static partial class Operators
     public static Operator Frac { get; } = Fn("frac", One, OperatorFamily.Arithmetic, Signature.Elementary(_ => Sort.Real), Elem);
 
     /// <summary>Remainder <c>a mod n</c>.</summary>
-    public static Operator Mod { get; } = Infix("\bmod", "mod", Precedence.Multiplicative, Two, OperatorFamily.Arithmetic, Signature.NumbersTo(Sort.Real), OperatorAttributes.NumericFunction, latex: "\\bmod");
+    public static Operator Mod { get; } = Infix("mod", "mod", Precedence.Multiplicative, Two, OperatorFamily.Arithmetic, Signature.NumbersTo(Sort.Real), OperatorAttributes.NumericFunction, latex: "\\bmod");
 
     /// <summary>Integer quotient.</summary>
     public static Operator Quo { get; } = Fn("quo", Two, OperatorFamily.Arithmetic, Signature.NumbersTo(Sort.Integer), OperatorAttributes.NumericFunction);

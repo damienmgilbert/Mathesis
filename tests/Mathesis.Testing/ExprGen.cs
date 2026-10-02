@@ -89,7 +89,7 @@ public static class ExprGen
                     "add" => args.Sum(),
                     "sub" => args[0] - args[1],
                     "mul" => args.Aggregate(1.0, (p, q) => p * q),
-                    "div" => args[0] / args[1],
+                    "div" => args[1] == 0 ? double.NaN : args[0] / args[1],
                     "neg" => -args[0],
                     "pow" => RealPow(args[0], args[1]),
                     "sqrt" => args[0] < 0 ? double.NaN : Math.Sqrt(args[0]),
@@ -109,6 +109,7 @@ public static class ExprGen
     // Real power: x^n for integer n is defined for any x; fractional powers need x >= 0.
     private static double RealPow(double b, double e)
     {
+        if (double.IsNaN(b) || double.IsNaN(e) || (b == 0 && e < 0)) return double.NaN;
         if (e == Math.Floor(e)) return Math.Pow(b, e);
         return b < 0 ? double.NaN : Math.Pow(b, e);
     }

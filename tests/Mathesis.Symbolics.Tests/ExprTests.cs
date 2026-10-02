@@ -241,6 +241,7 @@ public class ExprTests
             Assert.IsTrue(Operators.TryGet(op.Id, out var found) && found == op, op.Id);
             Assert.IsTrue(Operators.TryGetByName(op.Id, out _), op.Id);
             Assert.IsTrue(op.Arity.Min >= 1, op.Id);
+            Assert.IsTrue(op.Id.All(char.IsAsciiLetterOrDigit) && char.IsAsciiLetter(op.Id[0]), $"'{op.Id}' is not a plain identifier");
         }
         Assert.AreEqual(Operators.Arcsin, Operators.Get("arcsin"));
         Assert.IsTrue(Operators.TryGetByName("asin", out var asin) && asin == Operators.Arcsin);

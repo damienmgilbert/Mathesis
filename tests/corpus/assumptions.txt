@@ -1,0 +1,336 @@
+# Truth table for AssumptionSet.Ask: facts |- proposition ==> expected
+# Facts are separated by ';'. The expected value is the mathematically correct answer at the points where the proposition is defined and
+# the facts hold: True (holds at all of them), False (fails at all of them) or Unknown (holds at some and fails at others).
+# A decided answer that differs from the expected one is a failure; Unknown for an expected True/False is an allowed miss.
+
+# --- Signs of symbols ---
+x > 0 |- x > 0 ==> True
+x > 0 |- x >= 0 ==> True
+x > 0 |- x < 0 ==> False
+x > 0 |- x <= 0 ==> False
+x > 0 |- x != 0 ==> True
+x > 0 |- x = 0 ==> False
+x >= 0 |- x >= 0 ==> True
+x >= 0 |- x > 0 ==> Unknown
+x >= 0 |- x < 0 ==> False
+x >= 0 |- x = 0 ==> Unknown
+x < 0 |- x < 0 ==> True
+x < 0 |- x > 0 ==> False
+x < 0 |- x != 0 ==> True
+x <= 0 |- x <= 0 ==> True
+x <= 0 |- x < 0 ==> Unknown
+x <= 0 |- x > 0 ==> False
+x != 0 |- x != 0 ==> True
+x != 0 |- x = 0 ==> False
+x != 0 |- x > 0 ==> Unknown
+x = 0 |- x = 0 ==> True
+x = 0 |- x > 0 ==> False
+x = 0 |- x >= 0 ==> True
+x = 3 |- x > 2 ==> True
+x = 3 |- x < 2 ==> False
+x = 3 |- x^2 = 9 ==> True
+ |- x > 0 ==> Unknown
+ |- x = x ==> True
+ |- x < x ==> False
+ |- x <= x ==> True
+ |- x != x ==> False
+ |- 1 < 2 ==> True
+ |- 2 < 1 ==> False
+ |- 1/3 < 1/2 ==> True
+ |- pi > 3 ==> True
+ |- pi > 4 ==> False
+ |- e > 2 ==> True
+ |- e < 3 ==> True
+ |- pi > e ==> True
+
+# --- Powers ---
+ |- x^2 >= 0 ==> True
+ |- x^2 > 0 ==> Unknown
+ |- x^2 < 0 ==> False
+ |- x^2 + 1 > 0 ==> True
+ |- x^2 + 1 >= 1 ==> True
+ |- x^4 >= 0 ==> True
+ |- x^2 + y^2 >= 0 ==> True
+ |- x^2 + y^2 > 0 ==> Unknown
+ |- (x - 1)^2 >= 0 ==> True
+ |- (x - y)^2 >= 0 ==> True
+ |- (x - y)^2 + 1 > 0 ==> True
+ |- x^3 > 0 ==> Unknown
+ x > 0 |- x^3 > 0 ==> True
+ x < 0 |- x^3 < 0 ==> True
+ x < 0 |- x^2 > 0 ==> True
+ x < 0 |- x^3 > 0 ==> False
+ x > 0 |- x^(1/2) > 0 ==> True
+ x > 0 |- x^(-1) > 0 ==> True
+ x < 0 |- x^(-1) < 0 ==> True
+ x < 0 |- x^(-2) > 0 ==> True
+ x < 0 |- x^(1/3) < 0 ==> True
+ x > 0 |- x^(2/3) > 0 ==> True
+ x < 0 |- x^(2/3) > 0 ==> True
+ x > 0 |- x^0 = 1 ==> True
+ x > 0 |- x^1 = x ==> True
+ x > 0 |- 2^x > 0 ==> True
+ |- 2^x > 0 ==> True
+ |- e^x > 0 ==> True
+ |- exp(x) > 0 ==> True
+ |- exp(x) < 0 ==> False
+ |- exp(x) + 1 > 1 ==> True
+ |- exp(x) >= 0 ==> True
+
+# --- Square roots and absolute values ---
+ |- sqrt(x) >= 0 ==> True
+ |- sqrt(x) < 0 ==> False
+ x > 0 |- sqrt(x) > 0 ==> True
+ |- sqrt(x^2 + 1) > 0 ==> True
+ |- sqrt(x^2 + 1) >= 1 ==> True
+ |- abs(x) >= 0 ==> True
+ |- abs(x) > 0 ==> Unknown
+ |- abs(x) < 0 ==> False
+ x != 0 |- abs(x) > 0 ==> True
+ x < 0 |- abs(x) = -x ==> True
+ x > 0 |- abs(x) = x ==> True
+ |- abs(x) + 1 > 0 ==> True
+ |- abs(x) * abs(y) >= 0 ==> True
+ x < 0 |- abs(x) > 0 ==> True
+ |- sqrt(2) > 1 ==> True
+ |- sqrt(2) < 2 ==> True
+ |- sqrt(2) > 1.5 ==> False
+ |- sqrt(2) < 1.5 ==> True
+
+# --- Sums and products ---
+x > 0; y > 0 |- x + y > 0 ==> True
+x > 0; y > 0 |- x * y > 0 ==> True
+x > 0; y > 0 |- x / y > 0 ==> True
+x > 0; y > 0 |- x - y > 0 ==> Unknown
+x > 0; y < 0 |- x * y < 0 ==> True
+x > 0; y < 0 |- x * y > 0 ==> False
+x > 0; y < 0 |- x - y > 0 ==> True
+x > 0; y < 0 |- x / y < 0 ==> True
+x < 0; y < 0 |- x * y > 0 ==> True
+x < 0; y < 0 |- x + y < 0 ==> True
+x < 0; y < 0 |- x / y > 0 ==> True
+x >= 0; y >= 0 |- x + y >= 0 ==> True
+x >= 0; y >= 0 |- x * y >= 0 ==> True
+x >= 0; y >= 0 |- x + y > 0 ==> Unknown
+x >= 0; y > 0 |- x + y > 0 ==> True
+x > 0; y > 0; z > 0 |- x * y * z > 0 ==> True
+x > 0; y > 0; z > 0 |- x + y + z > 0 ==> True
+x > 0; y > 0; z < 0 |- x * y * z < 0 ==> True
+x > 0; y > 0 |- x * y + 1 > 1 ==> True
+x > 0 |- x + 1 > 1 ==> True
+x > 0 |- x + 1 > 0 ==> True
+x > 0 |- x - 1 > 0 ==> Unknown
+x > 0 |- 2 * x > 0 ==> True
+x > 0 |- -x < 0 ==> True
+x > 0 |- -x > 0 ==> False
+x < 0 |- -x > 0 ==> True
+x > 0 |- 3 * x + 2 > 2 ==> True
+x >= 0 |- x + 1 > 0 ==> True
+x > 1 |- x - 1 > 0 ==> True
+x > 1 |- x > 0 ==> True
+x > 1 |- x > 2 ==> Unknown
+x > 1 |- x < 1 ==> False
+x > 1 |- x^2 > 1 ==> True
+x > 2 |- x^2 > 4 ==> True
+x > 2 |- x^2 < 4 ==> False
+x < -2 |- x^2 > 4 ==> True
+x > 0 |- 1/x > 0 ==> True
+x < 0 |- 1/x < 0 ==> True
+x > 0 |- 1/x < 0 ==> False
+x > 0; y > 0 |- 1/x + 1/y > 0 ==> True
+
+# --- Two variables (Fourier-Motzkin) ---
+x > y; y > 0 |- x > 0 ==> True
+x > y; y > 0 |- x > 1 ==> Unknown
+x > y; y > 0 |- x < 0 ==> False
+x > y |- x - y > 0 ==> True
+x > y |- y - x < 0 ==> True
+x > y |- y > x ==> False
+x > y |- x >= y ==> True
+x > y |- x = y ==> False
+x > y |- x != y ==> True
+x >= y |- x - y >= 0 ==> True
+x >= y |- x > y ==> Unknown
+x >= y; y >= x |- x = y ==> True
+x > y; y > z |- x > z ==> True
+x > y; y > z |- z > x ==> False
+x > y; y >= z |- x > z ==> True
+x >= y; y >= z |- x >= z ==> True
+x >= y; y >= z |- x > z ==> Unknown
+x > y; z > 0 |- x + z > y ==> True
+x > y; z > 0 |- x - z > y ==> Unknown
+x > y; z >= 0 |- x + z > y ==> True
+x + y > 0; x - y > 0 |- x > 0 ==> True
+x + y > 0; x - y > 0 |- y > 0 ==> Unknown
+x + y > 2; x - y > 2 |- x > 2 ==> True
+x > 2 * y; y > 0 |- x > 0 ==> True
+x > 2 * y; y > 1 |- x > 2 ==> True
+2 * x > y; y > 0 |- x > 0 ==> True
+x > 0; y > 0; x + y < 1 |- x < 1 ==> True
+x > 0; y > 0; x + y < 1 |- y < 1 ==> True
+x > 0; y > 0; x + y < 1 |- x + y < 2 ==> True
+x > 0; y > 0; x + y < 1 |- x + y > 1 ==> False
+x < y; y < z |- x < z ==> True
+x < y; y < z |- x > z ==> False
+x <= y; y <= z |- x <= z ==> True
+x = y |- x - y = 0 ==> True
+x = y; y > 0 |- x > 0 ==> True
+x = y + 1; y > 0 |- x > 1 ==> True
+x = y + 1; y > 0 |- x > 2 ==> Unknown
+x = y + 1 |- x > y ==> True
+x = 2 * y; y > 0 |- x > y ==> True
+x = 2 * y; y < 0 |- x < y ==> True
+x = y^2 |- x >= 0 ==> True
+x = y^2; y != 0 |- x > 0 ==> True
+x = abs(y) |- x >= 0 ==> True
+x = exp(y) |- x > 0 ==> True
+
+# --- Integers ---
+n in Z; n > 0 |- n >= 1 ==> True
+n in Z; n > 0 |- n > 1 ==> Unknown
+n in Z; n > 0 |- n > 0 ==> True
+n in Z; n >= 0 |- n + 1 >= 1 ==> True
+n in Z; n > 2 |- n >= 3 ==> True
+n in Z; n < 0 |- n <= -1 ==> True
+n in Z; n > 0; n < 2 |- n = 1 ==> True
+n in Z; n > 1; n < 3 |- n = 2 ==> True
+n in Z; n > 0 |- n^2 >= 1 ==> True
+n in Z |- n^2 >= 0 ==> True
+n in Z |- n in Z ==> True
+n in Z |- n in Q ==> True
+n in Z |- n in R ==> True
+n in Z |- n in C ==> True
+n in Z |- 2 * n in Z ==> True
+n in Z |- n + 1 in Z ==> True
+n in Z |- n / 2 in Z ==> Unknown
+n in Z; n >= 0 |- n in N ==> True
+n in Z |- n in N ==> Unknown
+n in N |- n >= 0 ==> True
+n in N |- n in Z ==> True
+n in N |- n + 1 > 0 ==> True
+n in N |- n + 1 >= 1 ==> True
+n in Z |- 2 * n + 1 != 0 ==> True
+n in Z |- 2 * n = 1 ==> False
+n in Z |- 2 * n + 1 = 2 * n ==> False
+n in Z |- n = n + 1 ==> False
+n in Z |- n < n + 1 ==> True
+n in Z |- n + 1 > n ==> True
+n in Z |- (n + 1) - n = 1 ==> True
+n in Z; m in Z |- n + m in Z ==> True
+n in Z; m in Z |- n * m in Z ==> True
+n in Z; m in Z; n > m |- n >= m + 1 ==> True
+n in Z; m in Z; n > m |- n > m + 1 ==> Unknown
+n in Z; m in Z; n > m |- n - m >= 1 ==> True
+n in Z; n mod 2 = 0 |- n mod 2 = 0 ==> True
+n in Z; n mod 2 = 0 |- n mod 2 = 1 ==> False
+n in Z; n mod 2 = 1 |- n mod 2 = 1 ==> True
+n in Z; n mod 2 = 1 |- n mod 2 = 0 ==> False
+n in Z; n mod 2 = 0 |- (n + 1) mod 2 = 1 ==> True
+n in Z; n mod 2 = 0 |- (n + 2) mod 2 = 0 ==> True
+n in Z; n mod 2 = 1 |- (n + 1) mod 2 = 0 ==> True
+n in Z; n mod 2 = 1 |- (n * n) mod 2 = 1 ==> True
+n in Z; n mod 2 = 0 |- (3 * n) mod 2 = 0 ==> True
+n in Z; n mod 2 = 1 |- (3 * n) mod 2 = 1 ==> True
+n in Z |- n mod 2 = 0 ==> Unknown
+n in Z |- (2 * n) mod 2 = 0 ==> True
+n in Z |- (2 * n + 1) mod 2 = 1 ==> True
+n in Z |- divides(2, 2 * n) ==> True
+n in Z; n mod 2 = 0 |- divides(2, n) ==> True
+n in Z |- divides(1, n) ==> True
+
+# --- Intervals and bounds ---
+x in [0, 1] |- x >= 0 ==> True
+x in [0, 1] |- x <= 1 ==> True
+x in [0, 1] |- x < 2 ==> True
+x in [0, 1] |- x > 1 ==> False
+x in [0, 1] |- x < 0 ==> False
+x in [0, 1] |- x > 0 ==> Unknown
+x in [0, 1] |- x^2 <= 1 ==> True
+x in [0, 1] |- x^2 <= x ==> True
+x in [0, 1] |- 1 - x >= 0 ==> True
+x in [0, 1] |- x + 1 >= 1 ==> True
+x in [0, 1] |- x + 1 > 2 ==> False
+x in [1, 2]; y in [3, 4] |- x < y ==> True
+x in [1, 2]; y in [3, 4] |- x > y ==> False
+x in [1, 2]; y in [3, 4] |- x + y > 3 ==> True
+x in [1, 2]; y in [3, 4] |- x * y >= 3 ==> True
+x in [1, 2]; y in [3, 4] |- x * y <= 8 ==> True
+x in [1, 2]; y in [3, 4] |- y / x >= 1.5 ==> True
+x in [1, 2]; y in [3, 4] |- y - x > 0 ==> True
+x > 0; x < 1 |- x > 0 ==> True
+x > 0; x < 1 |- x < 1 ==> True
+x > 0; x < 1 |- x^2 < x ==> True
+x > 0; x < 1 |- 1/x > 1 ==> True
+x in [-1, 1] |- x^2 <= 1 ==> True
+x in [-1, 1] |- abs(x) <= 1 ==> True
+x in [-1, 1] |- x < 0 ==> Unknown
+x in [-1, 1] |- x + 2 > 0 ==> True
+x in [-2, -1] |- x < 0 ==> True
+x in [-2, -1] |- x^2 >= 1 ==> True
+x in [-2, -1] |- 1/x < 0 ==> True
+x in [2, 3] |- ln(x) > 0 ==> True
+x in [2, 3] |- sqrt(x) > 1 ==> True
+x in [2, 3] |- exp(x) > 1 ==> True
+x in [0, 3] |- x^2 < 10 ==> True
+x in [0, 3] |- x^2 > 10 ==> False
+x in [0, 3] |- x^2 > 5 ==> Unknown
+x in [0, 1] |- sin(x) >= 0 ==> True
+x in [0, 1] |- sin(x) <= 1 ==> True
+x in [0, 1] |- cos(x) > 0 ==> True
+ |- sin(x) <= 1 ==> True
+ |- sin(x) >= -1 ==> True
+ |- cos(x) <= 1 ==> True
+ |- sin(x)^2 <= 1 ==> True
+ |- sin(x) > 2 ==> False
+ |- sin(x)^2 + cos(x)^2 <= 2 ==> True
+ |- cos(x)^2 >= 0 ==> True
+ |- sin(x) > 0 ==> Unknown
+ |- sin(x) * cos(x) <= 1 ==> True
+ |- arctan(x) < 2 ==> True
+ |- tanh(x) < 1 ==> True
+ |- cosh(x) >= 1 ==> True
+ |- sinh(x) > 0 ==> Unknown
+ x > 0 |- sinh(x) > 0 ==> True
+ x < 0 |- sinh(x) < 0 ==> True
+ x > 0 |- tanh(x) > 0 ==> True
+ x > 0 |- arctan(x) > 0 ==> True
+
+# --- Logic ---
+x > 0 |- x > 0 and x >= 0 ==> True
+x > 0 |- x > 0 and x < 0 ==> False
+x > 0 |- x > 0 or x < 0 ==> True
+x > 0 |- x < 0 or x = 0 ==> False
+x > 0 |- not (x < 0) ==> True
+x > 0 |- not (x > 0) ==> False
+ |- x > 0 or x <= 0 ==> True
+ |- x > 0 and x <= 0 ==> False
+ |- not (x > 0 and x <= 0) ==> True
+x > 0 |- x > 1 ==> Unknown
+x > 0 |- x > 1 or x <= 1 ==> True
+x > 0 |- x > 1 and x <= 1 ==> False
+x > 1 |- implies(x > 0, x > -1) ==> True
+ |- implies(x > 1, x > 0) ==> True
+ |- implies(x > 0, x > 1) ==> Unknown
+ |- implies(x > 0, x < 0) ==> Unknown
+x > 0 |- implies(x < 0, x > 5) ==> True
+ |- iff(x > 0, x > 0) ==> True
+ |- iff(x > 0, x < 0) ==> Unknown
+
+# --- Membership ---
+ |- x in R ==> True
+ |- 3 in Z ==> True
+ |- 1/2 in Z ==> False
+ |- 1/2 in Q ==> True
+ |- pi in R ==> True
+ |- I in R ==> False
+ |- I in C ==> True
+ |- 0 in N ==> True
+ |- -1 in N ==> False
+ |- sqrt(2) in R ==> True
+x > 0 |- x in [0, oo) ==> True
+x < 0 |- x in [0, oo) ==> False
+x in [1, 2] |- x in [0, 3] ==> True
+x in [1, 2] |- x in [3, 4] ==> False
+ |- 2 in {1, 2, 3} ==> True
+ |- 4 in {1, 2, 3} ==> False
+x = 2 |- x in {1, 2, 3} ==> True
