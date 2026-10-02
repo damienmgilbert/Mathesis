@@ -262,8 +262,8 @@ public static class LatexPrinter
             }
             if (denominator.Count > 0)
             {
-                var top = numerator.Count == 0 ? "1" : Join([.. numerator]).Text;
-                var bottom = Join([.. denominator]).Text;
+                var top = numerator.Count == 0 ? "1" : numerator.Count == 1 ? Render(numerator[0]).Text : Join([.. numerator]).Text;
+                var bottom = denominator.Count == 1 ? Render(denominator[0]).Text : Join([.. denominator]).Text;
                 return new("\\frac{" + top + "}{" + bottom + "}", Precedence.Multiplicative);
             }
             return Join(factors);

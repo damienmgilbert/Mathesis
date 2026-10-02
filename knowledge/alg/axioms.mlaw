@@ -63,8 +63,11 @@ axiom mul-inverse "Multiplicative inverse"
 axiom distributive "Distributive property"
   vars:      a, b, c
   statement: a*(b + c) = a*b + a*c
+  orient:    ltr
   level:     Algebra1
   course:    Algebra
+  tags:      expand
+  explain:   "Multiply the factor into each term of the sum."
   refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
 
 axiom zero-ne-one "Non-triviality"

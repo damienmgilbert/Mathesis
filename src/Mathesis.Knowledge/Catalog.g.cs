@@ -486,6 +486,9 @@ public static class Laws
             /// <summary>Logarithm of an even power.</summary>
             public static readonly EntryId EvenPower = new("alg.log.even-power");
 
+            /// <summary>The exponential undoes the natural logarithm.</summary>
+            public static readonly EntryId ExpLn = new("alg.log.exp-ln");
+
             /// <summary>Exponential undoes the logarithm.</summary>
             public static readonly EntryId InverseExp = new("alg.log.inverse-exp");
 
@@ -494,6 +497,18 @@ public static class Laws
 
             /// <summary>Natural logarithm of e.</summary>
             public static readonly EntryId LnE = new("alg.log.ln-e");
+
+            /// <summary>Natural logarithm undoes the exponential.</summary>
+            public static readonly EntryId LnExp = new("alg.log.ln-exp");
+
+            /// <summary>Natural logarithm of a power.</summary>
+            public static readonly EntryId LnPower = new("alg.log.ln-power");
+
+            /// <summary>Natural logarithm of a product.</summary>
+            public static readonly EntryId LnProduct = new("alg.log.ln-product");
+
+            /// <summary>Natural logarithm of a quotient.</summary>
+            public static readonly EntryId LnQuotient = new("alg.log.ln-quotient");
 
             /// <summary>Monotonicity of logarithms.</summary>
             public static readonly EntryId Monotone = new("alg.log.monotone");

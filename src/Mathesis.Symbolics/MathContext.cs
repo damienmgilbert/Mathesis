@@ -18,6 +18,9 @@ public sealed record MathContext
     /// <summary>The facts about symbols.</summary>
     public AssumptionSet Assumptions { get; init; } = AssumptionSet.Empty;
 
+    /// <summary>The curriculum level explanations should stay within, or <c>null</c> for no limit.</summary>
+    public Mathesis.Knowledge.CurriculumLevel? Level { get; init; }
+
     /// <summary>The normalization options that match <see cref="Field"/>.</summary>
     public NormalizeOptions NormalizeOptions => new() { Field = Field };
 

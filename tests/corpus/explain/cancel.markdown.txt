@@ -1,0 +1,6 @@
+Start: $\frac{x^{2} - 1}{x - 1}$
+
+1. Multiplying numerator and denominator by the same non-zero number $x - 1$ does not change the fraction.
+   $\frac{-1 + x^{2}}{-1 + x} \to 1 + x$
+
+Result: $1 + x$

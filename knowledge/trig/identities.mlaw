@@ -111,7 +111,7 @@ law period-tan "Periods of tangent and cotangent"
 law cofunction-sin "Cofunction identity (sine)"
   vars:      x: complex
   statement: sin(pi/2 - x) = cos(x)
-  orient:    both
+  orient:    ltr
   level:     PreCalculus
   course:    Trigonometry
   tags:      trig-reduce
@@ -120,7 +120,7 @@ law cofunction-sin "Cofunction identity (sine)"
 law cofunction-cos "Cofunction identity (cosine)"
   vars:      x: complex
   statement: cos(pi/2 - x) = sin(x)
-  orient:    both
+  orient:    ltr
   level:     PreCalculus
   course:    Trigonometry
   tags:      trig-reduce
@@ -130,7 +130,7 @@ law cofunction-tan "Cofunction identity (tangent)"
   vars:      x: complex
   statement: tan(pi/2 - x) = cot(x)
   where:     sin(x) != 0
-  orient:    both
+  orient:    ltr
   level:     PreCalculus
   course:    Trigonometry
   tags:      trig-reduce
@@ -140,7 +140,7 @@ law cofunction-sec "Cofunction identity (secant)"
   vars:      x: complex
   statement: sec(pi/2 - x) = csc(x)
   where:     sin(x) != 0
-  orient:    both
+  orient:    ltr
   level:     PreCalculus
   course:    Trigonometry
   tags:      trig-reduce
@@ -607,7 +607,7 @@ domain trig.exp "Exponential forms"
 
 law euler "Euler's formula"
   vars:      x: complex
-  statement: e^(I*x) = cos(x) + I*sin(x)
+  statement: cos(x) + I*sin(x) = e^(I*x)
   orient:    both
   level:     PreCalculus
   course:    Trigonometry

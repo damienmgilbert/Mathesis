@@ -72,7 +72,7 @@ law power "Absolute value of a power"
 law square "Square and absolute value"
   vars:      a
   statement: abs(a)^2 = a^2
-  orient:    both
+  orient:    ltr
   level:     Algebra1
   course:    Algebra
   tags:      abs-simplify
@@ -158,7 +158,7 @@ law natural "Natural logarithm"
   vars:      x
   statement: ln(x) = log(x, e)
   where:     x > 0
-  orient:    both
+  orient:    rtl
   level:     Algebra2
   course:    Algebra
   tags:      log-base
@@ -235,6 +235,55 @@ law power "Logarithm of a power"
   tags:      expand-log | combine-log
   explain:   "The exponent comes down in front of the logarithm."
 
+law ln-product "Natural logarithm of a product"
+  vars:      x, y
+  statement: ln(x*y) = ln(x) + ln(y)
+  where:     x > 0 and y > 0
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log | combine-log
+  explain:   "The natural logarithm of a product is the sum of the natural logarithms."
+
+law ln-quotient "Natural logarithm of a quotient"
+  vars:      x, y
+  statement: ln(x/y) = ln(x) - ln(y)
+  where:     x > 0 and y > 0
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log | combine-log
+  explain:   "The natural logarithm of a quotient is the difference of the natural logarithms."
+
+law ln-power "Natural logarithm of a power"
+  vars:      x, r
+  statement: ln(x^r) = r*ln(x)
+  where:     x > 0
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log | combine-log
+  explain:   "ln({x}^{r}) = {r}·ln({x}) for a positive base."
+
+law ln-exp "Natural logarithm undoes the exponential"
+  vars:      x
+  statement: ln(exp(x)) = x
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-simplify
+  explain:   "ln(e^{x}) = {x}."
+
+law exp-ln "The exponential undoes the natural logarithm"
+  vars:      x
+  statement: exp(ln(x)) = x
+  where:     x > 0
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-simplify
+  explain:   "e^(ln {x}) = {x} for {x} > 0."
+
 law even-power "Logarithm of an even power"
   vars:      x, k: integer
   statement: ln(x^(2*k)) = 2*k*ln(abs(x))
@@ -279,7 +328,7 @@ law swap "Reciprocal bases"
   vars:      a, b
   statement: log(a, b) = 1/log(b, a)
   where:     a > 0 and a != 1 and b > 0 and b != 1
-  orient:    both
+  orient:    none
   level:     Algebra2
   course:    Algebra
   tags:      log-base
@@ -390,7 +439,7 @@ law div "Division by the conjugate"
   vars:      w: complex, z: complex
   statement: w/z = w*conj(z)/(z*conj(z))
   where:     z != 0
-  orient:    ltr
+  orient:    none
   level:     Algebra2
   course:    Algebra
   tags:      complex-simplify
