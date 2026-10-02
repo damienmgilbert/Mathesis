@@ -56,8 +56,11 @@ axiom mul-inverse "Multiplicative inverse"
   vars:      a
   statement: a*(1/a) = 1
   where:     a != 0
+  orient:    ltr
   level:     Algebra1
   course:    Algebra
+  tags:      fraction-simplify
+  explain:   "A non-zero number times its reciprocal is 1."
   refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
 
 axiom distributive "Distributive property"

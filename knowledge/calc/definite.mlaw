@@ -1,0 +1,51 @@
+# Calculus: definite and improper integrals (d5-calculus.md, "Definite integrals" and "Improper integrals"). These statements involve integrals with
+# bounds, which the numeric verifier does not evaluate; the integration engine checks every definite integral against Gauss-Kronrod quadrature instead
+# (tests/Mathesis.Tests/DefiniteIntegralTests.cs).
+
+domain calc.def "Definite integrals"
+
+law zero-width "Zero-width interval"
+  vars:      f: function(R -> R), a
+  statement: integrate(f, x, a, a) = 0
+  level:     Calculus1
+  course:    Calculus
+  explain:   "An integral over an interval of width zero is 0."
+  verify:    none
+  rationale: "The statement is about an integral with bounds, which the numeric verifier does not evaluate; the integration tests check it with quadrature."
+
+law reverse "Reversing limits"
+  vars:      f: function(R -> R), a, b
+  statement: integrate(f, x, b, a) = -integrate(f, x, a, b)
+  level:     Calculus1
+  course:    Calculus
+  explain:   "Swapping the limits of integration changes the sign."
+  verify:    none
+  rationale: "The statement is about integrals with bounds, which the numeric verifier does not evaluate; the integration tests check it with quadrature."
+
+domain calc.ftc "Fundamental Theorem of Calculus"
+
+theorem part2 "Fundamental Theorem of Calculus, part 2"
+  level:     Calculus1
+  course:    Calculus
+  explain:   "If F′ = f and F is continuous on [a, b], then the integral of f from a to b is F(b) − F(a)."
+  refs:      book:"Stewart, Calculus, 9e, §5.3"
+  verify:    none
+  rationale: "A theorem about integrals with bounds; the integration tests check every definite integral against quadrature."
+
+domain calc.improper "Improper integrals"
+
+definition type1 "Infinite interval"
+  level:     Calculus2
+  course:    Calculus
+  explain:   "An integral over an unbounded interval is the limit of the integrals over bounded intervals; it converges when that limit is finite."
+  refs:      book:"Stewart, Calculus, 9e, §7.8"
+  verify:    none
+  rationale: "A definition without an equation to sample."
+
+definition type2 "Discontinuous integrand"
+  level:     Calculus2
+  course:    Calculus
+  explain:   "If the integrand is unbounded at an endpoint or at a point inside, the integral is the limit of the integrals that stay away from it."
+  refs:      book:"Stewart, Calculus, 9e, §7.8"
+  verify:    none
+  rationale: "A definition without an equation to sample."

@@ -207,18 +207,23 @@ public sealed class RuleLibrary
 
     // Sort constraints from the declarations. A variable that is a bare operand of a sum or product and occurs nowhere else in the pattern is
     // optional (default 0 or 1). One that occurs twice stays required: its default would differ between a sum and a product, and an omitted
-    // operand in one place would have to agree with the binding in the other.
+    // operand in one place would have to agree with the binding in the other. In a product or sum of variables only, the variable of
+    // integration, differentiation or limit (the last argument of such a call) stays required, so exp(a*x) accepts exp(x) and exp(2*x).
     private static Dictionary<string, WildOptions> Options(Expr pattern, IReadOnlyDictionary<string, Sort> variables)
     {
         var options = variables.ToDictionary(v => v.Key, v => new WildOptions(v.Value));
         var occurrences = pattern.Walk().Where(w => w.Expr is Wild).GroupBy(w => ((Wild)w.Expr).Name).ToDictionary(g => g.Key, g => g.Count());
+        var mainVariables = pattern.Walk()
+            .Where(w => w.Expr is Apply { Operator.Id: "integrate" or "diff" or "limit", Arguments: [.., Wild] })
+            .Select(w => ((Wild)((Apply)w.Expr).Arguments[^1]).Name)
+            .ToHashSet();
         foreach (var (node, _) in pattern.Walk())
         {
             if (node is not Apply { Operator: var op } a || a.Arguments.Length < 2 || (op != Operators.Add && op != Operators.Mul)) continue;
-            if (a.Arguments.All(arg => arg is Wild)) continue;
+            if (a.Arguments.All(arg => arg is Wild w0 && !mainVariables.Contains(w0.Name))) continue;
             foreach (var arg in a.Arguments)
             {
-                if (arg is Wild w && occurrences[w.Name] == 1 && options.TryGetValue(w.Name, out var o)) options[w.Name] = o with { Default = new Number(op == Operators.Add ? Numbers.BigRational.Zero : Numbers.BigRational.One) };
+                if (arg is Wild w && occurrences[w.Name] == 1 && !mainVariables.Contains(w.Name) && options.TryGetValue(w.Name, out var o)) options[w.Name] = o with { Default = new Number(op == Operators.Add ? Numbers.BigRational.Zero : Numbers.BigRational.One) };
             }
         }
         return options;

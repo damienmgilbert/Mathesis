@@ -185,7 +185,7 @@ public sealed class StepReplayer : IStepReplayer
         if (step.RuleName.StartsWith("algorithm:", StringComparison.Ordinal))
         {
             var name = step.RuleName["algorithm:".Length..];
-            if (!Transforms.Algorithms.TryGetValue(name, out var algorithm) || algorithm(node, normalize) is not { } result) return null;
+            if (!AlgorithmRegistry.TryGet(name, out var algorithm) || algorithm(node, normalize) is not { } result) return null;
             replacement = result.Replacement;
         }
         else

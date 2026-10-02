@@ -99,6 +99,16 @@ public static class Definitions
             public static readonly EntryId DefAlt = new("calc.deriv.def-alt");
         }
 
+        /// <summary>Improper integrals.</summary>
+        public static class Improper
+        {
+            /// <summary>Infinite interval.</summary>
+            public static readonly EntryId Type1 = new("calc.improper.type1");
+
+            /// <summary>Discontinuous integrand.</summary>
+            public static readonly EntryId Type2 = new("calc.improper.type2");
+        }
+
         /// <summary>Integration techniques.</summary>
         public static class Int
         {
@@ -120,6 +130,13 @@ public static class Definitions
 
             /// <summary>Infinite limit.</summary>
             public static readonly EntryId Infinite = new("calc.lim.infinite");
+        }
+
+        /// <summary>Taylor series.</summary>
+        public static class Series
+        {
+            /// <summary>Taylor series.</summary>
+            public static readonly EntryId Taylor = new("calc.series.taylor");
         }
     }
 
@@ -695,6 +712,16 @@ public static class Laws
     /// <summary>Calculus.</summary>
     public static class Calculus
     {
+        /// <summary>Definite integrals.</summary>
+        public static class Def
+        {
+            /// <summary>Reversing limits.</summary>
+            public static readonly EntryId Reverse = new("calc.def.reverse");
+
+            /// <summary>Zero-width interval.</summary>
+            public static readonly EntryId ZeroWidth = new("calc.def.zero-width");
+        }
+
         /// <summary>Derivative definition and rules.</summary>
         public static class Deriv
         {
@@ -1016,6 +1043,37 @@ public static class Laws
 
             /// <summary>x to the x at 0.</summary>
             public static readonly EntryId XToX = new("calc.lim.x-to-x");
+        }
+
+        /// <summary>Maclaurin series.</summary>
+        public static class Mac
+        {
+            /// <summary>Maclaurin series of arctan.</summary>
+            public static readonly EntryId Arctan = new("calc.mac.arctan");
+
+            /// <summary>Binomial series.</summary>
+            public static readonly EntryId Binomial = new("calc.mac.binomial");
+
+            /// <summary>Maclaurin series of cos.</summary>
+            public static readonly EntryId Cos = new("calc.mac.cos");
+
+            /// <summary>Maclaurin series of cosh.</summary>
+            public static readonly EntryId Cosh = new("calc.mac.cosh");
+
+            /// <summary>Maclaurin series of eˣ.</summary>
+            public static readonly EntryId Exp = new("calc.mac.exp");
+
+            /// <summary>Geometric series.</summary>
+            public static readonly EntryId Geometric = new("calc.mac.geometric");
+
+            /// <summary>Maclaurin series of ln(1 + x).</summary>
+            public static readonly EntryId Ln = new("calc.mac.ln");
+
+            /// <summary>Maclaurin series of sin.</summary>
+            public static readonly EntryId Sin = new("calc.mac.sin");
+
+            /// <summary>Maclaurin series of sinh.</summary>
+            public static readonly EntryId Sinh = new("calc.mac.sinh");
         }
     }
 
@@ -1522,6 +1580,13 @@ public static class Theorems
             public static readonly EntryId InverseFunction = new("calc.deriv.inverse-function");
         }
 
+        /// <summary>Fundamental Theorem of Calculus.</summary>
+        public static class Ftc
+        {
+            /// <summary>Fundamental Theorem of Calculus, part 2.</summary>
+            public static readonly EntryId Part2 = new("calc.ftc.part2");
+        }
+
         /// <summary>Integration techniques.</summary>
         public static class Int
         {
@@ -1555,6 +1620,16 @@ public static class Theorems
 
             /// <summary>Squeeze theorem.</summary>
             public static readonly EntryId Squeeze = new("calc.lim.squeeze");
+        }
+
+        /// <summary>Taylor series.</summary>
+        public static class Series
+        {
+            /// <summary>Taylor's inequality.</summary>
+            public static readonly EntryId TaylorInequality = new("calc.series.taylor-inequality");
+
+            /// <summary>Taylor's theorem (Lagrange remainder).</summary>
+            public static readonly EntryId TaylorRemainder = new("calc.series.taylor-remainder");
         }
     }
 
@@ -1947,6 +2022,13 @@ public static class Methods
         {
             /// <summary>Exponential indeterminate forms.</summary>
             public static readonly EntryId LogTrick = new("calc.lim.log-trick");
+        }
+
+        /// <summary>Taylor series.</summary>
+        public static class Series
+        {
+            /// <summary>Series by arithmetic.</summary>
+            public static readonly EntryId SeriesArithmetic = new("calc.series.series-arithmetic");
         }
     }
 

@@ -57,7 +57,7 @@ public static class Transforms
     public static Transform Rationalize { get; } = new("Rationalize", Rules("rationalize", "rationalize"));
 
     /// <summary>Combines powers, simplifies radicals and absolute values.</summary>
-    public static Transform PowerSimplify { get; } = new("PowerSimplify", Rules("power-simplify", "power-simplify", "combine-powers", "radical-simplify", "radical-combine", "abs-simplify", "sign-simplify", "negative-exponent"));
+    public static Transform PowerSimplify { get; } = new("PowerSimplify", Rules("power-simplify", "power-simplify", "combine-powers", "radical-simplify", "radical-combine", "abs-simplify", "sign-simplify", "negative-exponent", "distribute-power"));
 
     /// <summary>Writes sums and differences of logarithms as one logarithm.</summary>
     public static Transform LogCombine { get; } = new("LogCombine", Rules("combine-log", "combine-log", "log-simplify"));
@@ -327,7 +327,7 @@ public static class Transforms
         return Result(id, Add(terms), provisos, ("fraction", node));
     }
 
-    private static BigRational[]? Solve(BigRational[,] m, int n)
+    internal static BigRational[]? Solve(BigRational[,] m, int n)
     {
         for (var col = 0; col < n; col++)
         {
