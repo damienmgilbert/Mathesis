@@ -1,0 +1,475 @@
+# Calculus: derivatives (d5-calculus.md, "Derivatives: definition and rules" and "Derivative table").
+# Derivatives are checked against Richardson-extrapolated central differences; samples where the difference scheme is not stable
+# (a pole between the stencil points) are skipped.
+
+domain calc.deriv "Derivative definition and rules"
+
+definition def "Derivative"
+  vars:      f: function(R -> R), x
+  statement: f'(x) = limit((f(x + h) - f(x))/h, h, 0)
+  level:     Calculus1
+  course:    Calculus
+  explain:   "f′({x}) is the limit of the difference quotient as h → 0."
+  refs:      book:"Stewart, Calculus, 9e, §2.8"
+  verify:    numeric
+
+definition def-alt "Derivative at a point (alternative form)"
+  vars:      f: function(R -> R), a
+  statement: f'(a) = limit((f(x) - f(a))/(x - a), x, a)
+  level:     Calculus1
+  course:    Calculus
+  explain:   "f′({a}) is the limit of (f(x) − f({a}))/(x − {a}) as x → {a}."
+  refs:      book:"Stewart, Calculus, 9e, §2.7"
+  verify:    numeric
+
+law constant "Constant rule"
+  vars:      c, x
+  statement: diff(c, x) = 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "The derivative of a constant is 0."
+
+law power "Power rule"
+  vars:      x, n
+  statement: diff(x^n, x) = n*x^(n - 1)
+  where:     x > 0 or (n in Z and (x != 0 or n >= 1))
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "d/d{x} {x}^{n} = {n}·{x}^({n}−1)."
+  sample:    n in [-4, 4], x in (0.2, 4)
+
+law constant-multiple "Constant multiple rule"
+  vars:      c, f: function(R -> R), x
+  statement: diff(c*f, x) = c*diff(f, x)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "A constant factor comes out of the derivative."
+
+law sum "Sum rule"
+  vars:      f: function(R -> R), g: function(R -> R), x
+  statement: diff(f + g, x) = diff(f, x) + diff(g, x)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "The derivative of a sum is the sum of the derivatives."
+
+law product "Product rule"
+  vars:      f: function(R -> R), g: function(R -> R), x
+  statement: diff(f*g, x) = diff(f, x)*g + f*diff(g, x)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "(fg)′ = f′g + fg′."
+
+law quotient "Quotient rule"
+  vars:      f: function(R -> R), g: function(R -> R), x
+  statement: diff(f/g, x) = (diff(f, x)*g - f*diff(g, x))/g^2
+  where:     g != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "(f/g)′ = (f′g − fg′)/g²."
+
+law chain "Chain rule"
+  vars:      f: function(R -> R), g: function(R -> R), x
+  statement: diff(f(g(x)), x) = f'(g(x))*diff(g(x), x)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "The derivative of f(g(x)) is f′(g(x))·g′(x)."
+
+law reciprocal "Reciprocal rule"
+  vars:      g: function(R -> R), x
+  statement: diff(1/g, x) = -diff(g, x)/g^2
+  where:     g != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "(1/g)′ = −g′/g²."
+
+law general-power "General power rule"
+  vars:      u: function(R -> R), n, x
+  statement: diff(u^n, x) = n*u^(n - 1)*diff(u, x)
+  where:     u > 0 or (n in Z and (u != 0 or n >= 1))
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "d/d{x} u^{n} = {n}·u^({n}−1)·u′."
+  sample:    n in [-3, 4]
+
+theorem inverse-function "Derivative of an inverse function"
+  level:   Calculus1
+  course:  Calculus
+  explain: "If f is differentiable and one-to-one near f⁻¹(y) with f′(f⁻¹(y)) ≠ 0, then (f⁻¹)′(y) = 1/f′(f⁻¹(y))."
+  refs:    book:"Stewart, Calculus, 9e, §3.5"
+
+method implicit "Implicit differentiation"
+  level:   Calculus1
+  course:  Calculus
+  explain: "Differentiate both sides of F(x, y) = 0 treating y as a function of x and solve for dy/dx; equivalently dy/dx = −F_x/F_y when F_y ≠ 0."
+  refs:    book:"Stewart, Calculus, 9e, §3.5"
+
+method logarithmic "Logarithmic differentiation"
+  level:   Calculus1
+  course:  Calculus
+  explain: "Take the natural logarithm of both sides (of |y| when y can be negative), differentiate, and multiply by y."
+  refs:    book:"Stewart, Calculus, 9e, §3.6"
+
+law var-power "Variable base and exponent"
+  vars:      u: function(R -> R), v: function(R -> R), x
+  statement: diff(u^v, x) = u^v*(diff(v, x)*ln(u) + v*diff(u, x)/u)
+  where:     u > 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      differentiate
+  explain:   "d/d{x} u^v = u^v (v′ ln u + v u′/u) for u > 0."
+
+law leibniz "General Leibniz rule"
+  vars:      f: function(R -> R), g: function(R -> R), x, n: natural
+  statement: diff(f*g, x, n) = sum(binomial(n, k)*diff(f, x, k)*diff(g, x, n - k), k, 0, n)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      differentiate
+  explain:   "The n-th derivative of a product is a binomial sum of products of derivatives."
+  sample:    n in 0..2
+
+formula parametric "Parametric derivative"
+  vars:       m, x: function(R -> R), y: function(R -> R), t
+  statement:  m = diff(y, t)/diff(x, t)
+  where:      diff(x, t) != 0
+  quantities: m "dy/dx", t "the parameter"
+  level:      Calculus2
+  course:     Calculus
+  explain:    "For x = x(t), y = y(t): dy/dx = (dy/dt)/(dx/dt) when dx/dt ≠ 0."
+
+formula polar "Slope of a polar curve"
+  vars:       m, r: function(R -> R), t
+  statement:  m = (diff(r, t)*sin(t) + r*cos(t))/(diff(r, t)*cos(t) - r*sin(t))
+  where:      diff(r, t)*cos(t) - r*sin(t) != 0
+  quantities: m "dy/dx", r "the polar radius r(θ)", t "the angle θ"
+  level:      Calculus2
+  course:     Calculus
+  explain:    "For r = r(θ): dy/dx = (r′ sin θ + r cos θ)/(r′ cos θ − r sin θ)."
+
+domain calc.dtab "Derivative table"
+
+law exp "Derivative of e^x"
+  vars:      x
+  statement: diff(e^x, x) = e^x
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} e^{x} = e^{x}."
+
+law exp-base "Derivative of a^x"
+  vars:      a, x
+  statement: diff(a^x, x) = a^x*ln(a)
+  where:     a > 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} {a}^{x} = {a}^{x} ln {a}."
+
+law ln "Derivative of ln x"
+  vars:      x
+  statement: diff(ln(x), x) = 1/x
+  where:     x > 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} ln {x} = 1/{x}."
+
+law ln-abs "Derivative of ln |x|"
+  vars:      x
+  statement: diff(ln(abs(x)), x) = 1/x
+  where:     x != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} ln|{x}| = 1/{x}."
+
+law log-base "Derivative of log base a"
+  vars:      x, a
+  statement: diff(log(x, a), x) = 1/(x*ln(a))
+  where:     x > 0 and a > 0 and a != 1
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} log_{a} {x} = 1/({x} ln {a})."
+
+law sqrt "Derivative of the square root"
+  vars:      x
+  statement: diff(sqrt(x), x) = 1/(2*sqrt(x))
+  where:     x > 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} sqrt({x}) = 1/(2 sqrt({x}))."
+
+law abs "Derivative of the absolute value"
+  vars:      x
+  statement: diff(abs(x), x) = sign(x)
+  where:     x != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} |{x}| = sign {x} for {x} ≠ 0."
+
+law sin "Derivative of sine"
+  vars:      x
+  statement: diff(sin(x), x) = cos(x)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} sin {x} = cos {x}."
+
+law cos "Derivative of cosine"
+  vars:      x
+  statement: diff(cos(x), x) = -sin(x)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} cos {x} = −sin {x}."
+
+law tan "Derivative of tangent"
+  vars:      x
+  statement: diff(tan(x), x) = sec(x)^2
+  where:     cos(x) != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} tan {x} = sec²{x}."
+
+law cot "Derivative of cotangent"
+  vars:      x
+  statement: diff(cot(x), x) = -csc(x)^2
+  where:     sin(x) != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} cot {x} = −csc²{x}."
+
+law sec "Derivative of secant"
+  vars:      x
+  statement: diff(sec(x), x) = sec(x)*tan(x)
+  where:     cos(x) != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} sec {x} = sec {x} tan {x}."
+
+law csc "Derivative of cosecant"
+  vars:      x
+  statement: diff(csc(x), x) = -csc(x)*cot(x)
+  where:     sin(x) != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} csc {x} = −csc {x} cot {x}."
+
+law arcsin "Derivative of arcsine"
+  vars:      x
+  statement: diff(arcsin(x), x) = 1/sqrt(1 - x^2)
+  where:     abs(x) < 1
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} arcsin {x} = 1/sqrt(1 − {x}²)."
+  sample:    x in (-0.9, 0.9)
+
+law arccos "Derivative of arccosine"
+  vars:      x
+  statement: diff(arccos(x), x) = -1/sqrt(1 - x^2)
+  where:     abs(x) < 1
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} arccos {x} = −1/sqrt(1 − {x}²)."
+  sample:    x in (-0.9, 0.9)
+
+law arctan "Derivative of arctangent"
+  vars:      x
+  statement: diff(arctan(x), x) = 1/(1 + x^2)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} arctan {x} = 1/(1 + {x}²)."
+
+law arccot "Derivative of arccotangent"
+  vars:      x
+  statement: diff(arccot(x), x) = -1/(1 + x^2)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} arccot {x} = −1/(1 + {x}²)."
+
+law arcsec "Derivative of arcsecant"
+  vars:      x
+  statement: diff(arcsec(x), x) = 1/(abs(x)*sqrt(x^2 - 1))
+  where:     abs(x) > 1
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} arcsec {x} = 1/(|{x}| sqrt({x}² − 1))."
+  sample:    x in (1.3, 6)
+
+law arccsc "Derivative of arccosecant"
+  vars:      x
+  statement: diff(arccsc(x), x) = -1/(abs(x)*sqrt(x^2 - 1))
+  where:     abs(x) > 1
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} arccsc {x} = −1/(|{x}| sqrt({x}² − 1))."
+  sample:    x in (1.3, 6)
+
+law sinh "Derivative of hyperbolic sine"
+  vars:      x
+  statement: diff(sinh(x), x) = cosh(x)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} sinh {x} = cosh {x}."
+
+law cosh "Derivative of hyperbolic cosine"
+  vars:      x
+  statement: diff(cosh(x), x) = sinh(x)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} cosh {x} = sinh {x}."
+
+law tanh "Derivative of hyperbolic tangent"
+  vars:      x
+  statement: diff(tanh(x), x) = sech(x)^2
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} tanh {x} = sech²{x}."
+
+law coth "Derivative of hyperbolic cotangent"
+  vars:      x
+  statement: diff(coth(x), x) = -csch(x)^2
+  where:     x != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} coth {x} = −csch²{x}."
+
+law sech "Derivative of hyperbolic secant"
+  vars:      x
+  statement: diff(sech(x), x) = -sech(x)*tanh(x)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} sech {x} = −sech {x} tanh {x}."
+
+law csch "Derivative of hyperbolic cosecant"
+  vars:      x
+  statement: diff(csch(x), x) = -csch(x)*coth(x)
+  where:     x != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} csch {x} = −csch {x} coth {x}."
+
+law arsinh "Derivative of inverse hyperbolic sine"
+  vars:      x
+  statement: diff(arsinh(x), x) = 1/sqrt(x^2 + 1)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} arsinh {x} = 1/sqrt({x}² + 1)."
+
+law arcosh "Derivative of inverse hyperbolic cosine"
+  vars:      x
+  statement: diff(arcosh(x), x) = 1/sqrt(x^2 - 1)
+  where:     x > 1
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} arcosh {x} = 1/sqrt({x}² − 1)."
+  sample:    x in (1.3, 6)
+
+law artanh "Derivative of inverse hyperbolic tangent"
+  vars:      x
+  statement: diff(artanh(x), x) = 1/(1 - x^2)
+  where:     abs(x) < 1
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} artanh {x} = 1/(1 − {x}²)."
+  sample:    x in (-0.9, 0.9)
+
+law erf "Derivative of the error function"
+  vars:      x
+  statement: diff(erf(x), x) = 2/sqrt(pi)*e^(-x^2)
+  orient:    ltr
+  level:     University
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} erf {x} = (2/√π) e^(−{x}²)."
+
+law gamma "Derivative of the gamma function"
+  vars:      x
+  statement: diff(gamma(x), x) = gamma(x)*digamma(x)
+  where:     not (x in Z and x <= 0)
+  orient:    ltr
+  level:     University
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} Γ({x}) = Γ({x}) ψ({x})."
+  sample:    x in (0.3, 8)
+
+law lambertw "Derivative of the Lambert W function"
+  vars:      x
+  statement: diff(lambertw(x), x) = lambertw(x)/(x*(1 + lambertw(x)))
+  where:     x != 0 and x > -1/e
+  orient:    ltr
+  level:     University
+  course:    Calculus
+  tags:      derivative-table
+  explain:   "d/d{x} W({x}) = W({x})/({x}(1 + W({x})))."
+  sample:    x in (-0.3, 6)

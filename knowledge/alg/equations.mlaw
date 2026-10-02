@@ -1,0 +1,108 @@
+# Algebra: solving equations honestly (d1-algebra.md, "Equations"). The alg.eq entries are the principles the solver uses to track
+# lost and extraneous solutions.
+
+domain alg.eq "Equations"
+
+theorem equiv-add "Adding preserves solutions"
+  vars:      u, v, w
+  statement: u = v <=> u + w = v + w
+  level:     Algebra1
+  course:    Algebra
+  explain:   "Adding the same quantity {w} to both sides gives an equivalent equation, provided {w} is defined wherever {u} and {v} are."
+  see:       alg.eqprop.add
+  verify:    numeric
+
+theorem equiv-mul "Multiplying by a non-zero quantity preserves solutions"
+  vars:      u, v, w
+  statement: u = v <=> u*w = v*w
+  where:     w != 0
+  level:     Algebra1
+  course:    Algebra
+  explain:   "Multiplying both sides by {w} gives an equivalent equation when {w} is never zero on the domain."
+  see:       alg.eqprop.mul
+  verify:    numeric
+
+theorem equiv-injective "Applying a one-to-one function preserves solutions"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "A = B is equivalent to f(A) = f(B) when f is one-to-one on the range of A and B."
+
+theorem square-both-sides "Squaring may add solutions"
+  vars:      u, v
+  statement: u = v => u^2 = v^2
+  level:     Algebra2
+  course:    Algebra
+  explain:   "Squaring both sides is not reversible (the converse is false), so every candidate must be checked in the original equation."
+  verify:    numeric
+
+theorem mul-by-variable "Multiplying by an expression that can vanish may add solutions"
+  vars:      u, v, w
+  statement: u = v => u*w = v*w
+  level:     Algebra2
+  course:    Algebra
+  explain:   "Multiplying by {w} may introduce solutions where {w} = 0; check those candidates."
+  verify:    numeric
+
+theorem divide-by-variable "Dividing by an expression that can vanish may lose solutions"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "From A·C = B·C also solve C = 0; for example x² = x loses x = 0 if both sides are divided by x."
+
+formula linear "Linear equation"
+  vars:      a, b, x
+  statement: a*x + b = 0 <=> x = -b/a
+  where:     a != 0
+  solve-for: x
+  level:     Algebra1
+  course:    Algebra
+  tags:      solve-linear
+  explain:   "a·x + b = 0 has the single solution x = −b/a."
+
+method literal "Solve a literal equation for a variable"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "Isolate the variable with equivalence steps."
+
+method rational "Rational equations"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "Multiply by the LCD, solve, and discard the values that make a denominator zero."
+
+method radical "Radical equations"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "Isolate the radical, raise both sides to a power, solve, and check every candidate."
+
+method abs "Absolute-value equations"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "Split into cases with the absolute-value equation law."
+  see:       alg.abs.eq
+
+method exponential "Exponential equations"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "Write both sides with a common base and equate exponents, or take logarithms of both sides."
+  see:       alg.exp.one-to-one
+
+method logarithmic "Logarithmic equations"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "Combine logarithms, use the definition or one-to-one property, and check the domain."
+  see:       alg.log.def, alg.log.one-to-one
+
+method quadratic-in-form "Equations quadratic in form"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "Substitute u for the repeated subexpression, solve the quadratic, and substitute back."
+
+method zero-product-solve "Solve by factoring"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "Factor to a product equal to zero, then use the zero-product property."
+  see:       alg.prop.zero-product
+
+definition extraneous "Extraneous solution"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "A candidate produced by a step that is not an equivalence and that fails the original equation."

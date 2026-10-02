@@ -4,4 +4,9 @@
     <ProjectReference Include="../Mathesis.Symbolics/Mathesis.Symbolics.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The catalog source: knowledge/<domain>/<topic>.mlaw at the repository root, embedded as knowledge/<domain>/<topic>.mlaw. -->
+    <EmbeddedResource Include="../../knowledge/**/*.mlaw" LogicalName="knowledge/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>

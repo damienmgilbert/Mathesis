@@ -784,6 +784,10 @@ internal sealed class ParserEngine
         // Overloaded abbreviations (P, C, E, I, F, H, ...) are functions only when applied with an adjacent '('.
         var parenthesized = Peek().Is("(");
         var adjacent = parenthesized && IsAdjacent(0);
+
+        // A function symbol the caller declared shadows an operator name or abbreviation of the same spelling (a declared f, u or H).
+        if (adjacent && _options.Declarations is not null && _options.Declarations.TryGetValue(name, out var shadowing) && shadowing is FunctionSort) return ParsePostfix(ParseFunctionSymbolCall(t, name, shadowing));
+
         var overloaded = Overloads.ContainsKey(name);
         if (overloaded && adjacent) return ParsePostfix(ParseCall(t, name));
 

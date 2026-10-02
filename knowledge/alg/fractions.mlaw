@@ -1,0 +1,164 @@
+# Algebra: fractions, ratios, percents and variation (d1-algebra.md, "Fractions, ratios and percents").
+
+domain alg.frac "Fractions"
+
+law equivalent "Equivalent fractions"
+  vars:      a, b, c
+  statement: a/b = (a*c)/(b*c)
+  where:     b != 0 and c != 0
+  orient:    both
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      fraction-simplify | fraction-expand
+  explain:   "Multiplying numerator and denominator by the same non-zero number {c} does not change the fraction."
+  see:       alg.rat.cancel
+
+law add-common "Add with a common denominator"
+  vars:      a, b, c
+  statement: a/c + b/c = (a + b)/c
+  where:     c != 0
+  orient:    both
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      fraction-combine | fraction-split
+  explain:   "Fractions with the same denominator add by adding the numerators."
+
+law add "Add fractions"
+  vars:      a, b, c, d
+  statement: a/b + c/d = (a*d + b*c)/(b*d)
+  where:     b != 0 and d != 0
+  orient:    ltr
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      fraction-combine
+  explain:   "Use the common denominator {b}·{d}: {a}/{b} + {c}/{d} = ({a}·{d} + {b}·{c})/({b}·{d})."
+
+law mul "Multiply fractions"
+  vars:      a, b, c, d
+  statement: (a/b)*(c/d) = (a*c)/(b*d)
+  where:     b != 0 and d != 0
+  orient:    ltr
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      fraction-combine
+  explain:   "Multiply numerators and multiply denominators."
+
+law div "Divide fractions"
+  vars:      a, b, c, d
+  statement: (a/b)/(c/d) = (a*d)/(b*c)
+  where:     b != 0 and c != 0 and d != 0
+  orient:    ltr
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      fraction-combine
+  explain:   "Dividing by a fraction is multiplying by its reciprocal."
+
+law reciprocal "Reciprocal of a fraction"
+  vars:      a, b
+  statement: 1/(a/b) = b/a
+  where:     a != 0 and b != 0
+  orient:    ltr
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      fraction-combine
+  explain:   "The reciprocal of {a}/{b} is {b}/{a}."
+
+law neg "Sign placement"
+  vars:      a, b
+  statement: -(a/b) = (-a)/b and (-a)/b = a/(-b)
+  where:     b != 0
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      sign-simplify
+  explain:   "The negative sign of a fraction can sit in front, in the numerator or in the denominator."
+
+law cross-mult "Cross multiplication"
+  vars:      a, b, c, d
+  statement: a/b = c/d <=> a*d = b*c
+  where:     b != 0 and d != 0
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      equation-step
+  explain:   "Two fractions are equal exactly when their cross products are equal."
+
+law lowest-terms "Lowest terms"
+  vars:      a: integer, b: integer
+  statement: a/b = (a/gcd(a, b))/(b/gcd(a, b))
+  where:     b != 0
+  orient:    ltr
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      fraction-simplify
+  explain:   "Divide numerator and denominator by their greatest common divisor."
+
+law mixed-number "Mixed number"
+  vars:      q, r, b
+  statement: q + r/b = (q*b + r)/b
+  where:     b != 0
+  orient:    both
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      fraction-combine
+  explain:   "A mixed number q r/b equals the improper fraction (q·b + r)/b."
+
+domain alg.pct "Percents"
+
+definition def "Percent"
+  level:     PreAlgebra
+  course:    Algebra
+  explain:   "p percent means p/100."
+
+formula change "Percent change"
+  vars:      c, n, o
+  statement: c = (n - o)/o*100
+  where:     o != 0
+  solve-for: c, n
+  quantities: c "percent change", n "new value", o "old value"
+  level:     PreAlgebra
+  course:    Algebra
+  explain:   "Percent change is the change divided by the old value, times 100."
+
+domain alg.ratio "Ratios and proportions"
+
+law proportion "Proportion"
+  vars:      a, b, c, d
+  statement: a/b = c/d <=> a*d = b*c
+  where:     b != 0 and d != 0
+  orient:    both
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      equation-step
+  explain:   "The proportion a : b = c : d holds exactly when a·d = b·c."
+
+domain alg.var "Variation"
+
+formula direct "Direct variation"
+  vars:      y, k, x
+  statement: y = k*x
+  where:     k != 0
+  solve-for: y, k, x
+  quantities: y "dependent quantity", k "constant of variation", x "independent quantity"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "y varies directly with x: y = k·x."
+
+formula inverse "Inverse variation"
+  vars:      y, k, x
+  statement: y = k/x
+  where:     k != 0 and x != 0
+  solve-for: y, k, x
+  quantities: y "dependent quantity", k "constant of variation", x "independent quantity"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "y varies inversely with x: y = k/x."
+
+formula joint "Joint variation"
+  vars:      z, k, x, y
+  statement: z = k*x*y
+  where:     k != 0
+  solve-for: z, k, x, y
+  quantities: z "dependent quantity", k "constant of variation", x "first quantity", y "second quantity"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "z varies jointly with x and y: z = k·x·y."

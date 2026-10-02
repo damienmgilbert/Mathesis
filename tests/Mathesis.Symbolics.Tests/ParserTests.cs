@@ -522,4 +522,15 @@ public class ParserTests
             Assert.IsFalse(string.IsNullOrEmpty(error.Message));
         }
     }
+
+    [TestMethod]
+    public void DeclaredFunctionSymbolsShadowOperatorNames()
+    {
+        // u(x) is the Heaviside step by default, but a declared function symbol u is a call of that symbol.
+        Assert.AreEqual("heaviside", ((Apply)P("u(x)")).Operator.Id);
+        var declared = new ParserOptions { Declarations = new Dictionary<string, Sort> { ["u"] = Sort.FunctionOf(Sort.Real, Sort.Real) } };
+        var call = (Apply)P("u(x)", declared);
+        Assert.AreEqual("call", call.Operator.Id);
+        Assert.AreEqual("u", ((Symbol)call.Arguments[0]).Name);
+    }
 }

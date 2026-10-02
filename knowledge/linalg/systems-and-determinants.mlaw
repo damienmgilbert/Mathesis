@@ -1,0 +1,264 @@
+# Linear algebra: linear systems and determinants (d7-linear-algebra.md, "Linear systems" and "Determinants").
+# Theorems stated for all n are checked on random matrices (vars declared matrix(n, n) with a sampled n) or, where only a concrete shape can
+# be evaluated, on a 3x3 instance (verify: instances).
+
+domain linalg.sys "Linear systems"
+
+theorem row-ops "Elementary row operations preserve solutions"
+  level:   University
+  course:  LinearAlgebra
+  explain: "Swapping two rows, scaling a row by c ≠ 0, and adding a multiple of one row to another do not change the solution set of a linear system."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.1"
+
+definition ref "Row echelon form"
+  level:   University
+  course:  LinearAlgebra
+  explain: "Zero rows are at the bottom, each leading entry lies to the right of the leading entry above it, and the entries below each leading entry are zero."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.2"
+
+definition rref "Reduced row echelon form"
+  level:   University
+  course:  LinearAlgebra
+  explain: "A row echelon form whose leading entries are all 1 and are the only non-zero entries in their columns."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.2"
+
+theorem rref-unique "Uniqueness of the reduced row echelon form"
+  level:   University
+  course:  LinearAlgebra
+  explain: "Every matrix is row equivalent to exactly one matrix in reduced row echelon form."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.2"
+
+theorem rouche-capelli "Consistency (Rouché–Capelli)"
+  level:   University
+  course:  LinearAlgebra
+  explain: "A·x = b is consistent exactly when rank A = rank [A | b]."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.2"
+
+theorem solution-count "Number of solutions"
+  level:   University
+  course:  LinearAlgebra
+  explain: "A consistent system in n unknowns has a unique solution when rank = n and infinitely many (n − rank free variables) otherwise."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.2"
+
+theorem homogeneous "Homogeneous systems"
+  level:   University
+  course:  LinearAlgebra
+  explain: "A·x = 0 is always consistent; a non-trivial solution exists exactly when rank A < n, in particular when there are more unknowns than equations."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.5"
+
+theorem structure "Structure of solutions"
+  level:   University
+  course:  LinearAlgebra
+  explain: "Every solution of a consistent system A·x = b has the form x_p + x_h with x_p a particular solution and x_h in the null space of A."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.5"
+
+method gaussian "Gaussian elimination"
+  level:   University
+  course:  LinearAlgebra
+  explain: "Reduce the augmented matrix to row echelon form by forward elimination, then solve by back substitution."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.2"
+
+method gauss-jordan "Gauss–Jordan elimination"
+  level:   University
+  course:  LinearAlgebra
+  explain: "Reduce the augmented matrix to reduced row echelon form and read the solution off directly."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §1.2"
+
+theorem cramer "Cramer's rule"
+  level:   University
+  course:  LinearAlgebra
+  explain: "For a square system with det A ≠ 0 the unique solution is x_i = det(A_i)/det(A), where A_i is A with column i replaced by b."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §3.3"
+
+domain linalg.det "Determinants"
+
+formula 2x2 "2×2 determinant"
+  vars:      a, b, c, d
+  statement: det([[a, b], [c, d]]) = a*d - b*c
+  level:     University
+  course:    LinearAlgebra
+  tags:      determinant
+  explain:   "The determinant of [[{a}, {b}], [{c}, {d}]] is {a}{d} − {b}{c}."
+
+method sarrus "Rule of Sarrus"
+  level:   University
+  course:  LinearAlgebra
+  explain: "For a 3×3 matrix add the products of the three down-right diagonals and subtract the products of the three up-right diagonals."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §3.1"
+
+theorem cofactor "Cofactor (Laplace) expansion"
+  level:   University
+  course:  LinearAlgebra
+  explain: "det A = Σ_j (−1)^(i+j) A_(i,j) M_(i,j) along any row i (or any column), where M_(i,j) is the minor."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §3.1"
+
+definition leibniz "Leibniz formula"
+  level:   University
+  course:  LinearAlgebra
+  explain: "det A is the sum over all permutations σ of sign(σ)·Π_i A_(i,σ(i))."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §3.1"
+
+theorem triangular "Triangular matrices"
+  vars:      a, b, c, d, e, f
+  statement: det([[a, b, c], [0, d, e], [0, 0, f]]) = a*d*f
+  level:     University
+  course:    LinearAlgebra
+  explain:   "The determinant of a triangular matrix is the product of its diagonal entries (checked here on a 3×3 instance)."
+  refs:      book:"Lay, Linear Algebra and Its Applications, 6e, §3.1"
+  verify:    instances
+
+theorem row-swap "Swapping rows"
+  vars:      a, b, c, d, e, f, g, h, i
+  statement: det([[d, e, f], [a, b, c], [g, h, i]]) = -det([[a, b, c], [d, e, f], [g, h, i]])
+  level:     University
+  course:    LinearAlgebra
+  explain:   "Swapping two rows negates the determinant (checked here on a 3×3 instance)."
+  refs:      book:"Lay, Linear Algebra and Its Applications, 6e, §3.2"
+  verify:    instances
+
+theorem row-scale "Scaling a row"
+  vars:      a, b, c, d, e, f, g, h, i, k
+  statement: det([[k*a, k*b, k*c], [d, e, f], [g, h, i]]) = k*det([[a, b, c], [d, e, f], [g, h, i]])
+  level:     University
+  course:    LinearAlgebra
+  explain:   "Scaling a row by k scales the determinant by k (checked here on a 3×3 instance)."
+  refs:      book:"Lay, Linear Algebra and Its Applications, 6e, §3.2"
+  verify:    instances
+
+theorem row-replace "Row replacement"
+  vars:      a, b, c, d, e, f, g, h, i, k
+  statement: det([[a + k*d, b + k*e, c + k*f], [d, e, f], [g, h, i]]) = det([[a, b, c], [d, e, f], [g, h, i]])
+  level:     University
+  course:    LinearAlgebra
+  explain:   "Adding a multiple of one row to another leaves the determinant unchanged (checked here on a 3×3 instance)."
+  refs:      book:"Lay, Linear Algebra and Its Applications, 6e, §3.2"
+  verify:    instances
+
+law transpose "Determinant of the transpose"
+  vars:      n: natural, A: matrix(n, n)
+  statement: det(A^T) = det(A)
+  orient:    ltr
+  level:     University
+  course:    LinearAlgebra
+  tags:      determinant
+  explain:   "A matrix and its transpose have the same determinant."
+  sample:    n in 1..4
+
+law product "Multiplicativity of the determinant"
+  vars:      n: natural, A: matrix(n, n), B: matrix(n, n)
+  statement: det(A*B) = det(A)*det(B)
+  orient:    ltr
+  level:     University
+  course:    LinearAlgebra
+  tags:      determinant
+  explain:   "det(AB) = det A · det B for square matrices of the same size."
+  sample:    n in 1..4
+
+law inverse "Determinant of the inverse"
+  vars:      n: natural, A: matrix(n, n)
+  statement: det(A^(-1)) = 1/det(A)
+  where:     det(A) != 0
+  orient:    ltr
+  level:     University
+  course:    LinearAlgebra
+  tags:      determinant
+  explain:   "det(A⁻¹) = 1/det A for an invertible matrix."
+  sample:    n in 1..4
+
+law scalar "Determinant of a scalar multiple"
+  vars:      c, n: natural, A: matrix(n, n)
+  statement: det(c*A) = c^n*det(A)
+  orient:    ltr
+  level:     University
+  course:    LinearAlgebra
+  tags:      determinant
+  explain:   "For an n×n matrix, det(c·A) = cⁿ·det A."
+  sample:    n in 1..4
+
+theorem invertible "Invertibility"
+  level:   University
+  course:  LinearAlgebra
+  explain: "A square matrix is invertible exactly when det A ≠ 0."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §3.2"
+
+theorem repeated-row "Repeated or zero rows"
+  vars:      a, b, c, d, e, f
+  statement: det([[a, b, c], [a, b, c], [d, e, f]]) = 0 and det([[a, b, c], [0, 0, 0], [d, e, f]]) = 0
+  level:     University
+  course:    LinearAlgebra
+  explain:   "A matrix with two equal rows or a zero row has determinant 0 (checked here on 3×3 instances)."
+  refs:      book:"Lay, Linear Algebra and Its Applications, 6e, §3.2"
+  verify:    instances
+
+theorem adjugate "Adjugate formula"
+  vars:      n: natural, A: matrix(n, n)
+  statement: A*adj(A) = det(A)*identity(n) and adj(A)*A = det(A)*identity(n)
+  level:     University
+  course:    LinearAlgebra
+  explain:   "A·adj(A) = det(A)·I for every square A; when det A ≠ 0 this gives A⁻¹ = adj(A)/det(A)."
+  refs:      book:"Lay, Linear Algebra and Its Applications, 6e, §3.3"
+  verify:    instances
+  sample:    n in 1..4
+
+theorem volume "Geometric meaning of the determinant"
+  level:   University
+  course:  LinearAlgebra
+  explain: "|det A| is the factor by which the map x ↦ A·x scales area (n = 2) or volume (n = 3)."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §3.3"
+
+formula vandermonde "Vandermonde determinant"
+  vars:      x, y, z
+  statement: det([[1, x, x^2], [1, y, y^2], [1, z, z^2]]) = (y - x)*(z - x)*(z - y)
+  level:     University
+  course:    LinearAlgebra
+  tags:      determinant
+  explain:   "The Vandermonde determinant of x_1, …, x_n is the product of x_j − x_i over i < j (shown here for n = 3)."
+
+law block-triangular "Block triangular determinant"
+  vars:      a, b, d
+  statement: det([[a, b], [0, d]]) = a*d
+  level:     University
+  course:    LinearAlgebra
+  tags:      determinant
+  explain:   "det([[A, B], [0, D]]) = det A · det D for square blocks A and D (shown here with 1×1 blocks)."
+  rationale: "Block matrices with matrix entries are not sampled by the verifier yet; the statement shown is the 1×1-block instance."
+
+theorem eigen "Determinant and eigenvalues"
+  level:   University
+  course:  LinearAlgebra
+  explain: "det A is the product of the eigenvalues of A, counted with multiplicity over the complex numbers."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §5.2"
+
+theorem orthogonal "Orthogonal matrices"
+  level:   University
+  course:  LinearAlgebra
+  explain: "The determinant of an orthogonal matrix is +1 or −1."
+  refs:    book:"Lay, Linear Algebra and Its Applications, 6e, §6.2"
+
+law matrix-determinant-lemma "Matrix determinant lemma"
+  vars:      n: natural, A: matrix(n, n), u: vector(n), v: vector(n)
+  statement: det(A + u*v^T) = (1 + v^T*A^(-1)*u)*det(A)
+  where:     det(A) != 0
+  orient:    ltr
+  level:     Advanced
+  course:    LinearAlgebra
+  tags:      determinant
+  explain:   "A rank-one update changes the determinant by the factor 1 + vᵀA⁻¹u."
+  sample:    n in 1..4
+
+law sylvester "Sylvester's determinant identity"
+  vars:      m: natural, n: natural, A: matrix(m, n), B: matrix(n, m)
+  statement: det(identity(m) + A*B) = det(identity(n) + B*A)
+  orient:    none
+  level:     Advanced
+  course:    LinearAlgebra
+  tags:      determinant
+  explain:   "det(I + AB) = det(I + BA) for A of size m×n and B of size n×m."
+  sample:    m in 1..3, n in 1..3
+
+method bareiss "Fraction-free elimination (Bareiss)"
+  level:   University
+  course:  LinearAlgebra
+  explain: "Compute an exact determinant of an integer or polynomial matrix without introducing fractions."
+  refs:    book:"Bareiss, Sylvester's identity and multistep integer-preserving Gaussian elimination, 1968"
+  implemented-by: M:Mathesis.LinearAlgebra.Exact.ExactLinearAlgebra.Determinant

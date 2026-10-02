@@ -1,0 +1,913 @@
+# Trigonometry: identities (d2-trigonometry.md, "Fundamental identities" through "Linear combinations, substitutions and exponential forms").
+# Identities that hold over the complex numbers declare their variables as complex so the verifier checks them there.
+
+domain trig.id "Fundamental identities"
+
+law pythagorean "Pythagorean identity"
+  vars:      x: complex
+  statement: sin(x)^2 + cos(x)^2 = 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "sin²{x} + cos²{x} = 1."
+
+law pythagorean-tan "Pythagorean identity (tan)"
+  vars:      x: complex
+  statement: 1 + tan(x)^2 = sec(x)^2
+  where:     cos(x) != 0
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce | trig-expand
+  explain:   "1 + tan²{x} = sec²{x}."
+
+law pythagorean-cot "Pythagorean identity (cot)"
+  vars:      x: complex
+  statement: 1 + cot(x)^2 = csc(x)^2
+  where:     sin(x) != 0
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce | trig-expand
+  explain:   "1 + cot²{x} = csc²{x}."
+
+law sin-odd "Sine is odd"
+  vars:      x: complex
+  statement: sin(-x) = -sin(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "sin(−{x}) = −sin {x}."
+
+law cos-even "Cosine is even"
+  vars:      x: complex
+  statement: cos(-x) = cos(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "cos(−{x}) = cos {x}."
+
+law tan-odd "Tangent is odd"
+  vars:      x: complex
+  statement: tan(-x) = -tan(x)
+  where:     cos(x) != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "tan(−{x}) = −tan {x}."
+
+law cot-odd "Cotangent is odd"
+  vars:      x: complex
+  statement: cot(-x) = -cot(x)
+  where:     sin(x) != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "cot(−{x}) = −cot {x}."
+
+law sec-even "Secant is even"
+  vars:      x: complex
+  statement: sec(-x) = sec(x)
+  where:     cos(x) != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "sec(−{x}) = sec {x}."
+
+law csc-odd "Cosecant is odd"
+  vars:      x: complex
+  statement: csc(-x) = -csc(x)
+  where:     sin(x) != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "csc(−{x}) = −csc {x}."
+
+law period-sin "Periods of sine, cosine, secant and cosecant"
+  vars:      x: complex, k: integer
+  statement: sin(x + 2*pi*k) = sin(x) and cos(x + 2*pi*k) = cos(x) and sec(x + 2*pi*k) = sec(x) and csc(x + 2*pi*k) = csc(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "Adding a multiple of 2π does not change sin, cos, sec or csc."
+
+law period-tan "Periods of tangent and cotangent"
+  vars:      x: complex, k: integer
+  statement: tan(x + pi*k) = tan(x) and cot(x + pi*k) = cot(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "Adding a multiple of π does not change tan or cot."
+
+law cofunction-sin "Cofunction identity (sine)"
+  vars:      x: complex
+  statement: sin(pi/2 - x) = cos(x)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "sin(π/2 − {x}) = cos {x}."
+
+law cofunction-cos "Cofunction identity (cosine)"
+  vars:      x: complex
+  statement: cos(pi/2 - x) = sin(x)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "cos(π/2 − {x}) = sin {x}."
+
+law cofunction-tan "Cofunction identity (tangent)"
+  vars:      x: complex
+  statement: tan(pi/2 - x) = cot(x)
+  where:     sin(x) != 0
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "tan(π/2 − {x}) = cot {x}."
+
+law cofunction-sec "Cofunction identity (secant)"
+  vars:      x: complex
+  statement: sec(pi/2 - x) = csc(x)
+  where:     sin(x) != 0
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "sec(π/2 − {x}) = csc {x}."
+
+law supplement-sin "Supplementary angle (sine)"
+  vars:      x: complex
+  statement: sin(pi - x) = sin(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "sin(π − {x}) = sin {x}."
+
+law supplement-cos "Supplementary angle (cosine)"
+  vars:      x: complex
+  statement: cos(pi - x) = -cos(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "cos(π − {x}) = −cos {x}."
+
+law shift-pi-sin "Half-turn (sine)"
+  vars:      x: complex
+  statement: sin(x + pi) = -sin(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "sin({x} + π) = −sin {x}."
+
+law shift-pi-cos "Half-turn (cosine)"
+  vars:      x: complex
+  statement: cos(x + pi) = -cos(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "cos({x} + π) = −cos {x}."
+
+law shift-half-pi-sin "Quarter-turn (sine)"
+  vars:      x: complex
+  statement: sin(x + pi/2) = cos(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "sin({x} + π/2) = cos {x}."
+
+law shift-half-pi-cos "Quarter-turn (cosine)"
+  vars:      x: complex
+  statement: cos(x + pi/2) = -sin(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-reduce
+  explain:   "cos({x} + π/2) = −sin {x}."
+
+domain trig.sum "Sum and difference"
+
+law sin-of-sum "Sine of a sum"
+  vars:      u: complex, v: complex
+  statement: sin(u + v) = sin(u)*cos(v) + cos(u)*sin(v)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "Angle-sum identity for sine."
+  refs:      dlmf:4.21.2
+
+law sin-of-diff "Sine of a difference"
+  vars:      u: complex, v: complex
+  statement: sin(u - v) = sin(u)*cos(v) - cos(u)*sin(v)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "Angle-difference identity for sine."
+  refs:      dlmf:4.21.2
+
+law cos-of-sum "Cosine of a sum"
+  vars:      u: complex, v: complex
+  statement: cos(u + v) = cos(u)*cos(v) - sin(u)*sin(v)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "Angle-sum identity for cosine."
+  refs:      dlmf:4.21.3
+
+law cos-of-diff "Cosine of a difference"
+  vars:      u: complex, v: complex
+  statement: cos(u - v) = cos(u)*cos(v) + sin(u)*sin(v)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "Angle-difference identity for cosine."
+  refs:      dlmf:4.21.3
+
+law tan-of-sum "Tangent of a sum"
+  vars:      u: complex, v: complex
+  statement: tan(u + v) = (tan(u) + tan(v))/(1 - tan(u)*tan(v))
+  where:     cos(u) != 0 and cos(v) != 0 and cos(u + v) != 0
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "Angle-sum identity for tangent."
+
+law tan-of-diff "Tangent of a difference"
+  vars:      u: complex, v: complex
+  statement: tan(u - v) = (tan(u) - tan(v))/(1 + tan(u)*tan(v))
+  where:     cos(u) != 0 and cos(v) != 0 and cos(u - v) != 0
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "Angle-difference identity for tangent."
+
+domain trig.mult "Multiple angles"
+
+law sin-double "Double angle (sine)"
+  vars:      x: complex
+  statement: sin(2*x) = 2*sin(x)*cos(x)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "sin 2{x} = 2 sin {x} cos {x}."
+
+law cos-double "Double angle (cosine)"
+  vars:      x: complex
+  statement: cos(2*x) = cos(x)^2 - sin(x)^2
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "cos 2{x} = cos²{x} − sin²{x}."
+
+law cos-double-cos "Double angle (cosine, cosine form)"
+  vars:      x: complex
+  statement: cos(2*x) = 2*cos(x)^2 - 1
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-power-reduce
+  explain:   "cos 2{x} = 2cos²{x} − 1."
+
+law cos-double-sin "Double angle (cosine, sine form)"
+  vars:      x: complex
+  statement: cos(2*x) = 1 - 2*sin(x)^2
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-power-reduce
+  explain:   "cos 2{x} = 1 − 2sin²{x}."
+
+law tan-double "Double angle (tangent)"
+  vars:      x: complex
+  statement: tan(2*x) = 2*tan(x)/(1 - tan(x)^2)
+  where:     cos(x) != 0 and cos(2*x) != 0
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "tan 2{x} = 2 tan {x}/(1 − tan²{x})."
+
+law sin-triple "Triple angle (sine)"
+  vars:      x: complex
+  statement: sin(3*x) = 3*sin(x) - 4*sin(x)^3
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "sin 3{x} = 3 sin {x} − 4 sin³{x}."
+
+law cos-triple "Triple angle (cosine)"
+  vars:      x: complex
+  statement: cos(3*x) = 4*cos(x)^3 - 3*cos(x)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "cos 3{x} = 4 cos³{x} − 3 cos {x}."
+
+law tan-triple "Triple angle (tangent)"
+  vars:      x: complex
+  statement: tan(3*x) = (3*tan(x) - tan(x)^3)/(1 - 3*tan(x)^2)
+  where:     cos(x) != 0 and cos(3*x) != 0
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand | trig-combine
+  explain:   "tan 3{x} = (3 tan {x} − tan³{x})/(1 − 3 tan²{x})."
+
+law chebyshev "Cosine of a multiple"
+  vars:      x, n: natural
+  statement: cos(n*x) = chebyshevT(n, cos(x))
+  orient:    both
+  level:     University
+  course:    Trigonometry
+  tags:      trig-expand
+  explain:   "cos({n}{x}) is the Chebyshev polynomial T_{n} evaluated at cos {x}."
+  sample:    n in 0..10
+
+law de-moivre "Multiple angles from De Moivre"
+  vars:      x, n: integer
+  statement: cos(n*x) + I*sin(n*x) = (cos(x) + I*sin(x))^n
+  orient:    none
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-expand
+  explain:   "(cos {x} + i sin {x})^{n} = cos {n}{x} + i sin {n}{x}."
+
+domain trig.half "Half angles"
+
+law sin "Half angle (sine)"
+  vars:      x
+  statement: abs(sin(x/2)) = sqrt((1 - cos(x))/2)
+  orient:    none
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-half-angle
+  explain:   "sin({x}/2) = ± sqrt((1 − cos {x})/2), with the sign of the quadrant of {x}/2."
+
+law cos "Half angle (cosine)"
+  vars:      x
+  statement: abs(cos(x/2)) = sqrt((1 + cos(x))/2)
+  orient:    none
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-half-angle
+  explain:   "cos({x}/2) = ± sqrt((1 + cos {x})/2), with the sign of the quadrant of {x}/2."
+
+law tan-sin "Half angle (tangent)"
+  vars:      x
+  statement: tan(x/2) = sin(x)/(1 + cos(x))
+  where:     cos(x) != -1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-half-angle
+  explain:   "tan({x}/2) = sin {x}/(1 + cos {x})."
+
+law tan-cos "Half angle (tangent, alternate form)"
+  vars:      x
+  statement: tan(x/2) = (1 - cos(x))/sin(x)
+  where:     sin(x) != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-half-angle
+  explain:   "tan({x}/2) = (1 − cos {x})/sin {x}."
+  sample:    x in (0.05, 6)
+
+domain trig.power "Power reduction"
+
+law sin-sq "Power reduction (sin²)"
+  vars:      x: complex
+  statement: sin(x)^2 = (1 - cos(2*x))/2
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-power-reduce
+  explain:   "sin²{x} = (1 − cos 2{x})/2."
+
+law cos-sq "Power reduction (cos²)"
+  vars:      x: complex
+  statement: cos(x)^2 = (1 + cos(2*x))/2
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-power-reduce
+  explain:   "cos²{x} = (1 + cos 2{x})/2."
+
+law tan-sq "Power reduction (tan²)"
+  vars:      x: complex
+  statement: tan(x)^2 = (1 - cos(2*x))/(1 + cos(2*x))
+  where:     cos(x) != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-power-reduce
+  explain:   "tan²{x} = (1 − cos 2{x})/(1 + cos 2{x})."
+
+law sin-cube "Power reduction (sin³)"
+  vars:      x: complex
+  statement: sin(x)^3 = (3*sin(x) - sin(3*x))/4
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-power-reduce
+  explain:   "sin³{x} = (3 sin {x} − sin 3{x})/4."
+
+law cos-cube "Power reduction (cos³)"
+  vars:      x: complex
+  statement: cos(x)^3 = (3*cos(x) + cos(3*x))/4
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-power-reduce
+  explain:   "cos³{x} = (3 cos {x} + cos 3{x})/4."
+
+law sin-fourth "Power reduction (sin⁴)"
+  vars:      x: complex
+  statement: sin(x)^4 = (3 - 4*cos(2*x) + cos(4*x))/8
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-power-reduce
+  explain:   "sin⁴{x} = (3 − 4 cos 2{x} + cos 4{x})/8."
+
+law cos-fourth "Power reduction (cos⁴)"
+  vars:      x: complex
+  statement: cos(x)^4 = (3 + 4*cos(2*x) + cos(4*x))/8
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-power-reduce
+  explain:   "cos⁴{x} = (3 + 4 cos 2{x} + cos 4{x})/8."
+
+law sin-sq-cos-sq "Product of squares"
+  vars:      x: complex
+  statement: sin(x)^2*cos(x)^2 = (1 - cos(4*x))/8
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      trig-power-reduce
+  explain:   "sin²{x} cos²{x} = (1 − cos 4{x})/8."
+
+domain trig.prod "Product to sum"
+
+law sin-sin "Product of sines"
+  vars:      u: complex, v: complex
+  statement: sin(u)*sin(v) = (cos(u - v) - cos(u + v))/2
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      product-to-sum | sum-to-product
+  explain:   "sin {u} sin {v} = (cos({u} − {v}) − cos({u} + {v}))/2."
+
+law cos-cos "Product of cosines"
+  vars:      u: complex, v: complex
+  statement: cos(u)*cos(v) = (cos(u - v) + cos(u + v))/2
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      product-to-sum | sum-to-product
+  explain:   "cos {u} cos {v} = (cos({u} − {v}) + cos({u} + {v}))/2."
+
+law sin-cos "Sine times cosine"
+  vars:      u: complex, v: complex
+  statement: sin(u)*cos(v) = (sin(u + v) + sin(u - v))/2
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      product-to-sum | sum-to-product
+  explain:   "sin {u} cos {v} = (sin({u} + {v}) + sin({u} − {v}))/2."
+
+law cos-sin "Cosine times sine"
+  vars:      u: complex, v: complex
+  statement: cos(u)*sin(v) = (sin(u + v) - sin(u - v))/2
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      product-to-sum | sum-to-product
+  explain:   "cos {u} sin {v} = (sin({u} + {v}) − sin({u} − {v}))/2."
+
+domain trig.s2p "Sum to product"
+
+law sin-plus-sin "Sum of sines"
+  vars:      u: complex, v: complex
+  statement: sin(u) + sin(v) = 2*sin((u + v)/2)*cos((u - v)/2)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      sum-to-product | product-to-sum
+  explain:   "sin {u} + sin {v} = 2 sin(({u} + {v})/2) cos(({u} − {v})/2)."
+
+law sin-minus-sin "Difference of sines"
+  vars:      u: complex, v: complex
+  statement: sin(u) - sin(v) = 2*cos((u + v)/2)*sin((u - v)/2)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      sum-to-product | product-to-sum
+  explain:   "sin {u} − sin {v} = 2 cos(({u} + {v})/2) sin(({u} − {v})/2)."
+
+law cos-plus-cos "Sum of cosines"
+  vars:      u: complex, v: complex
+  statement: cos(u) + cos(v) = 2*cos((u + v)/2)*cos((u - v)/2)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      sum-to-product | product-to-sum
+  explain:   "cos {u} + cos {v} = 2 cos(({u} + {v})/2) cos(({u} − {v})/2)."
+
+law cos-minus-cos "Difference of cosines"
+  vars:      u: complex, v: complex
+  statement: cos(u) - cos(v) = -2*sin((u + v)/2)*sin((u - v)/2)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      sum-to-product | product-to-sum
+  explain:   "cos {u} − cos {v} = −2 sin(({u} + {v})/2) sin(({u} − {v})/2)."
+
+domain trig.lin "Linear combinations of sine and cosine"
+
+law sin-form "Harmonic addition (sine form)"
+  vars:      a, b, x
+  statement: a*sin(x) + b*cos(x) = sqrt(a^2 + b^2)*sin(x + atan2(b, a))
+  where:     a != 0 or b != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      harmonic-addition
+  explain:   "a sin x + b cos x = R sin(x + φ) with R = sqrt(a² + b²) and φ = atan2(b, a)."
+
+law cos-form "Harmonic addition (cosine form)"
+  vars:      a, b, x
+  statement: a*cos(x) + b*sin(x) = sqrt(a^2 + b^2)*cos(x - atan2(b, a))
+  where:     a != 0 or b != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      harmonic-addition
+  explain:   "a cos x + b sin x = R cos(x − φ) with R = sqrt(a² + b²) and φ = atan2(b, a)."
+
+domain trig.weier "Weierstrass substitution"
+
+law sin "Weierstrass substitution (sine)"
+  vars:      x
+  statement: sin(x) = 2*tan(x/2)/(1 + tan(x/2)^2)
+  where:     cos(x/2) != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Trigonometry
+  tags:      weierstrass
+  explain:   "With t = tan({x}/2): sin {x} = 2t/(1 + t²)."
+
+law cos "Weierstrass substitution (cosine)"
+  vars:      x
+  statement: cos(x) = (1 - tan(x/2)^2)/(1 + tan(x/2)^2)
+  where:     cos(x/2) != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Trigonometry
+  tags:      weierstrass
+  explain:   "With t = tan({x}/2): cos {x} = (1 − t²)/(1 + t²)."
+
+law tan "Weierstrass substitution (tangent)"
+  vars:      x
+  statement: tan(x) = 2*tan(x/2)/(1 - tan(x/2)^2)
+  where:     cos(x/2) != 0 and tan(x/2)^2 != 1
+  orient:    ltr
+  level:     Calculus2
+  course:    Trigonometry
+  tags:      weierstrass
+  explain:   "With t = tan({x}/2): tan {x} = 2t/(1 − t²)."
+
+domain trig.exp "Exponential forms"
+
+law euler "Euler's formula"
+  vars:      x: complex
+  statement: e^(I*x) = cos(x) + I*sin(x)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      euler-form
+  explain:   "e^(i{x}) = cos {x} + i sin {x}."
+  refs:      dlmf:4.14.1
+
+law euler-identity "Euler's identity"
+  statement: e^(I*pi) + 1 = 0
+  orient:    none
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      euler-form
+  explain:   "e^(iπ) + 1 = 0."
+
+law sin "Sine as exponentials"
+  vars:      x: complex
+  statement: sin(x) = (e^(I*x) - e^(-I*x))/(2*I)
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      euler-form
+  explain:   "sin {x} = (e^(i{x}) − e^(−i{x}))/(2i)."
+  refs:      dlmf:4.14.1
+
+law cos "Cosine as exponentials"
+  vars:      x: complex
+  statement: cos(x) = (e^(I*x) + e^(-I*x))/2
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      euler-form
+  explain:   "cos {x} = (e^(i{x}) + e^(−i{x}))/2."
+  refs:      dlmf:4.14.2
+
+law tan "Tangent as exponentials"
+  vars:      x: complex
+  statement: tan(x) = -I*(e^(I*x) - e^(-I*x))/(e^(I*x) + e^(-I*x))
+  where:     cos(x) != 0
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      euler-form
+  explain:   "tan {x} = −i(e^(i{x}) − e^(−i{x}))/(e^(i{x}) + e^(−i{x}))."
+
+domain trig.inv "Inverse trigonometric functions"
+
+definition arcsin-def "Arcsine"
+  vars:      x, y
+  defines:   arcsin(x) = y
+  iff:       sin(y) = x and -pi/2 <= y and y <= pi/2
+  where:     -1 <= x and x <= 1
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "arcsin {x} is the angle y in [−π/2, π/2] with sin y = {x}."
+
+definition arccos-def "Arccosine"
+  vars:      x, y
+  defines:   arccos(x) = y
+  iff:       cos(y) = x and 0 <= y and y <= pi
+  where:     -1 <= x and x <= 1
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "arccos {x} is the angle y in [0, π] with cos y = {x}."
+
+definition arctan-def "Arctangent"
+  vars:      x, y
+  defines:   arctan(x) = y
+  iff:       tan(y) = x and -pi/2 < y and y < pi/2
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "arctan {x} is the angle y in (−π/2, π/2) with tan y = {x}."
+
+definition arccot-def "Arccotangent"
+  vars:      x, y
+  defines:   arccot(x) = y
+  iff:       cot(y) = x and 0 < y and y < pi
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "arccot {x} is the angle y in (0, π) with cot y = {x}."
+  see:       conv.arccot-range
+
+law arcsec-def "Arcsecant"
+  vars:      x
+  statement: arcsec(x) = arccos(1/x)
+  where:     abs(x) >= 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arcsec {x} = arccos(1/{x})."
+
+law arccsc-def "Arccosecant"
+  vars:      x
+  statement: arccsc(x) = arcsin(1/x)
+  where:     abs(x) >= 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arccsc {x} = arcsin(1/{x})."
+
+definition atan2-def "Two-argument arctangent"
+  level:   PreCalculus
+  course:  Trigonometry
+  explain: "atan2(y, x) is the angle in (−π, π] of the point (x, y), defined for (x, y) ≠ (0, 0)."
+
+law sin-arcsin "Sine of arcsine"
+  vars:      x
+  statement: sin(arcsin(x)) = x
+  where:     -1 <= x and x <= 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "sin(arcsin {x}) = {x} for {x} in [−1, 1]."
+  sample:    x in [-1, 1]
+
+law arcsin-sin "Arcsine of sine"
+  vars:      x
+  statement: arcsin(sin(x)) = x
+  where:     -pi/2 <= x and x <= pi/2
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arcsin(sin {x}) = {x} for {x} in [−π/2, π/2]."
+  sample:    x in [-1.6, 1.6]
+
+law cos-arccos "Cosine of arccosine"
+  vars:      x
+  statement: cos(arccos(x)) = x
+  where:     -1 <= x and x <= 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "cos(arccos {x}) = {x} for {x} in [−1, 1]."
+  sample:    x in [-1, 1]
+
+law arccos-cos "Arccosine of cosine"
+  vars:      x
+  statement: arccos(cos(x)) = x
+  where:     0 <= x and x <= pi
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arccos(cos {x}) = {x} for {x} in [0, π]."
+  sample:    x in [-0.2, 3.3]
+
+law tan-arctan "Tangent of arctangent"
+  vars:      x
+  statement: tan(arctan(x)) = x
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "tan(arctan {x}) = {x}."
+
+law arctan-tan "Arctangent of tangent"
+  vars:      x
+  statement: arctan(tan(x)) = x
+  where:     -pi/2 < x and x < pi/2
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arctan(tan {x}) = {x} for {x} in (−π/2, π/2)."
+  sample:    x in [-1.7, 1.7]
+
+law arcsin-plus-arccos "Complementary inverses (arcsin and arccos)"
+  vars:      x
+  statement: arcsin(x) + arccos(x) = pi/2
+  where:     -1 <= x and x <= 1
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arcsin {x} + arccos {x} = π/2."
+  sample:    x in [-1, 1]
+
+law arctan-plus-arccot "Complementary inverses (arctan and arccot)"
+  vars:      x
+  statement: arctan(x) + arccot(x) = pi/2
+  orient:    both
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arctan {x} + arccot {x} = π/2."
+
+law arctan-reciprocal "Arctangent of a reciprocal"
+  vars:      x
+  statement: arctan(x) + arctan(1/x) = pi/2*sign(x)
+  where:     x != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arctan {x} + arctan(1/{x}) = (π/2)·sign {x}."
+
+law arcsin-odd "Arcsine is odd"
+  vars:      x
+  statement: arcsin(-x) = -arcsin(x)
+  where:     -1 <= x and x <= 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arcsin(−{x}) = −arcsin {x}."
+  sample:    x in [-1, 1]
+
+law arccos-neg "Arccosine of a negative"
+  vars:      x
+  statement: arccos(-x) = pi - arccos(x)
+  where:     -1 <= x and x <= 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arccos(−{x}) = π − arccos {x}."
+  sample:    x in [-1, 1]
+
+law arctan-odd "Arctangent is odd"
+  vars:      x
+  statement: arctan(-x) = -arctan(x)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arctan(−{x}) = −arctan {x}."
+
+law sin-arccos "Sine of arccosine"
+  vars:      x
+  statement: sin(arccos(x)) = sqrt(1 - x^2)
+  where:     -1 <= x and x <= 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "sin(arccos {x}) = sqrt(1 − {x}²)."
+  sample:    x in [-1, 1]
+
+law cos-arcsin "Cosine of arcsine"
+  vars:      x
+  statement: cos(arcsin(x)) = sqrt(1 - x^2)
+  where:     -1 <= x and x <= 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "cos(arcsin {x}) = sqrt(1 − {x}²)."
+  sample:    x in [-1, 1]
+
+law tan-arcsin "Tangent of arcsine"
+  vars:      x
+  statement: tan(arcsin(x)) = x/sqrt(1 - x^2)
+  where:     -1 < x and x < 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "tan(arcsin {x}) = {x}/sqrt(1 − {x}²)."
+  sample:    x in (-1, 1)
+
+law tan-arccos "Tangent of arccosine"
+  vars:      x
+  statement: tan(arccos(x)) = sqrt(1 - x^2)/x
+  where:     -1 <= x and x <= 1 and x != 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "tan(arccos {x}) = sqrt(1 − {x}²)/{x}."
+  sample:    x in [-1, 1]
+
+law sin-arctan "Sine of arctangent"
+  vars:      x
+  statement: sin(arctan(x)) = x/sqrt(1 + x^2)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "sin(arctan {x}) = {x}/sqrt(1 + {x}²)."
+
+law cos-arctan "Cosine of arctangent"
+  vars:      x
+  statement: cos(arctan(x)) = 1/sqrt(1 + x^2)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "cos(arctan {x}) = 1/sqrt(1 + {x}²)."
+
+law arctan-sum "Arctangent addition"
+  vars:      x, y
+  statement: arctan(x) + arctan(y) = arctan((x + y)/(1 - x*y))
+  where:     x*y < 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      inverse-trig
+  explain:   "arctan {x} + arctan {y} = arctan(({x} + {y})/(1 − {x}{y})) when {x}{y} < 1 (add or subtract π when {x}{y} > 1)."

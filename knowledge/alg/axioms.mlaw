@@ -1,0 +1,294 @@
+# Algebra: axioms and properties of the real numbers (docs/design/domains/d1-algebra.md, "Axioms and properties of real numbers").
+
+domain alg.ax "Field and order axioms"
+
+axiom add-assoc "Associativity of addition"
+  vars:      a, b, c
+  statement: (a + b) + c = a + (b + c)
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+
+axiom add-comm "Commutativity of addition"
+  vars:      a, b
+  statement: a + b = b + a
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+
+axiom add-identity "Additive identity"
+  vars:      a
+  statement: a + 0 = a
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+
+axiom add-inverse "Additive inverse"
+  vars:      a
+  statement: a + (-a) = 0
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+
+axiom mul-assoc "Associativity of multiplication"
+  vars:      a, b, c
+  statement: (a*b)*c = a*(b*c)
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+
+axiom mul-comm "Commutativity of multiplication"
+  vars:      a, b
+  statement: a*b = b*a
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+  rationale: "Scalars only; matrices do not commute (linalg)."
+
+axiom mul-identity "Multiplicative identity"
+  vars:      a
+  statement: a*1 = a
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+
+axiom mul-inverse "Multiplicative inverse"
+  vars:      a
+  statement: a*(1/a) = 1
+  where:     a != 0
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+
+axiom distributive "Distributive property"
+  vars:      a, b, c
+  statement: a*(b + c) = a*b + a*c
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+
+axiom zero-ne-one "Non-triviality"
+  statement: 0 != 1
+  level:     Algebra1
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.2"
+
+domain alg.prop "Consequences of the field axioms"
+
+law mul-zero "Multiplication by zero"
+  vars:      a
+  statement: a*0 = 0
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      zero-product-simplify
+  explain:   "Anything times 0 is 0."
+
+law neg-one "Multiplying by -1"
+  vars:      a
+  statement: (-1)*a = -a
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      sign-simplify
+  explain:   "Multiplying by −1 negates: (−1)·{a} = −{a}."
+
+law double-neg "Double negation"
+  vars:      a
+  statement: -(-a) = a
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      sign-simplify
+  explain:   "The opposite of the opposite is the number itself."
+
+law neg-sum "Opposite of a sum"
+  vars:      a, b
+  statement: -(a + b) = -a - b
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      distribute-negation
+  explain:   "Distribute the negative sign over each term."
+
+law neg-product "Signs of products"
+  vars:      a, b
+  statement: (-a)*b = -(a*b) and (-a)*(-b) = a*b
+  level:     Algebra1
+  course:    Algebra
+  tags:      sign-simplify
+  explain:   "One negative factor makes the product negative; two negatives make it positive."
+
+law sub-def "Subtraction as addition"
+  vars:      a, b
+  statement: a - b = a + (-b)
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      structural
+  explain:   "Subtracting {b} is adding its opposite."
+
+law div-def "Division as multiplication"
+  vars:      a, b
+  statement: a/b = a*(1/b)
+  where:     b != 0
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      structural
+  explain:   "Dividing by {b} is multiplying by its reciprocal."
+
+law zero-product "Zero-product property"
+  vars:      a, b
+  statement: a*b = 0 <=> a = 0 or b = 0
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      solve-by-factoring
+  explain:   "A product is zero exactly when one of its factors is zero."
+
+convention div-by-zero "Division by zero is undefined"
+  level:     Algebra1
+  course:    Algebra
+  rationale: "a/0 is undefined for every a, and 0/0 is undefined too; the evaluator returns the undefined constant and solvers record the excluded value."
+
+domain alg.eqprop "Properties of equality"
+
+axiom reflexive "Reflexive property of equality"
+  vars:      a
+  statement: a = a
+  level:     PreAlgebra
+  course:    Algebra
+  refs:      book:"Enderton, A Mathematical Introduction to Logic, §2.4"
+
+axiom symmetric "Symmetric property of equality"
+  vars:      a, b
+  statement: a = b => b = a
+  level:     PreAlgebra
+  course:    Algebra
+  refs:      book:"Enderton, A Mathematical Introduction to Logic, §2.4"
+
+axiom transitive "Transitive property of equality"
+  vars:      a, b, c
+  statement: a = b and b = c => a = c
+  level:     PreAlgebra
+  course:    Algebra
+  refs:      book:"Enderton, A Mathematical Introduction to Logic, §2.4"
+
+axiom substitution "Substitution property of equality"
+  vars:      a, b, f: function(R -> R)
+  statement: a = b => f(a) = f(b)
+  where:     true
+  level:     PreAlgebra
+  course:    Algebra
+  refs:      book:"Enderton, A Mathematical Introduction to Logic, §2.4"
+  rationale: "f is any function defined at a and b."
+
+law add "Addition property of equality"
+  vars:      a, b, c
+  statement: a = b <=> a + c = b + c
+  orient:    both
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      equation-step
+  explain:   "Adding {c} to both sides keeps the equation true."
+
+law mul "Multiplication property of equality"
+  vars:      a, b, c
+  statement: a = b <=> a*c = b*c
+  where:     c != 0
+  orient:    both
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      equation-step
+  explain:   "Multiplying both sides by the non-zero number {c} keeps the equation true."
+
+law cancel-add "Additive cancellation"
+  vars:      a, b, c
+  statement: a + c = b + c => a = b
+  orient:    ltr
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      equation-step
+  explain:   "The same number added to both sides can be cancelled."
+
+law cancel-mul "Multiplicative cancellation"
+  vars:      a, b, c
+  statement: a*c = b*c => a = b
+  where:     c != 0
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      equation-step
+  explain:   "A non-zero factor common to both sides can be cancelled."
+
+domain alg.order "Order properties of the real numbers"
+
+axiom trichotomy "Trichotomy"
+  vars:      a, b
+  statement: (a < b or a = b or a > b) and not (a < b and a = b) and not (a < b and a > b) and not (a = b and a > b)
+  level:     PreAlgebra
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.4"
+
+axiom transitive "Transitivity of <"
+  vars:      a, b, c
+  statement: a < b and b < c => a < c
+  level:     PreAlgebra
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.4"
+
+law add "Adding preserves order"
+  vars:      a, b, c
+  statement: a < b <=> a + c < b + c
+  orient:    both
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      inequality-step
+  explain:   "Adding the same number to both sides keeps the order."
+
+law mul-pos "Multiplying by a positive"
+  vars:      a, b, c
+  statement: a < b <=> a*c < b*c
+  where:     c > 0
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      inequality-step
+  explain:   "Multiplying both sides by the positive number {c} keeps the order."
+
+law mul-neg "Multiplying by a negative reverses"
+  vars:      a, b, c
+  statement: a < b <=> a*c > b*c
+  where:     c < 0
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      inequality-step
+  explain:   "Multiplying both sides by the negative number {c} reverses the order."
+
+law square-nonneg "Squares are non-negative"
+  vars:      a
+  statement: a^2 >= 0
+  orient:    none
+  level:     Algebra1
+  course:    Algebra
+  tags:      sign-analysis
+  explain:   "The square of a real number is never negative."
+
+law reciprocal "Reciprocals reverse order"
+  vars:      a, b
+  statement: a < b => 1/a > 1/b
+  where:     a*b > 0
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      inequality-step
+  explain:   "For numbers of the same sign, taking reciprocals reverses the order."
+
+axiom archimedean "Archimedean property"
+  vars:      a
+  statement: exists n in N: n > a
+  level:     University
+  course:    Algebra
+  refs:      book:"Apostol, Calculus Vol. 1, §I 3.5"
