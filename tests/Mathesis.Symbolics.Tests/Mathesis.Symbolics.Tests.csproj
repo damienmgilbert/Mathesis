@@ -10,4 +10,8 @@
     <ProjectReference Include="../Mathesis.Testing/Mathesis.Testing.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../corpus/**" Link="corpus/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

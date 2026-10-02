@@ -236,3 +236,15 @@ union
 | Exact numbers keep their display hint | `1/4` typed as `0.25` prints `0.25` |
 | LaTeX uses `\frac`, `\sqrt`, `\left(\right)` only where needed, `\,dx`, `\operatorname{}` for unknown functions | |
 | MathML presentation and content forms, C# (`double.Sin(x)` or generic `T.Sin(x)`), tree dump for debugging | |
+
+### Phase 4 implementation notes
+
+Behaviors the design left open, as implemented (change them here first):
+
+- `ToString()` is the faithful printer: ASCII, compact spacing around `*`, `/` and `^`, trees print in the order they have so the output parses back to the same Raw tree. `PrintOptions.Presentation` adds Unicode symbols and descending polynomials; `PrintOptions.DecimalDigits` rounds exact numbers half away from zero.
+- A lone `x^-1` in a Canonical tree prints as `x^-1`; only products split into numerator and denominator.
+- `!` after an operand is factorial and before one is logical not; `|` between operands is divides and `|x|` is absolute value; `(a, b)` is a tuple, an interval needs a bracket (`[a, b)`); `[a, b, c]` is a column vector; `f(x)` is a call when `f` is declared, listed in `ParserOptions.FunctionSymbols` (default `f`, `g`, `h`) or not a single letter.
+- Relation chains `a < b < c` parse to left-nested binary `and`.
+- Variable names that are constants (`e`, `I`, `pi`) are rejected in quantifiers and in `d/dx`.
+- LaTeX: the imaginary unit prints as `\mathrm{i}` and parses back to `I`; `\bmod`, `A^{\top}`, `\frac{d}{dx} f` and `\frac{d^{n}}{dx^{n}} f` round trip. Region and line integrals are unsupported.
+- Mathesis JSON writes numbers as exact strings (`"3/4"`), operators as `{"op": id, "args": [...]}` and symbols as `{"sym": name}`; it never reads or writes display hints.

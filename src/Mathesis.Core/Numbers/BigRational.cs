@@ -630,6 +630,36 @@ public readonly struct BigRational : INumber<BigRational>, ISignedNumber<BigRati
         };
 
     /// <summary>
+    /// Rounds to <paramref name="fractionDigits"/> decimal places with ties going away from zero (the school convention,
+    /// catalog <c>conv.rounding</c>), unlike <see cref="Math.Round(decimal)"/> whose default is half to even. The result is exact.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="fractionDigits"/> is negative.</exception>
+    public BigRational Round(int fractionDigits)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(fractionDigits);
+        var scale = new BigRational(BigInteger.Pow(10, fractionDigits));
+        var scaled = Abs(this) * scale;
+        var rounded = Floor(scaled + OneHalf);
+        var magnitude = new BigRational(rounded) / scale;
+        return Sign < 0 ? -magnitude : magnitude;
+    }
+
+    private static readonly BigRational OneHalf = new(BigInteger.One, new BigInteger(2));
+
+    /// <summary>
+    /// Formats the value rounded half away from zero to exactly <paramref name="fractionDigits"/> decimal places,
+    /// for example <c>0.125</c> to 2 places is <c>0.13</c> and −2.5 to 0 places is <c>-3</c>.
+    /// </summary>
+    public string ToFixedString(int fractionDigits)
+    {
+        var rounded = Round(fractionDigits);
+        var digits = BigInteger.Abs(rounded._numerator * BigInteger.Pow(10, fractionDigits) / rounded.Denominator).ToString(CultureInfo.InvariantCulture);
+        if (fractionDigits > 0) digits = digits.PadLeft(fractionDigits + 1, '0');
+        var text = fractionDigits > 0 ? digits[..^fractionDigits] + "." + digits[^fractionDigits..] : digits;
+        return rounded.Sign < 0 ? "-" + text : text;
+    }
+
+    /// <summary>
     /// The exact decimal expansion, with a repeating block in parentheses: <c>1/8</c> → <c>0.125</c>, <c>1/6</c> → <c>0.1(6)</c>,
     /// <c>-4</c> → <c>-4</c>. The output parses back to the same value.
     /// </summary>

@@ -13,7 +13,7 @@ Claude Code builds Milestone 1 (Foundation) of Mathesis: six packages, `Mathesis
 - Root name: `Mathesis` (decided) for namespaces and package IDs. No package with that ID is listed on nuget.org as of 2026-10-01; published NuGet IDs are permanent, so confirm it is still free before the first publish.
 - License: MIT unless you say otherwise.
 - Defaults: real-valued solving with complex roots listed separately, and `I` as the imaginary unit so `i` stays a free symbol.
-- Conventions (decided; do not change; catalog entries `conv.*` in `docs/design/06-knowledge-catalog.md`): decimal literals are exact, bare `log` is base 10, 0⁰ = 1, real odd roots in real mode (`(-8)^(1/3) = -2`). Still open: display rounding half away from zero; confirm or change before Phase 4.
+- Conventions (decided; do not change; catalog entries `conv.*` in `docs/design/06-knowledge-catalog.md`): decimal literals are exact, bare `log` is base 10, 0⁰ = 1, real odd roots in real mode (`(-8)^(1/3) = -2`), and display rounding half away from zero (`conv.rounding`, confirmed before Phase 4).
 
 ## Scope
 

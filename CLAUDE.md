@@ -13,7 +13,7 @@
 
 # Working on Mathesis
 - The design docs in `docs/design/` are the source of truth (`00-index.md` gives the reading order; `PLAN.md` is Milestone 1). Cite the doc and section you relied on. If the docs are silent or contradict each other, say so and ask; do not invent design.
-- When a suggestion would change a decided point, name the doc that decided it and ask first. Decided: name `Mathesis`; MIT license; real mode by default with `I` as the imaginary unit; decimals are exact; bare `log` is base 10; 0⁰ = 1; real odd roots (`(-8)^(1/3) = -2`). Open: display rounding half away from zero (confirm before Phase 4).
+- When a suggestion would change a decided point, name the doc that decided it and ask first. Decided: name `Mathesis`; MIT license; real mode by default with `I` as the imaginary unit; decimals are exact; bare `log` is base 10; 0⁰ = 1; real odd roots (`(-8)^(1/3) = -2`); display rounding half away from zero (`conv.rounding`). Nothing is open.
 - Write formulas in the library's linear input notation (`docs/design/05-syntax-trees-and-notation.md`), e.g. `a^m * a^n = a^(m + n)`, `diff(sin(x), x) = cos(x)`.
 - AOT and trim safe: no reflection dispatch, no `System.Linq.Expressions` compilation, System.Text.Json source generation. Test projects are exempt from the package-ID rule.
 - Correctness over coverage: a wrong answer is a release blocker. When unsure whether an identity holds, search for a counterexample before stating it.

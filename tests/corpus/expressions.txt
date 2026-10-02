@@ -1,0 +1,551 @@
+# Arithmetic and precedence
+1 + 2
+1 + 2 + 3
+a - b - c
+a - (b - c)
+a*b*c
+a*(b*c)
+a/b/c
+a/(b/c)
+a/b*c
+2^3^2
+(2^3)^2
+-x^2
+(-x)^2
+2^-3
+x^-1
+-a*b
+-(a*b)
+-(a + b)
+a + -b
+a - -b
+1/2x
+1/(2x)
+2x
+2(x + 1)
+(x + 1)(x - 1)
+3x^2y
+x y z
+2 x y
+x*y*z
+0.25
+0.125 + 3.5
+100
+1e3
+2.5e-3
+x^2 - 5x + 6
+x^2 - 5x + 6 = 0
+a + b*c - d/e
+(a + b)*(c - d)
+((a))
+a mod n
+a mod n mod m
+7 mod 3
+abs(x)
+abs(x - 1)
+|x|
+|x - 1|
+||x| - 1|
+|a + b| <= |a| + |b|
+sign(x)
+floor(x)
+ceil(x)
+round(x)
+round(x, 2)
+frac(x)
+quo(a, n)
+gcd(a, b)
+gcd(a, b, c)
+lcm(a, b)
+max(a, b)
+min(a, b, c)
+sqrt(x)
+sqrt(x^2 + 1)
+√x
+√(x + 1)
+∛x
+root(x, 3)
+root(x + 1, n)
+n!
+(n + 1)!
+n!!
+(n!)!
+binomial(n, k)
+C(n, k)
+perm(n, k)
+P(n, k)
+subfactorial(n)
+x²
+x² + y²
+x³ - 3x
+
+# Complex numbers
+I
+I^2
+2 + 3I
+re(z)
+im(z)
+conj(z)
+arg(z)
+cis(t)
+abs(2 + 3I)
+conj(a + b*I)
+(1 + I)(1 - I)
+
+# Exponential and logarithmic
+exp(x)
+exp(-x^2)
+e^x
+e^(-x^2)
+e^(2x)
+ln(x)
+ln x
+ln(x*y)
+ln x^2
+log(x, 2)
+log(x)
+log x
+log_2(8)
+W(x)
+exp(ln(x))
+ln(exp(x))
+x^y
+x^(y + 1)
+a^(b^c)
+pi
+π
+2pi
+pi*r^2
+
+# Trigonometric
+sin(x)
+cos(x)
+tan(x)
+cot(x)
+sec(x)
+csc(x)
+sin x
+sin 2x
+sin x cos x
+sin^2 x + cos^2 x
+sin^2(x) + cos^2(x)
+sin^-1 x
+sin^-1(x)
+arcsin(x)
+asin(x)
+arccos(x)
+arctan(x)
+atan(x)
+arccot(x)
+arcsec(x)
+arccsc(x)
+atan2(y, x)
+sin(x + y)
+sin(2x)
+2 sin x cos x
+tan x = sin x/cos x
+sin(pi/2)
+cos(pi)
+sin(x)^2
+1 - cos^2 x
+
+# Hyperbolic
+sinh(x)
+cosh(x)
+tanh(x)
+coth(x)
+sech(x)
+csch(x)
+arsinh(x)
+arcosh(x)
+artanh(x)
+arcoth(x)
+arsech(x)
+arcsch(x)
+asinh(x)
+cosh^2 x - sinh^2 x
+cosh^2(x) - sinh^2(x) = 1
+
+# Special functions
+gamma(x)
+gamma(1/2)
+beta(a, b)
+digamma(x)
+erf(x)
+erfc(x)
+erfi(x)
+zeta(2)
+zeta(s)
+polylog(2, x)
+besselj(0, x)
+bessely(1, x)
+besseli(0, x)
+besselk(1, x)
+airyai(x)
+airybi(x)
+ellipk(m)
+ellipe(m)
+si(x)
+ci(x)
+ei(x)
+li(x)
+fresnels(x)
+fresnelc(x)
+heaviside(t)
+u(t)
+dirac(t)
+δ(t)
+δ(i, j)
+ε(i, j, k)
+kronecker(i, j)
+leviCivita(i, j, k)
+
+# Orthogonal polynomials
+legendreP(n, x)
+hermiteH(n, x)
+laguerreL(n, x)
+chebyshevT(n, x)
+chebyshevU(n, x)
+jacobiP(n, a, b, x)
+gegenbauerC(n, a, x)
+legendreP(2, x) = (3x^2 - 1)/2
+chebyshevT(2, x) = 2x^2 - 1
+
+# Number theory and combinatorics
+φ(n)
+totient(n)
+μ(n)
+mobius(n)
+σ(k, n)
+divisorSigma(2, n)
+primePi(x)
+prime(n)
+F(n)
+fibonacci(10)
+lucas(n)
+catalan(n)
+stirling1(n, k)
+stirling2(n, k)
+bell(n)
+partitions(n)
+H(n)
+harmonic(n)
+multinomial(a, b, c)
+fibonacci(n + 2) = fibonacci(n + 1) + fibonacci(n)
+
+# Relations
+a < b < c < d
+a = b
+a != b
+a ≠ b
+a < b
+a <= b
+a ≤ b
+a > b
+a >= b
+a ≥ b
+a < b <= c
+a = b = c
+0 < x < 1
+a ~= b
+a ≈ b
+a | b
+a ∣ b
+3 | n
+a ≡ b (mod n)
+congruent(a, b, n)
+x in S
+x ∈ S
+x notin S
+x ∉ S
+A ⊂ B
+A ⊆ B
+f ∝ g
+u ⊥ v
+u ∥ v
+X ~ Normal(0, 1)
+x^2 + y^2 = r^2
+x = 1 and y = 2
+
+# Logic
+p and q
+p ∧ q
+p or q
+p ∨ q
+not p
+¬p
+p => q
+p → q
+p ⇒ q
+p <=> q
+p ↔ q
+p ⇔ q
+p xor q
+p ⊕ q
+nand(p, q)
+nor(p, q)
+not p and q
+not (p and q)
+p and q or r
+p or q and r
+p => q => r
+(p => q) => r
+p <=> q <=> r
+a < b and b < c
+x > 0 or x < -1
+not x = 1
+true
+false
+p and true
+
+# Tuples and points
+(1, 2)
+(a, b, c)
+(x, y) in R
+f(1, 2)
+(x + 1, y - 1)
+
+# Sets
+A ∪ B
+A ∩ B
+A ∖ B
+A \ B
+A △ B
+A ∪ B ∩ C
+(A ∪ B) ∩ C
+A^c
+complement(A)
+cartesian(A, B)
+powerset(A)
+𝒫(A)
+card(A)
+{}
+{1}
+{1, 2, 3}
+{a, b, c}
+{1, 2} ∪ {3}
+EmptySet
+∅
+N
+Z
+Q
+R
+C
+ℕ
+ℤ
+ℚ
+ℝ
+ℂ
+{x in R | x > 0}
+{x in Z | x^2 < 10}
+{x^2 | x in Z}
+{2k | k in Z}
+[0, 1]
+[0, 1)
+(0, 1]
+]0, 1[
+[0, oo)
+]-oo, 0]
+[a, b] ∪ [c, d]
+x in [0, 1)
+
+# Functions and derivatives
+f(x)
+f(x + 1)
+f(g(x))
+g(x, y)
+f'(x)
+f''(x)
+f'
+f''(x) + f(x) = 0
+y'
+y''
+(f ∘ g)(x)
+f ∘ g
+diff(f(x), x)
+diff(x^2, x)
+diff(x^3, x, 2)
+diff(f(x, y), x, y)
+dy/dx
+d/dx (x^2)
+d/dx sin x
+d^2y/dx^2
+d^2/dx^2 f(x)
+∂f/∂x
+integrate(x^2, x)
+integrate(sin x, x)
+O(x^3)
+grad(f)
+divergence(F)
+curl(F)
+laplacian(f)
+jacobian(F, x)
+hessian(f, x)
+inverseFunction(f)
+f(x) = x^2 + 1
+
+# Linear algebra
+[[1, 2], [3, 4]]
+[[1], [2], [3]]
+[[a, b], [c, d]]
+[[1, 0], [0, 1]]
+A^T
+A^T B
+A^H
+A^-1
+A^2
+A*B
+A B
+A ⊗ B
+kron(A, B)
+det(A)
+det([[1, 2], [3, 4]])
+tr(A)
+trace(A)
+rank(A)
+adj(A)
+dot(u, v)
+cross(u, v)
+outer(u, v)
+norm(v)
+norm(v, 2)
+‖v‖
+rref(A)
+nullspace(A)
+colspace(A)
+rowspace(A)
+eigenvalues(A)
+eigenvectors(A)
+charpoly(A, x)
+I(3)
+identity(3)
+zeros(2, 3)
+diag(1, 2, 3)
+proj(u, v)
+det(A*B) = det(A)*det(B)
+(A B)^T = B^T A^T
+A*A^-1
+2A + 3B
+[[1, 2], [3, 4]] * [[5, 6], [7, 8]]
+
+# Probability
+P(A)
+P(A | B)
+Pr(A)
+E(X)
+Var(X)
+Cov(X, Y)
+Corr(X, Y)
+Bernoulli(p)
+Binomial(n, p)
+Geometric(p)
+Poisson(l)
+Hypergeometric(N, K, n)
+Uniform(a, b)
+Normal(0, 1)
+Exponential(l)
+StudentT(n)
+ChiSquared(k)
+X ~ Poisson(3)
+P(X = 1)
+E(X + Y) = E(X) + E(Y)
+Var(X) = E(X^2) - E(X)^2
+
+# Binders
+sum(k, k, 1, n)
+sum(k^2, k, 1, n)
+sum(1/k!, k, 0, oo)
+product(k, k, 1, n)
+product(1 + 1/k^2, k, 1, oo)
+integrate(x^2, x, 0, 1)
+integrate(e^(-x^2), x, -oo, oo)
+integrate(1/x, x, 1, e)
+integrate(f(x, y), (x, 0, 1), (y, 0, x))
+limit(sin(x)/x, x, 0)
+limit(1/x, x, 0, "+")
+limit(1/x, x, 0, "-")
+limit((1 + 1/n)^n, n, oo)
+forall x in R: x^2 >= 0
+forall x: x = x
+exists x in R: x^2 = 2
+exists! x in R: x^3 = 8
+forall x in R: exists y in R: y > x
+forall epsilon in R: epsilon > 0 => exists delta in R: delta > 0
+x -> x^2
+(x, y) -> x + y
+laplace(f(t), t, s)
+fourier(f(t), t, w)
+Union(A(k), k, 1, n)
+Intersection(A(k), k, 1, n)
+argmin(x^2 + 1, x in R)
+argmax(sin x, x in [0, pi])
+Piecewise[(x, x >= 0), (-x, true)]
+Piecewise[(1, x > 0), (0, x = 0), (-1, true)]
+sum(sum(i*j, j, 1, n), i, 1, n)
+∑(k, k, 1, n)
+∀ x in R: x = x
+∃ x in R: x > 0
+
+# Unicode and conventions
+α + β
+θ
+theta
+alpha*beta
+x₁ + x₂
+x_1 + x_2
+a_i*b_i
+2π
+πr²
+x²y³
+sin θ
+cos θ
+√2
+√(a^2 + b^2)
+x ≤ y ≤ z
+a ≠ 0
+∞
+-∞
+oo
+inf
+zoo
+undefined
+GoldenRatio
+EulerGamma
+CatalanG
+2GoldenRatio
+x ∈ ℝ
+sin x ≥ -1
+
+# Mixed expressions
+(x^2 - 1)/(x - 1)
+(x^2 - 1)/(x - 1) = x + 1
+(a + b)^2 = a^2 + 2a*b + b^2
+(a + b)^3
+sqrt(a^2 + b^2)
+(-b + sqrt(b^2 - 4a*c))/(2a)
+(-b - sqrt(b^2 - 4a*c))/(2a)
+x = (-b + sqrt(b^2 - 4a*c))/(2a)
+1/(1 + e^(-x))
+sin(x)/x
+(sin x)^2
+sin(x^2)
+sin x^2
+x e^x
+x*e^x
+e^x*sin x
+ln(x)/x
+x^2*ln(x)
+(1 + 1/n)^n
+n!/(k!(n - k)!)
+binomial(n, k) = n!/(k!(n - k)!)
+a/b + c/d = (a*d + b*c)/(b*d)
+x^2 + y^2 + z^2
+f(x) = a*x^2 + b*x + c
+v = d/t
+F = m*a
+E = m*c^2
+a^2 + b^2 = c^2
+sum(k, k, 1, n) = n(n + 1)/2
+integrate(x^n, x) = x^(n + 1)/(n + 1)
+diff(x^n, x) = n*x^(n - 1)
+
