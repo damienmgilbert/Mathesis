@@ -9,7 +9,7 @@ namespace Mathesis.Numerics;
 /// </summary>
 /// <remarks>
 /// <para>Bracketing methods (<see cref="Bisection{T}"/>, <see cref="Brent{T}"/>) use |Δx| ≤ absTol + relTol·|x| (Brent adds 2ε|x|)
-/// with defaults absTol = ε², relTol = 0 (bisection: 4ε). Open methods (<see cref="Newton{T}(Func{T, T}, Func{T, T}, T, StoppingCriteria?)"/>, <see cref="Secant{T}"/>) use the
+/// with defaults absTol = ε², relTol = 0 (bisection: 4ε; its iteration cap is 2,200, the other methods' 100). Open methods (<see cref="Newton{T}(Func{T, T}, Func{T, T}, T, StoppingCriteria?)"/>, <see cref="Secant{T}"/>) use the
 /// rule from design-doc entry <c>num.root.stopping</c>: |x<sub>n+1</sub> − x<sub>n</sub>| ≤ absTol + relTol·(1 + |x<sub>n+1</sub>|),
 /// defaults absTol = 0, relTol = 4ε. ε is the machine epsilon of the floating-point type used.</para>
 /// <para>This class lives in <c>Mathesis.Numerics</c> rather than a <c>Mathesis.Numerics.Roots</c> namespace, which would
@@ -29,7 +29,7 @@ public static class Roots
         Num.ThrowIfNotFinite(b, nameof(b));
         var eps = Num.Eps<T>();
         var (absTol, relTol, fTol) = Num.Tolerances(stop, eps * eps, Num.C<T>(4) * eps);
-        var maxIterations = stop?.MaxIterations ?? 100;
+        var maxIterations = stop?.MaxIterations ?? 2_200; // halving any finite double bracket to its resolution takes fewer steps than this
 
         if (a > b) (a, b) = (b, a);
         var fa = f(a);

@@ -309,8 +309,7 @@ public static class Quadrature
                     var d = one - t * t;
                     var x = t / d;
                     var jacobian = (one + t * t) / (d * d);
-                    var y = f(x) * jacobian;
-                    return T.IsFinite(x) && T.IsFinite(y) ? y : T.Zero;
+                    return T.IsFinite(x) ? Weighted(f(x), jacobian) : T.Zero;
                 },
                 -one,
                 one,
@@ -322,8 +321,8 @@ public static class Quadrature
                 t =>
                 {
                     var d = one - t;
-                    var y = f(a + t / d) * (one / (d * d));
-                    return T.IsFinite(y) ? y : T.Zero;
+                    var x = a + t / d;
+                    return T.IsFinite(x) ? Weighted(f(x), one / (d * d)) : T.Zero;
                 },
                 T.Zero,
                 one,
@@ -333,13 +332,18 @@ public static class Quadrature
             t =>
             {
                 var d = one - t;
-                var y = f(b - t / d) * (one / (d * d));
-                return T.IsFinite(y) ? y : T.Zero;
+                var x = b - t / d;
+                return T.IsFinite(x) ? Weighted(f(x), one / (d * d)) : T.Zero;
             },
             T.Zero,
             one,
             stop);
     }
+
+    // f(x)·jacobian where an integrand that has decayed to exactly 0 beats an overflowing jacobian (0·∞), but NaN from the
+    // integrand itself (a domain error) is kept so the caller sees the failure instead of an integral over the defined part.
+    private static T Weighted<T>(T fx, T jacobian)
+        where T : IFloatingPointIeee754<T> => fx == T.Zero ? T.Zero : fx * jacobian;
 
     /// <summary>
     /// Romberg integration (design entry <c>num.quad.romberg</c>): Richardson extrapolation of trapezoid sums with 1, 2, 4, … panels.
@@ -361,7 +365,10 @@ public static class Quadrature
         var evaluations = 2;
         var previous = new T[maxLevels + 1];
         var current = new T[maxLevels + 1];
-        previous[0] = Num.Half<T>() * width * (f(a) + f(b));
+        var fa = f(a);
+        var fb = f(b);
+        var maxAbs = Num.Max(T.Abs(fa), T.Abs(fb));
+        previous[0] = Num.Half<T>() * width * (fa + fb);
         if (!T.IsFinite(previous[0])) return new(previous[0], T.PositiveInfinity, evaluations, 1, false, ["The integrand is not finite at an end point."]);
 
         for (var level = 1; level <= maxLevels; level++)
@@ -370,7 +377,12 @@ public static class Quadrature
             var panels = 1 << (level - 1);
             var h = width / T.CreateChecked(panels);
             var sum = T.Zero;
-            for (var i = 0; i < panels; i++) sum += f(a + (T.CreateChecked(i) + Num.Half<T>()) * h);
+            for (var i = 0; i < panels; i++)
+            {
+                var fi = f(a + (T.CreateChecked(i) + Num.Half<T>()) * h);
+                maxAbs = Num.Max(maxAbs, T.Abs(fi));
+                sum += fi;
+            }
             evaluations += panels;
             current[0] = Num.Half<T>() * previous[0] + Num.Half<T>() * h * sum;
 
@@ -386,6 +398,12 @@ public static class Quadrature
             if (level >= 3 && error <= Num.Max(absTol, relTol * T.Abs(value)))
             {
                 return new(value, error, evaluations, level, true, []);
+            }
+
+            // Round-off floor, as in GaussKronrod: an integral that cancels to ~0 cannot meet a relative tolerance.
+            if (level >= 3 && error <= Num.C<T>(50) * eps * T.Abs(width) * maxAbs)
+            {
+                return new(value, error, evaluations, level, true, ["The result is limited by round-off."]);
             }
             if (level == maxLevels)
             {
