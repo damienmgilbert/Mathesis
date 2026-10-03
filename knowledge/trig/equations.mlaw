@@ -1,0 +1,36 @@
+# Trigonometry: basic trigonometric equations (d2-trigonometry.md, "Trigonometric equations"). The statements are about image sets {… | k in Z}, which the
+# numeric verifier does not evaluate; the solver substitutes every solution family back into its equation (tests/Mathesis.Tests/SolveTests.cs).
+
+domain trig.eqn "Trigonometric equations"
+
+theorem sin "Basic sine equation"
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "sin x = a has no solution when |a| > 1; otherwise x = arcsin a + 2πk or x = π − arcsin a + 2πk for every integer k."
+  refs:      book:"Stewart, Precalculus, 7e, §7.5"
+  verify:    none
+  rationale: "The statement is about a set indexed by an integer, which the numeric verifier does not evaluate; the solver tests every family it returns."
+
+theorem cos "Basic cosine equation"
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "cos x = a has no solution when |a| > 1; otherwise x = arccos a + 2πk or x = −arccos a + 2πk for every integer k."
+  refs:      book:"Stewart, Precalculus, 7e, §7.5"
+  verify:    none
+  rationale: "The statement is about a set indexed by an integer, which the numeric verifier does not evaluate; the solver tests every family it returns."
+
+theorem tan "Basic tangent equation"
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "tan x = a has the solutions x = arctan a + πk for every integer k."
+  refs:      book:"Stewart, Precalculus, 7e, §7.5"
+  verify:    none
+  rationale: "The statement is about a set indexed by an integer, which the numeric verifier does not evaluate; the solver tests every family it returns."
+
+theorem cot "Basic cotangent equation"
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "cot x = a has the solutions x = arccot a + πk, that is tan x = 1/a for a ≠ 0 and x = π/2 + πk for a = 0."
+  refs:      book:"Stewart, Precalculus, 7e, §7.5"
+  verify:    none
+  rationale: "The statement is about a set indexed by an integer, which the numeric verifier does not evaluate; the solver tests every family it returns."

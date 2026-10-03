@@ -1497,6 +1497,13 @@ public static class Theorems
             public static readonly EntryId ByRoots = new("alg.factor.by-roots");
         }
 
+        /// <summary>Inequalities.</summary>
+        public static class Ineq
+        {
+            /// <summary>Compound inequality.</summary>
+            public static readonly EntryId Compound = new("alg.ineq.compound");
+        }
+
         /// <summary>Partial fractions.</summary>
         public static class Pf
         {
@@ -1567,6 +1574,13 @@ public static class Theorems
 
             /// <summary>Sum and product of the roots.</summary>
             public static readonly EntryId Vieta = new("alg.quad.vieta");
+        }
+
+        /// <summary>Systems of equations.</summary>
+        public static class Sys
+        {
+            /// <summary>Linear systems: one solution, none, or infinitely many.</summary>
+            public static readonly EntryId Classification = new("alg.sys.classification");
         }
     }
 
@@ -1696,6 +1710,26 @@ public static class Theorems
 
             /// <summary>Structure of solutions.</summary>
             public static readonly EntryId Structure = new("linalg.sys.structure");
+        }
+    }
+
+    /// <summary>Trigonometry.</summary>
+    public static class Trigonometry
+    {
+        /// <summary>Trigonometric equations.</summary>
+        public static class Eqn
+        {
+            /// <summary>Basic cosine equation.</summary>
+            public static readonly EntryId Cos = new("trig.eqn.cos");
+
+            /// <summary>Basic cotangent equation.</summary>
+            public static readonly EntryId Cot = new("trig.eqn.cot");
+
+            /// <summary>Basic sine equation.</summary>
+            public static readonly EntryId Sin = new("trig.eqn.sin");
+
+            /// <summary>Basic tangent equation.</summary>
+            public static readonly EntryId Tan = new("trig.eqn.tan");
         }
     }
 }
@@ -1929,6 +1963,13 @@ public static class Methods
             public static readonly EntryId SquareFree = new("alg.factor.square-free");
         }
 
+        /// <summary>Inequalities.</summary>
+        public static class Ineq
+        {
+            /// <summary>Sign chart.</summary>
+            public static readonly EntryId SignChart = new("alg.ineq.sign-chart");
+        }
+
         /// <summary>Partial fractions.</summary>
         public static class Pf
         {
@@ -1964,6 +2005,16 @@ public static class Methods
 
             /// <summary>Least common denominator.</summary>
             public static readonly EntryId Lcd = new("alg.rat.lcd");
+        }
+
+        /// <summary>Systems of equations.</summary>
+        public static class Sys
+        {
+            /// <summary>Elimination method.</summary>
+            public static readonly EntryId Elimination = new("alg.sys.elimination");
+
+            /// <summary>Substitution method.</summary>
+            public static readonly EntryId Substitution = new("alg.sys.substitution");
         }
     }
 
