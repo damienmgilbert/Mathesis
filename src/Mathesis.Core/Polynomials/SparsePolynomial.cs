@@ -295,7 +295,13 @@ public sealed class SparsePolynomial<T>
     public override bool Equals(object? obj) => Equals(obj as SparsePolynomial<T>);
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(VariableCount, _terms.Length, _terms.Length == 0 ? 0 : _terms[0].Monomial.GetHashCode());
+    public override int GetHashCode()
+    {
+        // Equals ignores the monomial order, so the hash must not depend on the order of the terms either: add the term hashes.
+        var sum = 0;
+        foreach (var (monomial, coefficient) in _terms) sum += HashCode.Combine(monomial, coefficient);
+        return HashCode.Combine(VariableCount, _terms.Length, sum);
+    }
 
     /// <summary>Formats the terms in decreasing order, for diagnostics.</summary>
     public override string ToString() =>

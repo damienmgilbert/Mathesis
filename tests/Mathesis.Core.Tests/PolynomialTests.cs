@@ -360,4 +360,20 @@ public class PolynomialTests
         Assert.AreEqual(Linear(-2).Pow(3), dense);
         Assert.Throws<ArgumentException>(() => Polynomial<BigRational>.FromSparse(SparsePolynomial<BigRational>.Variable(0, 2)));
     }
+
+    [TestMethod]
+    public void SparsePolynomialsEqualAcrossMonomialOrdersHashEqually()
+    {
+        var terms = new[]
+        {
+            (new Monomial([2, 0]), (BigRational)1),
+            (new Monomial([0, 3]), (BigRational)1),
+            (new Monomial([1, 1]), (BigRational)(-2)),
+        };
+        var lex = new SparsePolynomial<BigRational>(2, MonomialOrder.Lex, terms);
+        var grlex = new SparsePolynomial<BigRational>(2, MonomialOrder.GrLex, terms);
+        Assert.AreNotEqual(lex.LeadingTerm.Monomial, grlex.LeadingTerm.Monomial);
+        Assert.IsTrue(lex.Equals(grlex));
+        Assert.AreEqual(lex.GetHashCode(), grlex.GetHashCode());
+    }
 }
