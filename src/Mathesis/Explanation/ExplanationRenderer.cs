@@ -98,17 +98,28 @@ public static partial class ExplanationRenderer
             name = entry.Name;
         }
         var values = step.Explanation.Arguments.GroupBy(a => a.Key, StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.First().Value, StringComparer.Ordinal);
-        // A product written by juxtaposition in the template (2{a}{b}) reads as "2 · 1 · x", not as the number 21 and a letter.
+        // A product written by juxtaposition in the template (2{a}{b}) reads as "2 · 1 · x", not as the number 21 and a letter; a negative value after a
+        // symbol or digit is parenthesized (4{a} with a = −1 is 4(-1)).
         var source = template ?? name;
         var previousEnd = -1;
-        return Placeholder().Replace(source, m =>
+        var text = Placeholder().Replace(source, m =>
         {
             var printed = values.TryGetValue(m.Groups[1].Value, out var v) ? (format == ExplanationFormat.Text ? TextPrinter.Print(v, PrintOptions.Presentation) : "$" + LatexPrinter.Print(v) + "$") : m.Value;
             var afterDigit = m.Index > 0 && char.IsAsciiDigit(source[m.Index - 1]) && char.IsAsciiDigit(printed[0]);
             var separator = m.Index == previousEnd || afterDigit ? " · " : string.Empty;
+            if (format == ExplanationFormat.Text && printed.StartsWith('-') && m.Index > 0 && source[m.Index - 1] is not (' ' or '(' or '=' or '−')) printed = "(" + printed + ")";
             previousEnd = m.Index + m.Length;
             return separator + printed;
         });
+
+        // A rejected candidate names itself even when the entry's sentence is general.
+        if (values.TryGetValue("candidate", out var candidate) && !source.Contains("{candidate}", StringComparison.Ordinal))
+        {
+            text += " Candidate: " + (format == ExplanationFormat.Text ? TextPrinter.Print(candidate, PrintOptions.Presentation) : "$" + LatexPrinter.Print(candidate) + "$");
+            if (values.TryGetValue("reason", out var reason) && reason is Symbol reasonSymbol) text += " (" + reasonSymbol.Name.Replace('_', ' ') + ")";
+            text += ".";
+        }
+        return text;
     }
 
     [GeneratedRegex(@"\{([A-Za-z][A-Za-z0-9_]*)\}")]

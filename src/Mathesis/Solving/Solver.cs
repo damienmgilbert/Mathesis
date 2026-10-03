@@ -157,7 +157,6 @@ public static partial class Solver
         {
             var domain = NaturalDomain.Of(f, x, c.Math) is Outcome<Expr>.Success { Value: var d } ? d : null;
             var set = domain is null || domain is Constant { Id: ConstantId.Reals } ? SolutionSet.All : new SolutionSet(SolutionKind.Condition, domain) { IsComplete = true };
-            Record(c, "alg.eq.equiv-add", "identity", start, set.Set);
             return Wrap(start, set, c);
         }
 
@@ -191,7 +190,6 @@ public static partial class Solver
             setExpr = parts.Count == 1 ? parts[0] : new Apply(Operators.Union, [.. parts]);
             result = new SolutionSet(SolutionKind.Image, setExpr) { Points = [.. sorted], Families = [.. families], IsApproximate = cand.Approximate };
         }
-        Record(c, "alg.eq.equiv-add", "solution-set", start, result.Set);
         return Wrap(start, result, c);
     }
 
@@ -407,7 +405,7 @@ public static partial class Solver
             case Truth.False: Record(c, "alg.quad.root-nature", "negative-discriminant", EqZero(f), new Constant(ConstantId.EmptySet), ("D", discriminant)); return Cand.None;
             case Truth.Unknown: c.Provisos = c.Provisos.Add(real); break;
         }
-        Record(c, "alg.quad.quadratic-formula", "quadratic-formula", EqZero(f), new Apply(Operators.Or, [new Apply(Operators.Eq, [x, plus]), new Apply(Operators.Eq, [x, minus])]), ("D", discriminant));
+        Record(c, "alg.quad.quadratic-formula", "quadratic-formula", EqZero(f), new Apply(Operators.Or, [new Apply(Operators.Eq, [x, plus]), new Apply(Operators.Eq, [x, minus])]), ("a", c2), ("b", c1), ("c", c0), ("D", discriminant));
         return Cand.Of([plus, minus]);
     }
 
@@ -488,7 +486,7 @@ public static partial class Solver
         }
         else
         {
-            Record(c, "alg.quad.quadratic-formula", "quadratic-formula", EqZero(polynomialExpr), new Apply(Operators.Eq, [x, Canon(Mul(Add(Negate(Num(b)), Pow(Num(discriminant), Half)), Pow(Num(twoA), Num(-1))))]), ("D", Num(discriminant)));
+            Record(c, "alg.quad.quadratic-formula", "quadratic-formula", EqZero(polynomialExpr), new Apply(Operators.Eq, [x, Canon(Mul(Add(Negate(Num(b)), Pow(Num(discriminant), Half)), Pow(Num(twoA), Num(-1))))]), ("a", Num(a)), ("b", Num(b)), ("c", Num(k)), ("D", Num(discriminant)));
         }
         var root = ExactValues.Sqrt(discriminant);
         var center = Num(-b / twoA);

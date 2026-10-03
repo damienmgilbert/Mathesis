@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <Description>Dense vectors and matrices for Mathesis with exact row reduction, determinants and inverses over the rationals and numeric decompositions.</Description>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="../Mathesis.Core/Mathesis.Core.csproj" />
     <PackageReference Include="System.Numerics.Tensors" />

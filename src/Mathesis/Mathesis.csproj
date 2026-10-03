@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <Description>A computer algebra library for .NET with step-by-step explanations: simplify, differentiate, integrate, solve and look up the law behind every step.</Description>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="../Mathesis.Core/Mathesis.Core.csproj" />
     <ProjectReference Include="../Mathesis.Numerics/Mathesis.Numerics.csproj" />

@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <Description>Exact numbers (BigRational, complex, dual, interval), results with budgets and provisos, polynomials and the shared contracts of Mathesis.</Description>
+  </PropertyGroup>
+
   <ItemGroup>
   </ItemGroup>
 
