@@ -11,7 +11,7 @@
     <RootNamespace>$(MSBuildProjectName)</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(MSBuildProjectDirectory.Replace('\', '/').Contains('/src/'))">
+  <PropertyGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)src'))">
     <IsAotCompatible>true</IsAotCompatible>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
@@ -27,11 +27,11 @@
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts/packages</PackageOutputPath>
   </PropertyGroup>
 
-  <ItemGroup Condition="$(MSBuildProjectDirectory.Replace('\', '/').Contains('/src/'))">
+  <ItemGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)src'))">
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="/" Visible="false" />
   </ItemGroup>
 
-  <PropertyGroup Condition="$(MSBuildProjectDirectory.Replace('\', '/').Contains('/tests/'))">
+  <PropertyGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)tests'))">
     <IsPackable>false</IsPackable>
     <!-- Parsers ignore the culture by design, so tests may omit IFormatProvider. -->
     <NoWarn>$(NoWarn);CA1305;CA1861</NoWarn>

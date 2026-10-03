@@ -117,7 +117,7 @@ public readonly struct Complex<T> : INumberBase<Complex<T>>, ISignedNumber<Compl
     // ----- Equality -----
 
     /// <inheritdoc />
-    public bool Equals(Complex<T> other) => Real == other.Real && Imaginary == other.Imaginary;
+    public bool Equals(Complex<T> other) => Real.Equals(other.Real) && Imaginary.Equals(other.Imaginary);
 
     /// <inheritdoc />
     public override bool Equals(object? obj) => obj is Complex<T> other && Equals(other);
@@ -421,8 +421,21 @@ public static class ComplexFunctions
         /// <summary>The principal natural logarithm ln|z| + i·arg z. The logarithm of zero is −∞ + 0i.</summary>
         public static Complex<T> Log(Complex<T> z) => new(T.Log(z.Magnitude), z.Phase);
 
-        /// <summary>The principal square root (non-negative real part).</summary>
-        public static Complex<T> Sqrt(Complex<T> z) =>
-            Complex<T>.FromPolar(T.Sqrt(z.Magnitude), z.Phase / (T.One + T.One));
+        /// <summary>The principal square root (non-negative real part), from the algebraic formula so that √(−4) is exactly 2i.</summary>
+        public static Complex<T> Sqrt(Complex<T> z)
+        {
+            var two = T.One + T.One;
+            var m = z.Magnitude;
+            if (T.IsZero(m)) return Complex<T>.Zero;
+            if (!T.IsNegative(z.Real))
+            {
+                var re = T.Sqrt((m + z.Real) / two);
+                return new(re, z.Imaginary / (two * re));
+            }
+
+            // Negative real part: m + a would cancel, so take the imaginary part first.
+            var im = T.Sqrt((m - z.Real) / two);
+            return new(T.Abs(z.Imaginary) / (two * im), T.CopySign(im, z.Imaginary));
+        }
     }
 }

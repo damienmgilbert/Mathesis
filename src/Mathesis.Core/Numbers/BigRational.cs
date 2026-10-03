@@ -150,9 +150,15 @@ public readonly struct BigRational : INumber<BigRational>, ISignedNumber<BigRati
 
     /// <summary>Raises <paramref name="value"/> to an integer power. 0⁰ is 1 (see catalog convention <c>conv.zero-to-the-zero</c>).</summary>
     /// <exception cref="DivideByZeroException"><paramref name="value"/> is zero and <paramref name="exponent"/> is negative.</exception>
+    /// <exception cref="OverflowException"><paramref name="exponent"/> is <see cref="int.MinValue"/> and <paramref name="value"/> is not 1 or −1 (the result would not fit in memory).</exception>
     public static BigRational Pow(BigRational value, int exponent)
     {
         if (exponent == 0) return One;
+        if (exponent == int.MinValue)
+        {
+            if (value.Sign == 0) throw new DivideByZeroException();
+            return value == One || value == NegativeOne ? One : throw new OverflowException("The result is too large to represent.");
+        }
         var baseValue = exponent < 0 ? Reciprocal(value) : value;
         var e = (uint)Math.Abs((long)exponent);
         return new BigRational(
@@ -418,7 +424,9 @@ public readonly struct BigRational : INumber<BigRational>, ISignedNumber<BigRati
         var q = BigInteger.DivRem(scaledN, scaledD, out var remainder);
         if (!remainder.IsZero) q |= BigInteger.One;
 
-        var drop = (int)q.GetBitLength() - 53;
+        // Keep 53 significant bits, or fewer in the subnormal range, so the value is rounded once and ScaleB is exact.
+        var exponent = (int)q.GetBitLength() - 1 - shift;
+        var drop = (int)q.GetBitLength() - Math.Clamp(exponent + 1075, 0, 53);
         var mantissa = q >> drop;
         var rest = q - (mantissa << drop);
         var half = BigInteger.One << (drop - 1);

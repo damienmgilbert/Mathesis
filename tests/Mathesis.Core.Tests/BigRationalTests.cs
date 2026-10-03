@@ -201,6 +201,26 @@ public class BigRationalTests
     }
 
     [TestMethod]
+    public void ToDoubleRoundsOnceInTheSubnormalRange()
+    {
+        var two = new System.Numerics.BigInteger(2);
+        // 2^-1075 is the tie between 0 and the smallest subnormal; a hair above it must round up, exactly 2^-1075 goes to even (0).
+        Assert.AreEqual(double.Epsilon, BigRational.Create(System.Numerics.BigInteger.Pow(two, 200) + 1, System.Numerics.BigInteger.Pow(two, 1275)).ToDouble());
+        Assert.AreEqual(0.0, BigRational.Create(1, System.Numerics.BigInteger.Pow(two, 1075)).ToDouble());
+        Assert.AreEqual(2 * double.Epsilon, BigRational.Create(3, System.Numerics.BigInteger.Pow(two, 1075)).ToDouble());
+        Assert.AreEqual(0.0, BigRational.Create(1, System.Numerics.BigInteger.Pow(two, 1200)).ToDouble());
+    }
+
+    [TestMethod]
+    public void PowAcceptsTheMostNegativeExponentForUnitBases()
+    {
+        Assert.AreEqual(BigRational.One, BigRational.Pow(BigRational.One, int.MinValue));
+        Assert.AreEqual(BigRational.One, BigRational.Pow(BigRational.NegativeOne, int.MinValue));
+        Assert.Throws<DivideByZeroException>(() => BigRational.Pow(BigRational.Zero, int.MinValue));
+        Assert.Throws<OverflowException>(() => BigRational.Pow(2, int.MinValue));
+    }
+
+    [TestMethod]
     public void DoubleConversionEdgeCases()
     {
         var huge = BigRational.Pow(2, 2000);

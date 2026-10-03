@@ -172,4 +172,22 @@ public class ComplexTests
         var one = Complex<BigRational>.One;
         Assert.AreEqual(Complex<BigRational>.Zero, Horner([one, Complex<BigRational>.Zero, one], Complex<BigRational>.ImaginaryOne));
     }
+
+    [TestMethod]
+    public void SquareRootOfANegativeRealIsExactlyImaginary()
+    {
+        Assert.AreEqual(new Complex<double>(0, 2), Complex<double>.Sqrt(new Complex<double>(-4, 0)));
+        Assert.AreEqual(new Complex<double>(0, 3), Complex<double>.Sqrt(new Complex<double>(-9, 0)));
+        Assert.AreEqual(new Complex<double>(2, 1), Complex<double>.Sqrt(new Complex<double>(3, 4)));
+        Assert.AreEqual(new Complex<double>(2, -1), Complex<double>.Sqrt(new Complex<double>(3, -4)));
+        Assert.AreEqual(Complex<double>.Zero, Complex<double>.Sqrt(Complex<double>.Zero));
+    }
+
+    [TestMethod]
+    public void NaNEqualsItselfLikeDouble()
+    {
+        var z = new Complex<double>(double.NaN, 1);
+        Assert.IsTrue(z.Equals(z));
+        Assert.IsTrue(new Dual<double>(double.NaN, 0).Equals(new Dual<double>(double.NaN, 0)));
+    }
 }
