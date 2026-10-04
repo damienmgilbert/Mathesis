@@ -23,7 +23,7 @@ The first release: six packages (`Mathesis`, `Mathesis.Core`, `Mathesis.Numerics
 | Catalog lint and generated handles (`eng/mlaw-lint.cs`, `eng/gen-knowledge.cs -- --check`) | no problems, up to date |
 | Catalog coverage (`eng/check-catalog-coverage.cs`) | the sections seeded in Milestone 1 are covered 516/516 (100%); full report below |
 | `dotnet pack` | six `.nupkg` files in `artifacts/packages` |
-| Trim and AOT analysis of `samples/AotSmoke` | a trimmed self-contained publish has zero warnings and the app's checks pass; see the NativeAOT note below |
+| NativeAOT publish of `samples/AotSmoke` (`-r win-x64`) | zero ILC warnings (they are errors), the native link succeeds and the executable passes its six checks; see the NativeAOT note below |
 | README | sixteen examples, each executed by a test against the output shown |
 
 ### Catalog coverage report
@@ -49,8 +49,13 @@ Entries added during Milestone 1 that the domain documents do not list: `alg.log
 - **Simplification:** `sqrt(8)` stays as written; multivariate factoring, cancellation and partial fractions are not implemented.
 - **Explanations:** solving steps describe equations and are not replayable; the substitution check is the verification.
 - Several façade abilities of `docs/design/08-features-and-abilities.md` belong to later milestones (domain and range analysis, conics, sums, differential equations, finite mathematics, proofs).
+- **Catalog verification:** every law and formula is verified numerically except `calc.int.substitution` (the indefinite form, whose right-hand side is an integral in `u = g(x)`); its definite form `calc.int.substitution-definite` is verified. The Maclaurin laws are checked as limits of partial sums where the series settles (not at the radius of convergence), and the endpoints of the `ln(1 + x)` and `arctan` series are checked with the alternating-series bound.
 - **Naming:** the catalog functions are `Cas.Get`, `Cas.Find` and `Cas.ByDomain`. The design originally wrote them as `Knowledge.Find`, which cannot be a static class in the `Mathesis` namespace because `Mathesis.Knowledge` is a namespace; `docs/design/08-features-and-abilities.md` now records the `Cas.*` names.
 
 ### NativeAOT
 
-`samples/AotSmoke` is configured for NativeAOT (`PublishAot`, ILC warnings as errors). Linking needs the platform's C++ toolchain (on Windows the "Desktop development with C++" workload of Visual Studio). Where it is installed, `dotnet publish samples/AotSmoke -c Release -r win-x64` produces the native executable. This release was checked with the trim and AOT analyzers (`IsAotCompatible` on every package project) and with a trimmed self-contained publish of the smoke app, which has no warnings and passes its own checks; the native link itself was not run on the build machine because the C++ workload was not installed there.
+`samples/AotSmoke` is configured for NativeAOT (`PublishAot`, ILC warnings as errors). Linking needs the platform's C++ toolchain (on Windows the "Desktop development with C++" workload of Visual Studio). Where it is installed, `dotnet publish samples/AotSmoke -c Release -r win-x64` produces the native executable.
+
+Verified on Windows 11 with .NET SDK 10.0.401, ILCompiler 10.0.12, Visual Studio 18 Build Tools (MSVC 14.51.36231) and Windows SDK 10.0.26100.0: the publish has no ILC warnings (`IlcTreatWarningsAsErrors` is on), links a 4.7 MB self-contained `AotSmoke.exe` with no managed assembly beside it, and the executable exits 0 with all six checks (parse, simplify with steps, differentiate, integrate, solve, catalog lookup) passing. `IsAotCompatible` is on every package project, and a trimmed self-contained publish of the smoke app is also warning-free.
+
+**Windows caveat.** ILCompiler finds the toolchain through `findvcvarsall.bat`, which calls Visual Studio's `vcvarsall.bat`; with Visual Studio 18 that script writes `'vswhere.exe' is not recognized` to the error stream when `%ProgramFiles(x86)%\Microsoft Visual Studio\Installer` is not on `PATH`, and MSBuild takes that text for part of the linker path. The publish then fails with `MSB3073` and a `link.exe` exit code of 123. Publishing from a Developer PowerShell, or adding that directory to `PATH` for the command, avoids it.

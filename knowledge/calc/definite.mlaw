@@ -1,26 +1,22 @@
-# Calculus: definite and improper integrals (d5-calculus.md, "Definite integrals" and "Improper integrals"). These statements involve integrals with
-# bounds, which the numeric verifier does not evaluate; the integration engine checks every definite integral against Gauss-Kronrod quadrature instead
+# Calculus: definite and improper integrals (d5-calculus.md, "Definite integrals" and "Improper integrals"). The numeric verifier evaluates integrals with
+# bounds by Gauss-Kronrod quadrature, and the integration engine checks every definite integral against quadrature too
 # (tests/Mathesis.Tests/DefiniteIntegralTests.cs).
 
 domain calc.def "Definite integrals"
 
 law zero-width "Zero-width interval"
-  vars:      f: function(R -> R), a
+  vars:      f: function(R -> R), a, x
   statement: integrate(f, x, a, a) = 0
   level:     Calculus1
   course:    Calculus
   explain:   "An integral over an interval of width zero is 0."
-  verify:    none
-  rationale: "The statement is about an integral with bounds, which the numeric verifier does not evaluate; the integration tests check it with quadrature."
 
 law reverse "Reversing limits"
-  vars:      f: function(R -> R), a, b
+  vars:      f: function(R -> R), a, b, x
   statement: integrate(f, x, b, a) = -integrate(f, x, a, b)
   level:     Calculus1
   course:    Calculus
   explain:   "Swapping the limits of integration changes the sign."
-  verify:    none
-  rationale: "The statement is about integrals with bounds, which the numeric verifier does not evaluate; the integration tests check it with quadrature."
 
 domain calc.ftc "Fundamental Theorem of Calculus"
 

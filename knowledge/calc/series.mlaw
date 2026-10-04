@@ -1,5 +1,6 @@
-# Calculus: Taylor and Maclaurin series (d5-calculus.md, "Sequences and series"). The series laws are statements about infinite sums, which the numeric
-# verifier does not evaluate; the series engine checks its polynomials against the function near the center instead (tests/Mathesis.Tests).
+# Calculus: Taylor and Maclaurin series (d5-calculus.md, "Sequences and series"). The Maclaurin laws are infinite sums; the numeric verifier evaluates
+# them as the limit of their partial sums (tests/Mathesis.Knowledge.Tests, "Infinite sums" in 06-knowledge-catalog.md), and the series engine checks its
+# polynomials against the function near the center (tests/Mathesis.Tests).
 
 domain calc.series "Taylor series"
 
@@ -44,8 +45,6 @@ law exp "Maclaurin series of eˣ"
   course:    Calculus
   tags:      maclaurin
   explain:   "eˣ = 1 + x + x²/2! + x³/3! + …, for all x."
-  verify:    none
-  rationale: "The statement is an infinite sum, which the numeric verifier does not evaluate; truncations are checked in the series tests."
 
 law sin "Maclaurin series of sin"
   vars:      x
@@ -54,8 +53,6 @@ law sin "Maclaurin series of sin"
   course:    Calculus
   tags:      maclaurin
   explain:   "sin x = x − x³/3! + x⁵/5! − …, for all x."
-  verify:    none
-  rationale: "The statement is an infinite sum, which the numeric verifier does not evaluate; truncations are checked in the series tests."
 
 law cos "Maclaurin series of cos"
   vars:      x
@@ -64,8 +61,6 @@ law cos "Maclaurin series of cos"
   course:    Calculus
   tags:      maclaurin
   explain:   "cos x = 1 − x²/2! + x⁴/4! − …, for all x."
-  verify:    none
-  rationale: "The statement is an infinite sum, which the numeric verifier does not evaluate; truncations are checked in the series tests."
 
 law geometric "Geometric series"
   vars:      x
@@ -75,8 +70,6 @@ law geometric "Geometric series"
   course:    Calculus
   tags:      maclaurin
   explain:   "1/(1 − x) = 1 + x + x² + …, for |x| < 1."
-  verify:    none
-  rationale: "The statement is an infinite sum, which the numeric verifier does not evaluate; truncations are checked in the series tests."
 
 law ln "Maclaurin series of ln(1 + x)"
   vars:      x
@@ -86,8 +79,6 @@ law ln "Maclaurin series of ln(1 + x)"
   course:    Calculus
   tags:      maclaurin
   explain:   "ln(1 + x) = x − x²/2 + x³/3 − …, for −1 < x ≤ 1."
-  verify:    none
-  rationale: "The statement is an infinite sum, which the numeric verifier does not evaluate; truncations are checked in the series tests."
 
 law arctan "Maclaurin series of arctan"
   vars:      x
@@ -97,8 +88,6 @@ law arctan "Maclaurin series of arctan"
   course:    Calculus
   tags:      maclaurin
   explain:   "arctan x = x − x³/3 + x⁵/5 − …, for |x| ≤ 1."
-  verify:    none
-  rationale: "The statement is an infinite sum, which the numeric verifier does not evaluate; truncations are checked in the series tests."
 
 law binomial "Binomial series"
   vars:      x, k
@@ -108,8 +97,6 @@ law binomial "Binomial series"
   course:    Calculus
   tags:      maclaurin
   explain:   "(1 + x)ᵏ = 1 + kx + k(k − 1)x²/2! + …, for |x| < 1."
-  verify:    none
-  rationale: "The statement is an infinite sum, which the numeric verifier does not evaluate; truncations are checked in the series tests."
 
 law sinh "Maclaurin series of sinh"
   vars:      x
@@ -118,8 +105,6 @@ law sinh "Maclaurin series of sinh"
   course:    Calculus
   tags:      maclaurin
   explain:   "sinh x = x + x³/3! + x⁵/5! + …, for all x."
-  verify:    none
-  rationale: "The statement is an infinite sum, which the numeric verifier does not evaluate; truncations are checked in the series tests."
 
 law cosh "Maclaurin series of cosh"
   vars:      x
@@ -128,5 +113,3 @@ law cosh "Maclaurin series of cosh"
   course:    Calculus
   tags:      maclaurin
   explain:   "cosh x = 1 + x²/2! + x⁴/4! + …, for all x."
-  verify:    none
-  rationale: "The statement is an infinite sum, which the numeric verifier does not evaluate; truncations are checked in the series tests."
