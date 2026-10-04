@@ -435,7 +435,9 @@ public static class Normalizer
             return true;
         }
 
-        // Exact integer q-th root of n >= 0, if n is a perfect power.
+        // Exact integer q-th root of n >= 0, if n is a perfect power: Newton's iteration for the integer root, started above the root
+        // (Brent and Zimmermann, Modern Computer Arithmetic, 2010, section 1.5.2). From any x >= floor(n^(1/q)) the integer step
+        // decreases strictly until it reaches floor(n^(1/q)) and never goes below it, so the loop stops exactly there.
         private static bool TryRoot(BigInteger n, int q, out BigInteger root)
         {
             root = BigInteger.Zero;
@@ -444,22 +446,22 @@ public static class Normalizer
                 root = n;
                 return true;
             }
-            var low = BigInteger.One;
-            var high = BigInteger.One << (int)(n.GetBitLength() / q + 1);
-            while (low <= high)
+
+            // Start from the double estimate of 2^(log2(n)/q), widened and checked so that it is not below the root.
+            var e = BigInteger.Log(n, 2) / q;
+            var whole = (int)Math.Floor(e);
+            var x = whole >= 52 ? new BigInteger(Math.Pow(2, e - whole + 52)) << (whole - 52) : new BigInteger(Math.Ceiling(Math.Pow(2, e)));
+            x += (x >> 30) + 2;
+            while (BigInteger.Pow(x, q) < n) x <<= 1;
+
+            while (true)
             {
-                var mid = (low + high) >> 1;
-                var power = BigInteger.Pow(mid, q);
-                var c = power.CompareTo(n);
-                if (c == 0)
-                {
-                    root = mid;
-                    return true;
-                }
-                if (c < 0) low = mid + 1;
-                else high = mid - 1;
+                var next = ((q - 1) * x + n / BigInteger.Pow(x, q - 1)) / q;
+                if (next >= x) break;
+                x = next;
             }
-            return false;
+            root = x;
+            return BigInteger.Pow(x, q) == n;
         }
     }
 }

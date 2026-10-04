@@ -87,6 +87,52 @@ public class NormalizerTests
     }
 
     [TestMethod]
+    public void ExactRootsOfLargeNumbersAreFoldedInBoundedTime()
+    {
+        // Every symbolic operation must be bounded (docs/design/01, G9). 1e100000 has 332,000 bits; finding its root bit by bit took minutes.
+        var cases = new (string Input, string? Folded)[]
+        {
+            ("sqrt(1e100000)", "1e50000"),
+            ("(1e100000)^(1/5)", "1e20000"),
+            ("(1e100000)^(3/5)", "1e60000"),
+            ("(1e99968)^(1/64)", "1e1562"),
+            ("(1e100000)^(1/64)", null),
+            ("sqrt(1e99999)", null),
+            ("sqrt(1e100000 + 1)", null),
+            ("(1e-100000)^(1/2)", "1e-50000"),
+            ("(-1e99999)^(1/3)", "-1e33333"),
+            ("sqrt(3^2581*3^2581*3^2581*3^2581*3)", null),
+            ("(3^2581*3^2581*3^2581*3^2581*3^2581*3^1000*3)^(1/3)", null),
+        };
+
+        foreach (var (input, folded) in cases)
+        {
+            var tree = Expr.Parse(input);
+            var work = Task.Run(() => Normalizer.Canonical(tree));
+            Assert.IsTrue(work.Wait(TimeSpan.FromSeconds(3)), $"{input} did not finish in 3 s");
+            if (folded is null) Assert.IsNotInstanceOfType<Number>(work.Result, $"{input} is not an exact power");
+            else Assert.AreEqual(new Number(BigRational.Parse(folded)), work.Result, input);
+        }
+    }
+
+    [TestMethod]
+    public void ExactRootsAgreeWithPowersOnSeededCases()
+    {
+        // n^q has the exact q-th root n, and n^q + 1 has none (for q >= 2 consecutive q-th powers differ by more than 1).
+        var gen = new Gen(Seed + 7);
+        for (var i = 0; i < 300; i++)
+        {
+            var q = gen.Random.Next(2, 65);
+            var n = System.Numerics.BigInteger.Abs(gen.WholeNumber(Math.Max(2, 40_000 / q / 4))) + 2;
+            var power = System.Numerics.BigInteger.Pow(n, q);
+            var exponent = new Number(BigRational.Create(1, q));
+
+            Assert.AreEqual(new Number(new BigRational(n)), Normalizer.Canonical(Pow(new Number(new BigRational(power)), exponent)), $"seed {Seed + 7}, case {i}: root {q} of {n}^{q}");
+            Assert.IsNotInstanceOfType<Number>(Normalizer.Canonical(Pow(new Number(new BigRational(power + 1)), exponent)), $"seed {Seed + 7}, case {i}: root {q} of {n}^{q} + 1");
+        }
+    }
+
+    [TestMethod]
     public void CanonicalRemovesIdentitiesAndEvaluatesIdentityPoints()
     {
         AssertCanonical("x", "x + 0");
