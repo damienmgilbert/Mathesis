@@ -1,0 +1,6 @@
+Start: (x + 1)^2 - x^2 - 2x
+1. Simplify the arithmetic and put the expression in standard order.
+   (x + 1)^2 - x^2 - 2x  →  -(2x) - x^2 + (x + 1)^2
+2. (1 + x)² = 1² + 2 · 1 · x + x².
+   -(2x) - x^2 + (x + 1)^2  →  1
+Result: 1

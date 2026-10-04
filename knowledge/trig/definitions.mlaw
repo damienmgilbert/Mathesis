@@ -1,0 +1,219 @@
+# Trigonometry: definitions, angles and units, exact values (d2-trigonometry.md).
+
+domain trig.def "Definitions of the trigonometric functions"
+
+definition right-triangle "Right-triangle ratios"
+  level:   Geometry
+  course:  Trigonometry
+  explain: "For an acute angle θ in a right triangle: sin θ = opposite/hypotenuse, cos θ = adjacent/hypotenuse, tan θ = opposite/adjacent."
+
+definition unit-circle "Unit-circle definition"
+  level:   PreCalculus
+  course:  Trigonometry
+  explain: "The terminal point of the angle θ on the unit circle is (cos θ, sin θ), for every real θ."
+
+definition tan "Tangent"
+  vars:      x
+  statement: tan(x) = sin(x)/cos(x)
+  where:     cos(x) != 0
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "tan {x} = sin {x} / cos {x}."
+  verify:    numeric
+
+definition cot "Cotangent"
+  vars:      x
+  statement: cot(x) = cos(x)/sin(x)
+  where:     sin(x) != 0
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "cot {x} = cos {x} / sin {x}."
+  verify:    numeric
+
+definition sec "Secant"
+  vars:      x
+  statement: sec(x) = 1/cos(x)
+  where:     cos(x) != 0
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "sec {x} = 1 / cos {x}."
+  verify:    numeric
+
+definition csc "Cosecant"
+  vars:      x
+  statement: csc(x) = 1/sin(x)
+  where:     sin(x) != 0
+  level:     PreCalculus
+  course:    Trigonometry
+  explain:   "csc {x} = 1 / sin {x}."
+  verify:    numeric
+
+definition radian "Radian measure"
+  level:   PreCalculus
+  course:  Trigonometry
+  explain: "An angle that subtends an arc of length s on a circle of radius r > 0 measures θ = s/r radians."
+
+definition coterminal "Coterminal angles"
+  level:   PreCalculus
+  course:  Trigonometry
+  explain: "The angles θ and θ + 2πk (k an integer) share a terminal side and have the same trigonometric values."
+
+definition reference-angle "Reference angle"
+  level:   PreCalculus
+  course:  Trigonometry
+  explain: "The reference angle is the acute angle between the terminal side and the x-axis; f(θ) = ±f(θ_ref) with the sign taken from the quadrant."
+
+definition quadrant-signs "Quadrant signs (ASTC)"
+  level:   PreCalculus
+  course:  Trigonometry
+  explain: "In quadrant I all functions are positive; in II only sin and csc; in III only tan and cot; in IV only cos and sec."
+
+domain trig.unit "Angle units and circular measure"
+
+formula deg-to-rad "Degrees to radians"
+  vars:       r, d
+  statement:  r = d*pi/180
+  solve-for:  r, d
+  quantities: r "angle in radians", d "angle in degrees"
+  level:      PreCalculus
+  course:     Trigonometry
+  explain:    "Multiply degrees by π/180 to get radians."
+
+formula dms "Degrees, minutes, seconds"
+  vars:       x, d, m, s
+  statement:  x = d + m/60 + s/3600
+  quantities: x "decimal degrees", d "degrees", m "minutes", s "seconds"
+  level:      PreCalculus
+  course:     Trigonometry
+  explain:    "d°m′s″ equals d + m/60 + s/3600 degrees."
+
+formula arc-length "Arc length"
+  vars:       s, r, t
+  statement:  s = r*t
+  where:      r > 0
+  solve-for:  s, r, t
+  quantities: s "arc length", r "radius", t "angle in radians"
+  level:      PreCalculus
+  course:     Trigonometry
+  explain:    "The arc of angle θ radians on a circle of radius r has length r·θ."
+
+formula sector-area "Sector area"
+  vars:       a, r, t
+  statement:  a = r^2*t/2
+  where:      r > 0
+  solve-for:  a, r, t
+  quantities: a "sector area", r "radius", t "angle in radians"
+  level:      PreCalculus
+  course:     Trigonometry
+  explain:    "The sector of angle θ radians on a circle of radius r has area r²θ/2."
+
+definition linear-speed "Linear and angular speed"
+  level:   PreCalculus
+  course:  Trigonometry
+  explain: "A point at distance r from the axis turning with angular speed ω = θ/t has linear speed v = r·ω."
+
+domain trig.exact "Exact values of sine, cosine and tangent"
+
+law zero "Exact values at 0"
+  statement: sin(0) = 0 and cos(0) = 1 and tan(0) = 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "sin 0 = 0, cos 0 = 1, tan 0 = 0."
+
+law pi-12 "Exact values at π/12 (15°)"
+  statement: sin(pi/12) = (sqrt(6) - sqrt(2))/4 and cos(pi/12) = (sqrt(6) + sqrt(2))/4 and tan(pi/12) = 2 - sqrt(3)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 15°: sin = (√6 − √2)/4, cos = (√6 + √2)/4, tan = 2 − √3."
+
+law pi-10 "Exact values at π/10 (18°)"
+  statement: sin(pi/10) = (sqrt(5) - 1)/4 and cos(pi/10) = sqrt(10 + 2*sqrt(5))/4 and tan(pi/10) = sqrt(25 - 10*sqrt(5))/5
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 18°: sin = (√5 − 1)/4, cos = √(10 + 2√5)/4, tan = √(25 − 10√5)/5."
+
+law pi-8 "Exact values at π/8 (22.5°)"
+  statement: sin(pi/8) = sqrt(2 - sqrt(2))/2 and cos(pi/8) = sqrt(2 + sqrt(2))/2 and tan(pi/8) = sqrt(2) - 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 22.5°: sin = √(2 − √2)/2, cos = √(2 + √2)/2, tan = √2 − 1."
+
+law pi-6 "Exact values at π/6 (30°)"
+  statement: sin(pi/6) = 1/2 and cos(pi/6) = sqrt(3)/2 and tan(pi/6) = sqrt(3)/3
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 30°: sin = 1/2, cos = √3/2, tan = √3/3."
+
+law pi-5 "Exact values at π/5 (36°)"
+  statement: sin(pi/5) = sqrt(10 - 2*sqrt(5))/4 and cos(pi/5) = (1 + sqrt(5))/4 and tan(pi/5) = sqrt(5 - 2*sqrt(5))
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 36°: sin = √(10 − 2√5)/4, cos = (1 + √5)/4, tan = √(5 − 2√5)."
+
+law pi-4 "Exact values at π/4 (45°)"
+  statement: sin(pi/4) = sqrt(2)/2 and cos(pi/4) = sqrt(2)/2 and tan(pi/4) = 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 45°: sin = cos = √2/2, tan = 1."
+
+law 3pi-10 "Exact values at 3π/10 (54°)"
+  statement: sin(3*pi/10) = (1 + sqrt(5))/4 and cos(3*pi/10) = sqrt(10 - 2*sqrt(5))/4 and tan(3*pi/10) = sqrt(25 + 10*sqrt(5))/5
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 54°: sin = (1 + √5)/4, cos = √(10 − 2√5)/4, tan = √(25 + 10√5)/5."
+
+law pi-3 "Exact values at π/3 (60°)"
+  statement: sin(pi/3) = sqrt(3)/2 and cos(pi/3) = 1/2 and tan(pi/3) = sqrt(3)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 60°: sin = √3/2, cos = 1/2, tan = √3."
+
+law 3pi-8 "Exact values at 3π/8 (67.5°)"
+  statement: sin(3*pi/8) = sqrt(2 + sqrt(2))/2 and cos(3*pi/8) = sqrt(2 - sqrt(2))/2 and tan(3*pi/8) = sqrt(2) + 1
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 67.5°: sin = √(2 + √2)/2, cos = √(2 − √2)/2, tan = √2 + 1."
+
+law 2pi-5 "Exact values at 2π/5 (72°)"
+  statement: sin(2*pi/5) = sqrt(10 + 2*sqrt(5))/4 and cos(2*pi/5) = (sqrt(5) - 1)/4 and tan(2*pi/5) = sqrt(5 + 2*sqrt(5))
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 72°: sin = √(10 + 2√5)/4, cos = (√5 − 1)/4, tan = √(5 + 2√5)."
+
+law 5pi-12 "Exact values at 5π/12 (75°)"
+  statement: sin(5*pi/12) = (sqrt(6) + sqrt(2))/4 and cos(5*pi/12) = (sqrt(6) - sqrt(2))/4 and tan(5*pi/12) = 2 + sqrt(3)
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 75°: sin = (√6 + √2)/4, cos = (√6 − √2)/4, tan = 2 + √3."
+
+law pi-2 "Exact values at π/2 (90°)"
+  statement: sin(pi/2) = 1 and cos(pi/2) = 0
+  orient:    ltr
+  level:     PreCalculus
+  course:    Trigonometry
+  tags:      exact-trig
+  explain:   "At 90°: sin = 1, cos = 0, and tan is undefined."

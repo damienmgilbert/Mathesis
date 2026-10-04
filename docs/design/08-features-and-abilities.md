@@ -54,7 +54,7 @@ Cells show the milestone (see `10-roadmap.md`) in which the ability is complete 
 | Polynomial division (long or synthetic) | `Cas.Divide(p, q, x, style: DivisionStyle.Synthetic)` | 1 |
 | Log and exponent forms | `Cas.LogCombine`, `Cas.LogExpand`, `Cas.PowerSimplify` | 1 |
 | Trig forms | `Cas.TrigSimplify`, `Cas.TrigExpand`, `Cas.TrigReduce`, `Cas.TrigToExp`, `Cas.ExpToTrig` | 1 |
-| Apply a specific law | `Cas.Apply(Laws.Trig.Sum.SinOfSum, expr, at: path)` | 1 |
+| Apply a specific law | `Cas.Apply(Laws.Trigonometry.Sum.SinOfSum, expr, at: path)` | 1 |
 
 ### Solving
 
@@ -141,7 +141,7 @@ Cells show the milestone (see `10-roadmap.md`) in which the ability is complete 
 | Steps for any result | `outcome.Steps.Render(Format.Markdown, Verbosity.Standard)` | 1 |
 | Restrict methods to a level | `MathContext.Default with { Level = CurriculumLevel.PreCalculus }` | 1 |
 | Cite the law at each step | `step.Entry` → catalog entry with name, statement, explanation | 1 |
-| Look up the catalog | `Knowledge.Find("difference of squares")`, `Knowledge.Get(id)`, `Knowledge.ByDomain("trig.sum")` | 1 |
+| Look up the catalog | `Cas.Find("difference of squares")`, `Cas.Get(id)`, `Cas.ByDomain("trig.sum")` | 1 |
 
 ### Integration points
 

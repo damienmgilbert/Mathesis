@@ -13,7 +13,7 @@ Claude Code builds Milestone 1 (Foundation) of Mathesis: six packages, `Mathesis
 - Root name: `Mathesis` (decided) for namespaces and package IDs. No package with that ID is listed on nuget.org as of 2026-10-01; published NuGet IDs are permanent, so confirm it is still free before the first publish.
 - License: MIT unless you say otherwise.
 - Defaults: real-valued solving with complex roots listed separately, and `I` as the imaginary unit so `i` stays a free symbol.
-- Conventions (decided; do not change; catalog entries `conv.*` in `docs/design/06-knowledge-catalog.md`): decimal literals are exact, bare `log` is base 10, 0⁰ = 1, real odd roots in real mode (`(-8)^(1/3) = -2`). Still open: display rounding half away from zero; confirm or change before Phase 4.
+- Conventions (decided; do not change; catalog entries `conv.*` in `docs/design/06-knowledge-catalog.md`): decimal literals are exact, bare `log` is base 10, 0⁰ = 1, real odd roots in real mode (`(-8)^(1/3) = -2`), and display rounding half away from zero (`conv.rounding`, confirmed before Phase 4).
 
 ## Scope
 
@@ -98,7 +98,7 @@ samples/AotSmoke/                # NativeAOT smoke console
 - Exact (`Mathesis.LinearAlgebra.Exact`): RREF returning the list of row operations, Bareiss determinant, Gauss–Jordan inverse, rank, null and column space bases, characteristic polynomial (Berkowitz), all with a pluggable zero test so they also work for `Expr` entries later.
 - `Polynomial<T>` and `SparsePolynomial<T>` in `Mathesis.Core` (`Mathesis.Polynomials`): arithmetic, division with remainder, GCD, Yun square-free factorization, Horner evaluation, derivative, all roots by Aberth–Ehrlich, rational roots of integer polynomials.
 - `Mathesis.Numerics.Optimization`: golden-section search (one dimension) and Nelder–Mead (n dimensions), generic over `IFloatingPointIeee754<T>`, returning an `OptimizationResult<T>` (minimizer, minimum, iterations, evaluations, `Converged`).
-- **Done when:** residual ‖Ax − b‖ ≤ 1e−12·‖b‖ on seeded well-conditioned systems, the Hilbert(8) inverse is exact over `BigRational`, the roots of (x−1)(x−2)…(x−10) come back within 1e−8, replaying recorded row operations reproduces each RREF, and `Expand(SquareFree(p)) = p` on 1,000 seeded polynomials, golden-section finds the minimum of (x − 2)² + 1 and of cos x on [3, 4] to 1e−8, and Nelder–Mead minimizes the Rosenbrock function from (−1.2, 1) to within 1e−6 using at most 2,000 evaluations.
+- **Done when:** residual ‖Ax − b‖ ≤ 1e−12·‖b‖ on seeded well-conditioned systems, the Hilbert(8) inverse is exact over `BigRational`, the roots of (x−1)(x−2)…(x−10) come back within 1e−8, replaying recorded row operations reproduces each RREF, and `Expand(SquareFree(p)) = p` on 1,000 seeded polynomials, golden-section finds the minimizer of (x − 2)² + 1 and of cos x on [3, 4] to 1e−7 (a minimizer cannot be located better than about √ε) and the minimum value to 1e−14, and Nelder–Mead minimizes the Rosenbrock function from (−1.2, 1) to within 1e−6 using at most 2,000 evaluations.
 
 ### Phase 4: Expression model, parser, printers
 

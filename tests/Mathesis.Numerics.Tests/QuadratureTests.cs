@@ -172,4 +172,25 @@ public class QuadratureTests
         Assert.IsTrue(result.Converged);
         Assert.AreEqual(2f, result.Value, 1e-5f);
     }
+
+    [TestMethod]
+    public void RombergConvergesOnIntegralsThatCancelToZero()
+    {
+        var result = Quadrature.Romberg(Math.Sin, 0.0, 2 * Math.PI);
+        Assert.IsTrue(result.Converged, $"evaluations={result.Evaluations}");
+        Assert.AreEqual(0.0, result.Value, 1e-14);
+        Assert.IsLessThan(10_000, result.Evaluations);
+    }
+
+    [TestMethod]
+    public void InfiniteRangesDoNotHideAnUndefinedIntegrand()
+    {
+        // sqrt(x) is undefined for x < 0: the integral over the whole line has no value, so it must not report one as converged.
+        var result = Quadrature.Infinite<double>(x => Math.Sqrt(x) * Math.Exp(-x * x), double.NegativeInfinity, double.PositiveInfinity);
+        Assert.IsFalse(result.Converged);
+        Assert.IsTrue(double.IsNaN(result.Value) || double.IsInfinity(result.ErrorEstimate));
+
+        // Overflow of the change of variable far out is still treated as the integrand's limit, 0.
+        Assert.AreEqual(Math.Sqrt(Math.PI), Quadrature.Infinite<double>(x => Math.Exp(-x * x), double.NegativeInfinity, double.PositiveInfinity, Tight).Value, 1e-12);
+    }
 }

@@ -1,0 +1,115 @@
+# Calculus: Taylor and Maclaurin series (d5-calculus.md, "Sequences and series"). The Maclaurin laws are infinite sums; the numeric verifier evaluates
+# them as the limit of their partial sums (tests/Mathesis.Knowledge.Tests, "Infinite sums" in 06-knowledge-catalog.md), and the series engine checks its
+# polynomials against the function near the center (tests/Mathesis.Tests).
+
+domain calc.series "Taylor series"
+
+definition taylor "Taylor series"
+  vars:      f: function(R -> R), a, x
+  level:     Calculus2
+  course:    Calculus
+  explain:   "The Taylor series of f at {a} is the sum of f⁽ⁿ⁾({a})/n!·(x − {a})ⁿ; its partial sums are the Taylor polynomials."
+  refs:      book:"Stewart, Calculus, 9e, §11.10"
+  verify:    none
+  rationale: "A definition, theorem or method without an equation to sample."
+
+theorem taylor-remainder "Taylor's theorem (Lagrange remainder)"
+  level:     Calculus2
+  course:    Calculus
+  explain:   "If f has n + 1 derivatives near a, then f(x) minus its degree-n Taylor polynomial equals f⁽ⁿ⁺¹⁾(ξ)(x − a)ⁿ⁺¹/(n + 1)! for some ξ between a and x."
+  refs:      book:"Stewart, Calculus, 9e, §11.10"
+  verify:    none
+  rationale: "A definition, theorem or method without an equation to sample."
+
+theorem taylor-inequality "Taylor's inequality"
+  level:     Calculus2
+  course:    Calculus
+  explain:   "If |f⁽ⁿ⁺¹⁾| ≤ M between a and x, the error of the degree-n Taylor polynomial is at most M|x − a|ⁿ⁺¹/(n + 1)!."
+  refs:      book:"Stewart, Calculus, 9e, §11.10"
+  verify:    none
+  rationale: "A definition, theorem or method without an equation to sample."
+
+method series-arithmetic "Series by arithmetic"
+  level:     Calculus2
+  course:    Calculus
+  explain:   "Expand each part with the known series, then add, multiply, divide and substitute the truncated series; each result keeps track of its order term."
+  verify:    none
+  rationale: "A definition, theorem or method without an equation to sample."
+
+domain calc.mac "Maclaurin series"
+
+law exp "Maclaurin series of eˣ"
+  vars:      x
+  statement: e^x = sum(x^n/factorial(n), n, 0, oo)
+  level:     Calculus2
+  course:    Calculus
+  tags:      maclaurin
+  explain:   "eˣ = 1 + x + x²/2! + x³/3! + …, for all x."
+
+law sin "Maclaurin series of sin"
+  vars:      x
+  statement: sin(x) = sum((-1)^n*x^(2*n + 1)/factorial(2*n + 1), n, 0, oo)
+  level:     Calculus2
+  course:    Calculus
+  tags:      maclaurin
+  explain:   "sin x = x − x³/3! + x⁵/5! − …, for all x."
+
+law cos "Maclaurin series of cos"
+  vars:      x
+  statement: cos(x) = sum((-1)^n*x^(2*n)/factorial(2*n), n, 0, oo)
+  level:     Calculus2
+  course:    Calculus
+  tags:      maclaurin
+  explain:   "cos x = 1 − x²/2! + x⁴/4! − …, for all x."
+
+law geometric "Geometric series"
+  vars:      x
+  statement: 1/(1 - x) = sum(x^n, n, 0, oo)
+  where:     abs(x) < 1
+  level:     Calculus2
+  course:    Calculus
+  tags:      maclaurin
+  explain:   "1/(1 − x) = 1 + x + x² + …, for |x| < 1."
+
+law ln "Maclaurin series of ln(1 + x)"
+  vars:      x
+  statement: ln(1 + x) = sum((-1)^(n + 1)*x^n/n, n, 1, oo)
+  where:     x > -1 and x <= 1
+  level:     Calculus2
+  course:    Calculus
+  tags:      maclaurin
+  explain:   "ln(1 + x) = x − x²/2 + x³/3 − …, for −1 < x ≤ 1."
+
+law arctan "Maclaurin series of arctan"
+  vars:      x
+  statement: arctan(x) = sum((-1)^n*x^(2*n + 1)/(2*n + 1), n, 0, oo)
+  where:     abs(x) <= 1
+  level:     Calculus2
+  course:    Calculus
+  tags:      maclaurin
+  explain:   "arctan x = x − x³/3 + x⁵/5 − …, for |x| ≤ 1."
+
+law binomial "Binomial series"
+  vars:      x, k
+  statement: (1 + x)^k = sum(binomial(k, n)*x^n, n, 0, oo)
+  where:     abs(x) < 1
+  level:     Calculus2
+  course:    Calculus
+  tags:      maclaurin
+  explain:   "(1 + x)ᵏ = 1 + kx + k(k − 1)x²/2! + …, for |x| < 1."
+
+law sinh "Maclaurin series of sinh"
+  vars:      x
+  statement: sinh(x) = sum(x^(2*n + 1)/factorial(2*n + 1), n, 0, oo)
+  level:     Calculus2
+  course:    Calculus
+  tags:      maclaurin
+  explain:   "sinh x = x + x³/3! + x⁵/5! + …, for all x."
+
+law cosh "Maclaurin series of cosh"
+  vars:      x
+  statement: cosh(x) = sum(x^(2*n)/factorial(2*n), n, 0, oo)
+  level:     Calculus2
+  course:    Calculus
+  tags:      maclaurin
+  explain:   "cosh x = 1 + x²/2! + x⁴/4! + …, for all x."

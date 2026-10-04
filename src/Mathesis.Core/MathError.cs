@@ -20,6 +20,9 @@ public enum MathErrorKind : byte
 
     /// <summary>An expression's sorts do not fit its operator's signature.</summary>
     SortMismatch,
+
+    /// <summary>Text could not be parsed.</summary>
+    Syntax,
 }
 
 /// <summary>A mathematical failure, carried as data inside <see cref="Outcome{T}.Failed"/>; never thrown.</summary>

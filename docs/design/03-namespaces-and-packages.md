@@ -36,7 +36,7 @@ Namespaces follow mathematical domains; packages follow layers. A domain can spa
 
 | Namespace | Contents |
 | --- | --- |
-| `Mathesis.LinearAlgebra` | `DenseMatrix<T>`, `DenseVector<T>`, `MatrixView<T>`, `Shape`, norms, products (Hadamard, Kronecker), block operations |
+| `Mathesis.LinearAlgebra` | `DenseMatrix<T>`, `DenseVector<T>` (with companion factory classes `DenseMatrix` and `DenseVector`), `MatrixView<T>`, `Shape`, norms (`DenseMatrixNorms`, `DenseVectorNorms`), products (Hadamard, Kronecker), block operations, and `MatrixSolvers` (C# 14 extension members on `DenseMatrix<T>` for floating-point `T`: `Lu`, `Qr`, `Cholesky`, `SymmetricEigen`, `Solve`, `Determinant`, `Inverse`, `LeastSquares`, `ConditionEstimate`) |
 | `Mathesis.LinearAlgebra.Exact` | Fraction-free Gaussian elimination (Bareiss), RREF with recorded row operations, exact inverse, nullspace, column space, rank, characteristic polynomial (Faddeev–LeVerrier, Berkowitz), Smith and Hermite normal forms |
 | `Mathesis.LinearAlgebra.Decompositions` | LU/PLU, Cholesky, LDLᵀ, QR (Householder, Givens, Gram–Schmidt), eigen (symmetric Jacobi/QR, general Hessenberg-QR), Schur, SVD (Golub–Kahan), polar |
 | `Mathesis.LinearAlgebra.Sparse` | `SparseMatrix<T>` (CSR/CSC), sparse products, conjugate gradient, GMRES, BiCGSTAB, Jacobi, Gauss–Seidel, SOR, incomplete LU/Cholesky preconditioners |

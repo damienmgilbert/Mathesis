@@ -1,0 +1,365 @@
+# Algebra: exponents and radicals (d1-algebra.md, "Exponents" and "Radicals").
+
+domain alg.exp "Laws of exponents"
+
+law product-of-powers "Product of powers"
+  vars:      a, m, n
+  statement: a^m * a^n = a^(m + n)
+  where:     a > 0 or (a != 0 and m in Z and n in Z) or (a = 0 and m > 0 and n > 0)
+  complex:   a != 0 or (re(m) > 0 and re(n) > 0)
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      combine-powers
+  explain:   "Same base: add the exponents, {a}^{m}·{a}^{n} = {a}^({m}+{n})."
+  see:       alg.exp.quotient-of-powers, alg.exp.power-of-power
+
+law quotient-of-powers "Quotient of powers"
+  vars:      a, m, n
+  statement: a^m / a^n = a^(m - n)
+  where:     a > 0 or (a != 0 and m in Z and n in Z)
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      combine-powers
+  explain:   "Same base: subtract the exponents."
+  see:       alg.exp.product-of-powers
+
+law power-of-power "Power of a power"
+  vars:      a, m, n
+  statement: (a^m)^n = a^(m*n)
+  where:     a >= 0 or n in Z
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      combine-powers
+  explain:   "Raise a power to a power: multiply the exponents."
+  # Counterexample when a < 0 and n is not an integer: ((-1)^2)^(1/2) = 1 but (-1)^1 = -1.
+
+law power-of-product "Power of a product"
+  vars:      a, b, n
+  statement: (a*b)^n = a^n * b^n
+  where:     n in Z or (a >= 0 and b >= 0)
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      distribute-power | combine-powers
+  explain:   "A power of a product is the product of the powers."
+
+law power-of-quotient "Power of a quotient"
+  vars:      a, b, n
+  statement: (a/b)^n = a^n / b^n
+  where:     b != 0 and (n in Z or (a >= 0 and b > 0))
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      distribute-power | combine-powers
+  explain:   "A power of a quotient is the quotient of the powers."
+
+law zero "Zero exponent"
+  vars:      a
+  statement: a^0 = 1
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      power-simplify
+  explain:   "Any number to the power 0 is 1 (0^0 = 1 by convention)."
+  see:       conv.zero-to-the-zero
+
+law one "Exponent one"
+  vars:      a
+  statement: a^1 = a
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      power-simplify
+  explain:   "A number to the power 1 is itself."
+
+law negative "Negative exponent"
+  vars:      a, n
+  statement: a^(-n) = 1/a^n
+  where:     a != 0
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      negative-exponent
+  explain:   "A negative exponent means the reciprocal."
+
+law one-base "Base one"
+  vars:      a
+  statement: 1^a = 1
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      power-simplify
+  explain:   "One to any power is one."
+
+law zero-base "Base zero"
+  vars:      a
+  statement: 0^a = 0
+  where:     a > 0
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      power-simplify
+  explain:   "Zero to a positive power is zero."
+
+law rational "Rational exponent"
+  vars:      a, m: integer, n: integer
+  statement: a^(m/n) = root(a, n)^m and a^(m/n) = root(a^m, n)
+  where:     n >= 1 and gcd(m, n) = 1 and (a >= 0 or n mod 2 = 1)
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      radical-form | exponent-form
+  explain:   "{a}^({m}/{n}) is the {n}-th root of {a}, raised to the power {m}."
+  # Negative a with odd n needs the real-root convention conv.real-odd-root; the verifier samples a >= 0.
+  see:       conv.real-odd-root
+
+law even-power-neg "Even power of a negative"
+  vars:      a, k: integer
+  statement: (-a)^(2*k) = a^(2*k)
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      sign-simplify
+  explain:   "An even power erases the sign."
+
+law odd-power-neg "Odd power of a negative"
+  vars:      a, k: integer
+  statement: (-a)^(2*k + 1) = -(a^(2*k + 1))
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      sign-simplify
+  explain:   "An odd power keeps the sign."
+
+law one-to-one "Equal powers, equal exponents"
+  vars:      a, x, y
+  statement: a^x = a^y <=> x = y
+  where:     a > 0 and a != 1
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      exponential-equation
+  explain:   "Powers of the same base a > 0, a ≠ 1 are equal exactly when the exponents are equal."
+
+law equal-bases "Equal powers, equal bases"
+  vars:      x, y, n: integer
+  statement: x^n = y^n <=> x = y
+  where:     n mod 2 = 1 or (n != 0 and n mod 2 = 0 and x >= 0 and y >= 0)
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      radical-equation
+  explain:   "Odd powers (or even powers of non-negative numbers) are equal exactly when the bases are equal."
+
+law monotone "Monotonicity of exponentials"
+  vars:      a, x, y
+  statement: x < y <=> a^x < a^y
+  where:     a > 1
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      exponential-inequality
+  explain:   "For a base above 1 the exponential is increasing (it reverses for bases between 0 and 1)."
+
+law via-e "Power as exponential"
+  vars:      a, x
+  statement: a^x = e^(x*ln(a))
+  where:     a > 0
+  orient:    both
+  level:     Calculus1
+  course:    Algebra
+  tags:      exp-ln-form
+  explain:   "Every power with a positive base is an exponential of x·ln {a}."
+
+definition sci-notation "Scientific notation"
+  vars:      x, m, k: integer
+  statement: x = m*10^k
+  where:     1 <= abs(m) and abs(m) < 10 and x != 0
+  level:     PreAlgebra
+  course:    Algebra
+  explain:   "A non-zero number is written m × 10^k with 1 ≤ |m| < 10 and k an integer."
+
+domain alg.rad "Radicals"
+
+definition sqrt-def "Principal square root"
+  vars:      a, b
+  defines:   sqrt(a) = b
+  iff:       b >= 0 and b^2 = a
+  where:     a >= 0
+  level:     PreAlgebra
+  course:    Algebra
+  explain:   "sqrt({a}) is the non-negative number whose square is {a}."
+
+law sqrt-of-square "Square root of a square"
+  vars:      a
+  statement: sqrt(a^2) = abs(a)
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      radical-simplify
+  explain:   "The square root of a square is the absolute value, not {a} itself."
+
+law square-of-sqrt "Square of a square root"
+  vars:      a
+  statement: sqrt(a)^2 = a
+  where:     a >= 0
+  complex:   true
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      radical-simplify
+  explain:   "Squaring undoes the square root of a non-negative number."
+
+law product "Product rule for square roots"
+  vars:      a, b
+  statement: sqrt(a*b) = sqrt(a)*sqrt(b)
+  where:     a >= 0 and b >= 0
+  complex:   a >= 0 or b >= 0
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      radical-simplify | radical-combine
+  explain:   "The square root of a product is the product of the square roots (for non-negative factors)."
+  # Counterexample for a, b < 0: sqrt((-4)(-9)) = 6 but sqrt(-4)*sqrt(-9) = (2i)(3i) = -6.
+
+law quotient "Quotient rule for square roots"
+  vars:      a, b
+  statement: sqrt(a/b) = sqrt(a)/sqrt(b)
+  where:     a >= 0 and b > 0
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      radical-simplify | radical-combine
+  explain:   "The square root of a quotient is the quotient of the square roots."
+
+definition nth-def "Real n-th root"
+  vars:      a, b, n: integer
+  defines:   root(a, n) = b
+  iff:       b^n = a
+  where:     n >= 1 and (n mod 2 = 1 or (a >= 0 and b >= 0))
+  level:     Algebra2
+  course:    Algebra
+  explain:   "root({a}, {n}) is the real number whose {n}-th power is {a} (non-negative when {n} is even)."
+
+law nth-product "n-th root of a product"
+  vars:      a, b, n: integer
+  statement: root(a*b, n) = root(a, n)*root(b, n)
+  where:     n >= 1 and (n mod 2 = 1 or (a >= 0 and b >= 0))
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      radical-simplify | radical-combine
+  explain:   "The n-th root of a product is the product of the n-th roots."
+
+law nth-quotient "n-th root of a quotient"
+  vars:      a, b, n: integer
+  statement: root(a/b, n) = root(a, n)/root(b, n)
+  where:     n >= 1 and b != 0 and (n mod 2 = 1 or (a >= 0 and b > 0))
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      radical-simplify | radical-combine
+  explain:   "The n-th root of a quotient is the quotient of the n-th roots."
+
+law root-of-power-even "Even root of an even power"
+  vars:      a, n: integer
+  statement: root(a^n, n) = abs(a)
+  where:     n >= 2 and n mod 2 = 0
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      radical-simplify
+  explain:   "An even root of an even power is the absolute value."
+
+law root-of-power-odd "Odd root of an odd power"
+  vars:      a, n: integer
+  statement: root(a^n, n) = a
+  where:     n >= 1 and n mod 2 = 1
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      radical-simplify
+  explain:   "An odd root undoes an odd power."
+
+law power-of-root "Power of a root"
+  vars:      a, n: integer
+  statement: root(a, n)^n = a
+  where:     n >= 1 and (n mod 2 = 1 or a >= 0)
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      radical-simplify
+  explain:   "Raising an n-th root to the n-th power returns the radicand."
+
+law root-of-root "Root of a root"
+  vars:      a, m: integer, n: integer
+  statement: root(root(a, m), n) = root(a, m*n)
+  where:     m >= 1 and n >= 1 and (a >= 0 or (m mod 2 = 1 and n mod 2 = 1))
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      radical-simplify
+  explain:   "A root of a root is a single root with the product of the indices."
+
+law extract-square "Extract a square factor"
+  vars:      k, m
+  statement: sqrt(k^2 * m) = k*sqrt(m)
+  where:     k >= 0 and m >= 0
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      radical-simplify
+  explain:   "Take a perfect-square factor out of the radical."
+
+law like-radicals "Combine like radicals"
+  vars:      p, q, a, n: integer
+  statement: p*root(a, n) + q*root(a, n) = (p + q)*root(a, n)
+  where:     n >= 1
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      radical-combine
+  explain:   "Radicals with the same index and radicand combine like terms."
+
+law rationalize-monomial "Rationalize a monomial denominator"
+  vars:      a, b
+  statement: a/sqrt(b) = a*sqrt(b)/b
+  where:     b > 0
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      rationalize
+  explain:   "Multiply numerator and denominator by sqrt({b}) to clear the radical from the denominator."
+
+law rationalize-conjugate "Rationalize with a conjugate"
+  vars:      a, b, c
+  statement: a/(sqrt(b) + sqrt(c)) = a*(sqrt(b) - sqrt(c))/(b - c)
+  where:     b >= 0 and c >= 0 and b != c
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      rationalize
+  explain:   "Multiply by the conjugate to clear the radicals from the denominator."
+
+law rationalize-cube "Rationalize a cube-root binomial"
+  vars:      a, b
+  statement: 1/(root(a, 3) - root(b, 3)) = (root(a, 3)^2 + root(a, 3)*root(b, 3) + root(b, 3)^2)/(a - b)
+  where:     a != b
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      rationalize
+  explain:   "Use the difference-of-cubes factorization to clear cube roots from the denominator."
+
+law denest "Denesting square roots"
+  vars:      a, b
+  statement: sqrt(a + sqrt(b)) = sqrt((a + sqrt(a^2 - b))/2) + sqrt((a - sqrt(a^2 - b))/2)
+  where:     a > 0 and b >= 0 and a^2 >= b
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      radical-simplify
+  explain:   "A nested square root can sometimes be written as a sum of simpler roots."

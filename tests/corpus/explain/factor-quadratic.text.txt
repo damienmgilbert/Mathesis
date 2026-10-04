@@ -1,0 +1,4 @@
+Start: x^2 + 5x + 6
+1. x − c divides p exactly when p(c) = 0.
+   x^2 + 5x + 6  →  (x + 2)*(x + 3)
+Result: (x + 2)*(x + 3)

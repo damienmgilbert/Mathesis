@@ -1,0 +1,171 @@
+# Integral corpus: one integrand in x per line. "+" lines must integrate; "-" lines are known to stay unevaluated (not elementary or beyond the
+# pipeline: Hermite reduction, repeated quadratic factors, ...); "@ fact, fact" assumes facts. Every returned antiderivative must differentiate back to the
+# integrand (checked at seeded points with Richardson-extrapolated central differences) and its steps must cite catalog entries (tests/Mathesis.Tests/IntegralTests.cs).
+# Linearity, powers and polynomials
++ 5
++ x
++ x^2
++ x^3 - 2*x^2 + x - 7
++ 3*x^4 - 5*x^2 + 2
++ x^-2
++ x^-3
++ 1/x
++ 7/x
++ sqrt(x) @ x > 0
++ x^(1/3) @ x > 0
++ x^(-1/2) @ x > 0
++ (x + 1)^2
++ (2*x - 3)^5
++ (x^2 + 1)^2
++ x*(x + 1)*(x + 2)
++ 2*x + 3/x
++ x^pi @ x > 0
++ a*x^2 + b*x + c
+# Exponentials and logarithms
++ exp(x)
++ exp(2*x)
++ exp(-x)
++ exp(3*x + 1)
++ 2^x
++ 3^(2*x)
++ x*exp(x)
++ x^2*exp(x)
++ x^3*exp(x)
++ x*exp(-x)
++ x*exp(2*x)
++ x*exp(x^2)
++ x^2*exp(x^3)
++ exp(x)*sin(x)
++ exp(x)*cos(x)
++ exp(2*x)*sin(3*x)
++ exp(x)/(1 + exp(x))
++ ln(x) @ x > 0
++ x*ln(x) @ x > 0
++ x^2*ln(x) @ x > 0
++ ln(x)/x @ x > 0
++ ln(x)^2 @ x > 0
++ 1/(x*ln(x)) @ x > 1
++ ln(2*x + 1) @ x > 0
+# Trigonometric
++ sin(x)
++ cos(x)
++ tan(x)
++ cot(x)
++ sec(x)
++ csc(x)
++ sec(x)^2
++ csc(x)^2
++ sec(x)*tan(x)
++ sin(2*x)
++ cos(3*x + 1)
++ sin(x)^2
++ cos(x)^2
++ sin(x)^3
++ cos(x)^3
++ sin(x)^4
++ cos(x)^4
++ sin(x)^2*cos(x)
++ sin(x)*cos(x)^2
++ sin(x)^2*cos(x)^2
++ sin(x)^3*cos(x)^2
++ sin(x)*cos(x)
++ tan(x)^2
++ tan(x)^3
++ tan(x)*sec(x)^2
++ tan(x)^2*sec(x)^2
++ sec(x)^4
++ sec(x)^3*tan(x)
++ x*sin(x)
++ x*cos(x)
++ x^2*sin(x)
++ x^2*cos(x)
++ x*sin(2*x)
++ x*sec(x)^2
++ x*cos(x)^2
++ sin(x)*cos(2*x)
++ sin(3*x)*sin(x)
+# Inverse trigonometric and hyperbolic
++ arctan(x)
++ arcsin(x) @ x > -1, x < 1
++ arccos(x) @ x > -1, x < 1
++ x*arctan(x)
++ sinh(x)
++ cosh(x)
++ x*sinh(x)
++ x*cosh(x)
++ sinh(x)*cosh(x)
+# Rational functions
++ 1/(x + 1)
++ 1/(x - 2)
++ 1/(2*x + 3)
++ 1/(x + 1)^2
++ 1/(x + 1)^3
++ 1/(x^2 - 1)
++ 1/(x^2 - 4)
++ 1/(x^2 + 1)
++ 1/(x^2 + 4)
++ 1/(x^2 + 2*x + 5)
++ 1/(x^2 + x + 1)
++ x/(x^2 + 1)
++ x/(x + 1)
++ x^2/(x + 1)
++ x^3/(x^2 + 1)
++ (x + 3)/((x + 1)*(x + 2))
++ 1/(x*(x + 1))
++ 1/(x^2*(x + 1))
++ 1/(x^3 - x)
++ (x^2 + 1)/(x*(x - 1)*(x + 1))
++ (2*x + 1)/(x^2 + x + 1)
++ (3*x + 2)/(x^2 + 2*x + 5)
++ 1/((x - 1)^2*(x + 2))
++ (x^3 + 1)/(x^2 - 1)
++ 1/(x*(x^2 + 1))
++ (x + 1)/(x^2 + 4*x + 8)
++ 2*x/(x^2 + 1)^2
++ x/(x^2 + 1)^2
+# Substitution
++ 2*x*exp(x^2)
++ x*(x^2 + 1)^5
++ x*sqrt(x^2 + 1)
++ x/sqrt(x^2 + 1)
++ x^2*(x^3 + 1)^4
++ cos(x)*exp(sin(x))
++ cos(x)*sin(x)^5
++ sin(x)/cos(x)^2
++ exp(x)/(1 + exp(x))^2
++ exp(x)*sqrt(1 + exp(x))
++ 1/(x*sqrt(ln(x))) @ x > 1
++ sin(sqrt(x))/sqrt(x) @ x > 0
++ cos(x)/(1 + sin(x)^2)
++ sec(x)^2/(1 + tan(x))
++ sqrt(x)*exp(sqrt(x)) @ x > 0
++ exp(sqrt(x)) @ x > 0
+# Trigonometric substitution and Weierstrass
++ 1/sqrt(1 - x^2) @ x > -1, x < 1
++ 1/sqrt(4 - x^2) @ x > -2, x < 2
++ sqrt(1 - x^2) @ x > -1, x < 1
++ sqrt(4 - x^2) @ x > -2, x < 2
++ x^2*sqrt(1 - x^2) @ x > -1, x < 1
++ 1/sqrt(x^2 + 1)
++ sqrt(x^2 + 1)
++ 1/(x^2 + 1)^(3/2)
++ x^2/sqrt(x^2 + 4)
++ 1/sqrt(x^2 - 1) @ x > 1
++ sqrt(x^2 - 1)/x @ x > 1
++ 1/(1 + sin(x))
++ 1/(1 + cos(x))
++ 1/(2 + cos(x))
++ 1/(3 + 2*sin(x))
++ 1/(1 + sin(x) + cos(x))
++ sin(x)/(1 + cos(x))
++ 1/(5 + 4*cos(x))
+# Non-elementary and out of reach
+- x/(x^4 + 1)
+- 1/(sin(x) + cos(x))
+- exp(-x^2)
+- sin(x)/x
+- 1/ln(x) @ x > 1
+- exp(x)/x
+- sqrt(1 + x^3)
+- sin(x^2)
+- x^x @ x > 0

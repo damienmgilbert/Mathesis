@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <Description>Numerical analysis for Mathesis: root finding, quadrature, differentiation, interpolation, optimization and ODE solvers over generic floating-point types.</Description>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="../Mathesis.Core/Mathesis.Core.csproj" />
     <PackageReference Include="System.Numerics.Tensors" />

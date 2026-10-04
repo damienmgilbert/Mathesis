@@ -1,0 +1,554 @@
+# Calculus: antiderivatives and integration techniques (d5-calculus.md, "Antiderivatives" and "Integration techniques").
+# Every antiderivative implies a constant of integration; identities between indefinite integrals hold up to a constant, and the verifier
+# checks that the two sides differ by a constant over an interval inside the domain (sample hints keep the sample away from singularities).
+
+domain calc.itab "Table of antiderivatives"
+
+law power "Antiderivative of a power"
+  vars:      n, x
+  statement: integrate(x^n, x) = x^(n + 1)/(n + 1)
+  where:     n != -1 and x > 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ {x}^{n} d{x} = {x}^({n}+1)/({n}+1) + C for {n} ≠ −1."
+  sample:    n in [-3, 3], x in (0.3, 4)
+
+law reciprocal "Antiderivative of 1/x"
+  vars:      x
+  statement: integrate(1/x, x) = ln(abs(x))
+  where:     x != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ 1/{x} d{x} = ln|{x}| + C."
+  sample:    x in (0.3, 4)
+
+law exp "Antiderivative of e^x"
+  vars:      x
+  statement: integrate(e^x, x) = e^x
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ e^{x} d{x} = e^{x} + C."
+  sample:    x in (-3, 3)
+
+law exp-linear "Antiderivative of e^(ax)"
+  vars:      a, x
+  statement: integrate(e^(a*x), x) = e^(a*x)/a
+  where:     a != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ e^({a}{x}) d{x} = e^({a}{x})/{a} + C."
+  sample:    a in [-3, 3], x in (-3, 3)
+
+law exp-base "Antiderivative of a^x"
+  vars:      a, x
+  statement: integrate(a^x, x) = a^x/ln(a)
+  where:     a > 0 and a != 1
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ {a}^{x} d{x} = {a}^{x}/ln {a} + C."
+  sample:    a in (1.2, 5), x in (-3, 3)
+
+law ln "Antiderivative of ln x"
+  vars:      x
+  statement: integrate(ln(x), x) = x*ln(x) - x
+  where:     x > 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ ln {x} d{x} = {x} ln {x} − {x} + C."
+  sample:    x in (0.3, 5)
+
+law sin "Antiderivative of sine"
+  vars:      x
+  statement: integrate(sin(x), x) = -cos(x)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ sin {x} d{x} = −cos {x} + C."
+  sample:    x in (-6, 6)
+
+law cos "Antiderivative of cosine"
+  vars:      x
+  statement: integrate(cos(x), x) = sin(x)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ cos {x} d{x} = sin {x} + C."
+  sample:    x in (-6, 6)
+
+law tan "Antiderivative of tangent"
+  vars:      x
+  statement: integrate(tan(x), x) = -ln(abs(cos(x)))
+  where:     cos(x) != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ tan {x} d{x} = −ln|cos {x}| + C."
+  sample:    x in (-1.3, 1.3)
+
+law cot "Antiderivative of cotangent"
+  vars:      x
+  statement: integrate(cot(x), x) = ln(abs(sin(x)))
+  where:     sin(x) != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ cot {x} d{x} = ln|sin {x}| + C."
+  sample:    x in (0.3, 2.8)
+
+law sec "Antiderivative of secant"
+  vars:      x
+  statement: integrate(sec(x), x) = ln(abs(sec(x) + tan(x)))
+  where:     cos(x) != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ sec {x} d{x} = ln|sec {x} + tan {x}| + C."
+  sample:    x in (-1.2, 1.2)
+
+law csc "Antiderivative of cosecant"
+  vars:      x
+  statement: integrate(csc(x), x) = ln(abs(csc(x) - cot(x)))
+  where:     sin(x) != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ csc {x} d{x} = ln|csc {x} − cot {x}| + C."
+  sample:    x in (0.4, 2.7)
+
+law sec-sq "Antiderivative of sec²"
+  vars:      x
+  statement: integrate(sec(x)^2, x) = tan(x)
+  where:     cos(x) != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ sec²{x} d{x} = tan {x} + C."
+  sample:    x in (-1.2, 1.2)
+
+law csc-sq "Antiderivative of csc²"
+  vars:      x
+  statement: integrate(csc(x)^2, x) = -cot(x)
+  where:     sin(x) != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ csc²{x} d{x} = −cot {x} + C."
+  sample:    x in (0.4, 2.7)
+
+law sec-tan "Antiderivative of sec·tan"
+  vars:      x
+  statement: integrate(sec(x)*tan(x), x) = sec(x)
+  where:     cos(x) != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ sec {x} tan {x} d{x} = sec {x} + C."
+  sample:    x in (-1.2, 1.2)
+
+law csc-cot "Antiderivative of csc·cot"
+  vars:      x
+  statement: integrate(csc(x)*cot(x), x) = -csc(x)
+  where:     sin(x) != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ csc {x} cot {x} d{x} = −csc {x} + C."
+  sample:    x in (0.4, 2.7)
+
+law sin-sq "Antiderivative of sin²"
+  vars:      x
+  statement: integrate(sin(x)^2, x) = x/2 - sin(2*x)/4
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ sin²{x} d{x} = {x}/2 − sin 2{x}/4 + C."
+  sample:    x in (-5, 5)
+
+law cos-sq "Antiderivative of cos²"
+  vars:      x
+  statement: integrate(cos(x)^2, x) = x/2 + sin(2*x)/4
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ cos²{x} d{x} = {x}/2 + sin 2{x}/4 + C."
+  sample:    x in (-5, 5)
+
+law sinh "Antiderivative of hyperbolic sine"
+  vars:      x
+  statement: integrate(sinh(x), x) = cosh(x)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ sinh {x} d{x} = cosh {x} + C."
+  sample:    x in (-3, 3)
+
+law cosh "Antiderivative of hyperbolic cosine"
+  vars:      x
+  statement: integrate(cosh(x), x) = sinh(x)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ cosh {x} d{x} = sinh {x} + C."
+  sample:    x in (-3, 3)
+
+law arcsin-form "Antiderivative leading to arcsine"
+  vars:      a, x
+  statement: integrate(1/sqrt(a^2 - x^2), x) = arcsin(x/a)
+  where:     a > 0 and abs(x) < a
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ d{x}/sqrt({a}² − {x}²) = arcsin({x}/{a}) + C."
+  sample:    a in (1, 4), x in (-0.5, 0.5)
+
+law arctan-form "Antiderivative leading to arctangent"
+  vars:      a, x
+  statement: integrate(1/(a^2 + x^2), x) = arctan(x/a)/a
+  where:     a != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ d{x}/({a}² + {x}²) = arctan({x}/{a})/{a} + C."
+  sample:    a in (0.5, 4), x in (-4, 4)
+
+law arcsec-form "Antiderivative leading to arcsecant"
+  vars:      a, x
+  statement: integrate(1/(x*sqrt(x^2 - a^2)), x) = arcsec(abs(x)/a)/a
+  where:     a > 0 and abs(x) > a
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ d{x}/({x} sqrt({x}² − {a}²)) = arcsec(|{x}|/{a})/{a} + C."
+  sample:    a in (0.3, 1), x in (1.5, 5)
+
+law log-diff-squares "Antiderivative of 1/(x² − a²)"
+  vars:      a, x
+  statement: integrate(1/(x^2 - a^2), x) = ln(abs((x - a)/(x + a)))/(2*a)
+  where:     a != 0 and x != a and x != -a
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ d{x}/({x}² − {a}²) = ln|({x} − {a})/({x} + {a})|/(2{a}) + C."
+  sample:    a in (0.4, 2), x in (2.6, 6)
+
+law arsinh-form "Antiderivative leading to inverse hyperbolic sine"
+  vars:      a, x
+  statement: integrate(1/sqrt(x^2 + a^2), x) = ln(x + sqrt(x^2 + a^2))
+  where:     a != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ d{x}/sqrt({x}² + {a}²) = ln({x} + sqrt({x}² + {a}²)) + C."
+  sample:    a in (0.4, 4), x in (-4, 4)
+
+law arcosh-form "Antiderivative leading to inverse hyperbolic cosine"
+  vars:      a, x
+  statement: integrate(1/sqrt(x^2 - a^2), x) = ln(abs(x + sqrt(x^2 - a^2)))
+  where:     abs(x) > abs(a)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ d{x}/sqrt({x}² − {a}²) = ln|{x} + sqrt({x}² − {a}²)| + C."
+  sample:    a in (0.3, 1), x in (1.5, 5)
+
+law semicircle "Antiderivative of sqrt(a² − x²)"
+  vars:      a, x
+  statement: integrate(sqrt(a^2 - x^2), x) = x*sqrt(a^2 - x^2)/2 + a^2*arcsin(x/a)/2
+  where:     a > 0 and abs(x) <= a
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ sqrt({a}² − {x}²) d{x} = ({x}/2) sqrt({a}² − {x}²) + ({a}²/2) arcsin({x}/{a}) + C."
+  sample:    a in (1, 4), x in (-0.5, 0.5)
+
+law exp-sin "Antiderivative of e^(ax) sin(bx)"
+  vars:      a, b, x
+  statement: integrate(e^(a*x)*sin(b*x), x) = e^(a*x)*(a*sin(b*x) - b*cos(b*x))/(a^2 + b^2)
+  where:     a^2 + b^2 != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ e^({a}{x}) sin({b}{x}) d{x} = e^({a}{x})({a} sin {b}{x} − {b} cos {b}{x})/({a}² + {b}²) + C."
+  sample:    a in [-2, 2], b in [-3, 3], x in (-2, 2)
+
+law exp-cos "Antiderivative of e^(ax) cos(bx)"
+  vars:      a, b, x
+  statement: integrate(e^(a*x)*cos(b*x), x) = e^(a*x)*(a*cos(b*x) + b*sin(b*x))/(a^2 + b^2)
+  where:     a^2 + b^2 != 0
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ e^({a}{x}) cos({b}{x}) d{x} = e^({a}{x})({a} cos {b}{x} + {b} sin {b}{x})/({a}² + {b}²) + C."
+  sample:    a in [-2, 2], b in [-3, 3], x in (-2, 2)
+
+law x-exp "Antiderivative of x e^x"
+  vars:      x
+  statement: integrate(x*e^x, x) = (x - 1)*e^x
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      antiderivative
+  explain:   "∫ {x} e^{x} d{x} = ({x} − 1) e^{x} + C."
+  sample:    x in (-3, 3)
+
+law gaussian "Antiderivative of e^(−x²)"
+  vars:      x
+  statement: integrate(e^(-x^2), x) = sqrt(pi)*erf(x)/2
+  orient:    ltr
+  level:     University
+  course:    Calculus
+  tags:      antiderivative | non-elementary
+  explain:   "∫ e^(−{x}²) d{x} = (√π/2) erf {x} + C; the antiderivative is not elementary (Liouville)."
+  sample:    x in (-3, 3)
+
+law sinc "Antiderivative of sin(x)/x"
+  vars:      x
+  statement: integrate(sin(x)/x, x) = si(x)
+  where:     x != 0
+  orient:    ltr
+  level:     University
+  course:    Calculus
+  tags:      antiderivative | non-elementary
+  explain:   "∫ sin {x}/{x} d{x} = Si({x}) + C; the antiderivative is not elementary."
+  sample:    x in (0.5, 6)
+
+law inv-log "Antiderivative of 1/ln x"
+  vars:      x
+  statement: integrate(1/ln(x), x) = li(x)
+  where:     x > 0 and x != 1
+  orient:    ltr
+  level:     University
+  course:    Calculus
+  tags:      antiderivative | non-elementary
+  explain:   "∫ d{x}/ln {x} = li({x}) + C; the antiderivative is not elementary."
+
+domain calc.int "Integration techniques"
+
+definition antiderivative "Antiderivative"
+  level:   Calculus1
+  course:  Calculus
+  explain: "F is an antiderivative of f on an interval I if F′ = f on I; every antiderivative is F + C."
+  refs:    book:"Stewart, Calculus, 9e, §4.9"
+
+law linearity "Linearity of the integral"
+  vars:      a, b, f: function(R -> R), g: function(R -> R), x
+  statement: integrate(a*f + b*g, x) = a*integrate(f, x) + b*integrate(g, x)
+  orient:    both
+  level:     Calculus1
+  course:    Calculus
+  tags:      integrate-linear
+  explain:   "Constant factors come out of the integral, and the integral of a sum is the sum of the integrals."
+  sample:    x in (-2, 2)
+
+law substitution "Substitution"
+  vars:      f: function(R -> R), g: function(R -> R), x, u
+  statement: integrate(f(g(x))*g'(x), x) = integrate(f(u), u)
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      substitution
+  explain:   "Substituting u = g({x}) turns ∫ f(g({x}))·g′({x}) d{x} into ∫ f(u) du."
+  see:       calc.int.substitution-definite
+  verify:    none
+  rationale: "The right-hand side is an integral in the new variable u = g(x); the identity is checked in its definite form, calc.int.substitution-definite."
+
+law substitution-definite "Definite substitution"
+  vars:      f: function(R -> R), g: function(R -> R), x, a, b
+  statement: integrate(f(g(x))*g'(x), x, a, b) = integrate(f(u), u, g(a), g(b))
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      substitution
+  explain:   "With u = g({x}) the limits change to g({a}) and g({b})."
+  sample:    a in [-2, 2], b in [-2, 2]
+
+law parts "Integration by parts"
+  vars:      u: function(R -> R), v: function(R -> R), x
+  statement: integrate(u*diff(v, x), x) = u*v - integrate(v*diff(u, x), x)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      integration-by-parts
+  explain:   "∫ u dv = uv − ∫ v du."
+  sample:    x in (-2, 2)
+
+law parts-definite "Definite integration by parts"
+  vars:      u: function(R -> R), v: function(R -> R), x, a, b
+  statement: integrate(u*diff(v, x), x, a, b) = u(b)*v(b) - u(a)*v(a) - integrate(v*diff(u, x), x, a, b)
+  orient:    ltr
+  level:     Calculus2
+  course:    Calculus
+  tags:      integration-by-parts
+  explain:   "∫ₐᵇ u dv = [uv]ₐᵇ − ∫ₐᵇ v du."
+  sample:    a in [-2, 2], b in [-2, 2]
+
+method liate "LIATE heuristic"
+  level:   Calculus2
+  course:  Calculus
+  explain: "For integration by parts choose u in the order: logarithmic, inverse trigonometric, algebraic, trigonometric, exponential."
+  refs:    book:"Stewart, Calculus, 9e, §7.1"
+
+method tabular "Tabular integration"
+  level:   Calculus2
+  course:  Calculus
+  explain: "Repeated integration by parts for a polynomial times an exponential, sine or cosine, organized in a table."
+
+formula reduce-sin "Reduction formula for sin^n"
+  vars:      x, n: integer
+  statement: integrate(sin(x)^n, x) = -sin(x)^(n - 1)*cos(x)/n + (n - 1)/n*integrate(sin(x)^(n - 2), x)
+  where:     n >= 2
+  level:     Calculus2
+  course:    Calculus
+  tags:      reduction-formula
+  explain:   "∫ sin^{n} {x} d{x} = −sin^({n}−1) {x} cos {x}/{n} + (({n}−1)/{n}) ∫ sin^({n}−2) {x} d{x}."
+  sample:    n in 2..8, x in (-3, 3)
+
+formula reduce-cos "Reduction formula for cos^n"
+  vars:      x, n: integer
+  statement: integrate(cos(x)^n, x) = cos(x)^(n - 1)*sin(x)/n + (n - 1)/n*integrate(cos(x)^(n - 2), x)
+  where:     n >= 2
+  level:     Calculus2
+  course:    Calculus
+  tags:      reduction-formula
+  explain:   "∫ cos^{n} {x} d{x} = cos^({n}−1) {x} sin {x}/{n} + (({n}−1)/{n}) ∫ cos^({n}−2) {x} d{x}."
+  sample:    n in 2..8, x in (-3, 3)
+
+formula reduce-tan "Reduction formula for tan^n"
+  vars:      x, n: integer
+  statement: integrate(tan(x)^n, x) = tan(x)^(n - 1)/(n - 1) - integrate(tan(x)^(n - 2), x)
+  where:     n >= 2 and cos(x) != 0
+  level:     Calculus2
+  course:    Calculus
+  tags:      reduction-formula
+  explain:   "∫ tan^{n} {x} d{x} = tan^({n}−1) {x}/({n}−1) − ∫ tan^({n}−2) {x} d{x}."
+  sample:    n in 2..8, x in (-1.2, 1.2)
+
+formula reduce-sec "Reduction formula for sec^n"
+  vars:      x, n: integer
+  statement: integrate(sec(x)^n, x) = sec(x)^(n - 2)*tan(x)/(n - 1) + (n - 2)/(n - 1)*integrate(sec(x)^(n - 2), x)
+  where:     n >= 2 and cos(x) != 0
+  level:     Calculus2
+  course:    Calculus
+  tags:      reduction-formula
+  explain:   "∫ sec^{n} {x} d{x} = sec^({n}−2) {x} tan {x}/({n}−1) + (({n}−2)/({n}−1)) ∫ sec^({n}−2) {x} d{x}."
+  sample:    n in 2..8, x in (-1.2, 1.2)
+
+formula reduce-x-exp "Reduction formula for x^n e^x"
+  vars:      x, n: integer
+  statement: integrate(x^n*e^x, x) = x^n*e^x - n*integrate(x^(n - 1)*e^x, x)
+  where:     n >= 1
+  level:     Calculus2
+  course:    Calculus
+  tags:      reduction-formula
+  explain:   "∫ {x}^{n} e^{x} d{x} = {x}^{n} e^{x} − {n} ∫ {x}^({n}−1) e^{x} d{x}."
+  sample:    n in 1..8, x in (-2, 2)
+
+formula reduce-ln "Reduction formula for (ln x)^n"
+  vars:      x, n: integer
+  statement: integrate(ln(x)^n, x) = x*ln(x)^n - n*integrate(ln(x)^(n - 1), x)
+  where:     n >= 1 and x > 0
+  level:     Calculus2
+  course:    Calculus
+  tags:      reduction-formula
+  explain:   "∫ (ln {x})^{n} d{x} = {x}(ln {x})^{n} − {n} ∫ (ln {x})^({n}−1) d{x}."
+  sample:    n in 1..8, x in (0.3, 4)
+
+method trig-odd-sin "Odd power of sine"
+  level:   Calculus2
+  course:  Calculus
+  explain: "Save one factor sin x, convert the rest with sin² = 1 − cos², and substitute u = cos x."
+  refs:    book:"Stewart, Calculus, 9e, §7.2"
+
+method trig-odd-cos "Odd power of cosine"
+  level:   Calculus2
+  course:  Calculus
+  explain: "Save one factor cos x, convert the rest with cos² = 1 − sin², and substitute u = sin x."
+  refs:    book:"Stewart, Calculus, 9e, §7.2"
+
+method trig-even "Even powers of sine and cosine"
+  level:   Calculus2
+  course:  Calculus
+  explain: "Use the power-reduction identities (trig.power.*) repeatedly."
+  see:     trig.power.sin-sq, trig.power.cos-sq
+
+method trig-tan-sec "Tangent and secant powers"
+  level:   Calculus2
+  course:  Calculus
+  explain: "For an even power of sec save sec² and substitute u = tan x; for an odd power of tan save sec·tan and substitute u = sec x."
+  refs:    book:"Stewart, Calculus, 9e, §7.2"
+
+method trig-sub-sin "Trigonometric substitution for sqrt(a² − x²)"
+  level:   Calculus2
+  course:  Calculus
+  explain: "Substitute x = a sin θ with −π/2 ≤ θ ≤ π/2 (a > 0)."
+  refs:    book:"Stewart, Calculus, 9e, §7.3"
+
+method trig-sub-tan "Trigonometric substitution for sqrt(a² + x²)"
+  level:   Calculus2
+  course:  Calculus
+  explain: "Substitute x = a tan θ with −π/2 < θ < π/2 (a > 0)."
+  refs:    book:"Stewart, Calculus, 9e, §7.3"
+
+method trig-sub-sec "Trigonometric substitution for sqrt(x² − a²)"
+  level:   Calculus2
+  course:  Calculus
+  explain: "Substitute x = a sec θ with θ in [0, π/2) or [π, 3π/2) (a > 0)."
+  refs:    book:"Stewart, Calculus, 9e, §7.3"
+
+method partial-fractions "Partial fractions"
+  level:   Calculus2
+  course:  Calculus
+  explain: "Divide if the fraction is improper, decompose into partial fractions (alg.pf.*), and integrate term by term."
+  see:     alg.pf.distinct-linear, alg.pf.repeated-linear, alg.pf.quadratic
+
+method weierstrass "Weierstrass substitution"
+  level:   Calculus2
+  course:  Calculus
+  explain: "For a rational function of sin and cos substitute t = tan(x/2), so that dx = 2/(1 + t²) dt (trig.weier.*)."
+  see:     trig.weier.sin, trig.weier.cos
+
+theorem rational-complete "Rational functions have elementary antiderivatives"
+  level:   University
+  course:  Calculus
+  explain: "Every rational function integrates to a rational function plus constant multiples of logarithms (and arctangents over the reals); this is the basis of the complete algorithm."
+
+theorem liouville "Liouville's theorem on elementary integrability"
+  level:   Advanced
+  course:  Calculus
+  explain: "If ∫ f is elementary it has the form v0 + Σ c_i ln v_i with the v_i in the field generated by f; this shows e^(−x²) has no elementary antiderivative."
+  refs:    book:"Bronstein, Symbolic Integration I, Theorem 5.5.1"

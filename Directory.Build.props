@@ -11,15 +11,30 @@
     <RootNamespace>$(MSBuildProjectName)</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(MSBuildProjectDirectory.Replace('\', '/').Contains('/src/'))">
+  <PropertyGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)src'))">
     <IsAotCompatible>true</IsAotCompatible>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
+    <Version>0.1.0</Version>
+    <Authors>Damien Gilbert</Authors>
+    <Copyright>Copyright (c) Damien Gilbert</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/damienmgilbert/Mathesis</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/damienmgilbert/Mathesis</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>mathematics;computer-algebra;symbolic;calculus;algebra;education;numerics</PackageTags>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts/packages</PackageOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(MSBuildProjectDirectory.Replace('\', '/').Contains('/tests/'))">
+  <ItemGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)src'))">
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="/" Visible="false" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)tests'))">
     <IsPackable>false</IsPackable>
     <!-- Parsers ignore the culture by design, so tests may omit IFormatProvider. -->
-    <NoWarn>$(NoWarn);CA1305</NoWarn>
+    <NoWarn>$(NoWarn);CA1305;CA1861</NoWarn>
     <EnableMSTestRunner>true</EnableMSTestRunner>
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
   </PropertyGroup>

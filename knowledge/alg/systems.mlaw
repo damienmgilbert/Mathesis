@@ -1,0 +1,41 @@
+# Algebra: inequalities and systems (d1-algebra.md, "Inequalities" and "Systems, lines and coordinates"). These are methods and classification theorems
+# without a single equation to sample; the solver checks every solution against the original relations (tests/Mathesis.Tests/SolveTests.cs).
+
+domain alg.ineq "Inequalities"
+
+method sign-chart "Sign chart"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "Find the zeros and the points where the expression is undefined, test one point in each interval between them, and join the intervals where the sign is right."
+  verify:    none
+  rationale: "A method without an equation to sample; the solver tests points inside and outside every solution set."
+
+theorem compound "Compound inequality"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "a < x < b means a < x and x < b."
+  verify:    none
+  rationale: "A definition without an equation to sample."
+
+domain alg.sys "Systems of equations"
+
+method substitution "Substitution method"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "Solve one equation for a variable and substitute the result into the other equations."
+  verify:    none
+  rationale: "A method without an equation to sample; the solver substitutes every solution back into all equations."
+
+method elimination "Elimination method"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "Add multiples of the equations to eliminate a variable."
+  verify:    none
+  rationale: "A method without an equation to sample; the solver substitutes every solution back into all equations."
+
+theorem classification "Linear systems: one solution, none, or infinitely many"
+  level:     Algebra1
+  course:    Algebra
+  explain:   "A linear system has exactly one solution, no solution (inconsistent), or infinitely many (dependent equations)."
+  verify:    none
+  rationale: "A classification theorem without an equation to sample."

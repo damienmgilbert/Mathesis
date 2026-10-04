@@ -1,0 +1,3 @@
+Start: log(x, 2) + log(y, 2)
+1. The logarithm of a product is the sum of the logarithms.
+Result: log(x*y, 2)

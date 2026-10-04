@@ -1,0 +1,108 @@
+# Derivative corpus: one expression in x per line (an optional "@ fact, fact" assumes facts). Each derivative is compared with a Richardson-extrapolated
+# central difference at seeded points where the expression, the derivative and the provisos are defined (tests/Mathesis.Tests/CalculusTests.cs).
+# Constants, powers, sums
+5
+x
+x^2
+x^3 - 2*x^2 + x - 7
+x^10
+x^-1
+x^-3
+1/x
+1/x^2
+sqrt(x) @ x > 0
+x^(1/3) @ x > 0
+x^(3/2) @ x > 0
+x^pi @ x > 0
+3*x^4 - 5*x^2 + 2
+(x + 1)^2
+(2*x - 3)^5
+(x^2 + 1)^3
+1/(x^2 + 1)
+1/(x - 2)
+sqrt(x^2 + 1)
+sqrt(1 - x^2) @ x > -1, x < 1
+(x^3 + 2)^(1/3) @ x > 0
+# Products and quotients
+x*sin(x)
+x^2*cos(x)
+x*exp(x)
+x*ln(x) @ x > 0
+(x^2 + 1)*(x^3 - x)
+sin(x)*cos(x)
+exp(x)*sin(x)
+x^3*exp(-x)
+x/(x^2 + 1)
+(x + 1)/(x - 1)
+sin(x)/x
+exp(x)/x
+(x^2 - 1)/(x^2 + 1)
+x*sin(x)*exp(x)
+ln(x)/x @ x > 0
+tan(x)/x
+# Exponentials and logarithms
+exp(x)
+exp(2*x)
+exp(x^2)
+exp(-x^2)
+exp(sin(x))
+2^x
+3^(2*x)
+x^x @ x > 0
+x^(x^2) @ x > 0
+(x^2 + 1)^x
+sin(x)^x @ x > 0, x < 3
+ln(x) @ x > 0
+ln(x^2 + 1)
+ln(2*x + 1) @ x > 0
+ln(sin(x)) @ x > 0, x < 3
+log(x, 2) @ x > 0
+ln(abs(x))
+ln(ln(x)) @ x > 1
+exp(x)*ln(x) @ x > 0
+# Trigonometric and inverse trigonometric
+sin(x)
+cos(x)
+tan(x)
+cot(x)
+sec(x)
+csc(x)
+sin(2*x)
+cos(x^2)
+sin(x)^2
+cos(x)^3
+tan(x)^2
+sin(cos(x))
+sin(3*x + 1)
+sec(x)*tan(x)
+arctan(x)
+arcsin(x) @ x > -1, x < 1
+arccos(x) @ x > -1, x < 1
+arctan(x^2)
+arctan(1/x)
+arcsin(2*x) @ x > -0.5, x < 0.5
+x*arctan(x)
+arccot(x)
+x^4*ln(x) @ x > 0
+cos(x)*exp(2*x)
+sin(x^2)*cos(x^3)
+exp(x)/(1 + exp(x))
+x^5 - 3*x
+# Hyperbolic and others
+sinh(x)
+cosh(x)
+tanh(x)
+sinh(x^2)
+cosh(2*x)
+tanh(x)*x
+arsinh(x)
+abs(x)
+abs(x^2 - 1)
+# Symbolic constants
+a*x^2 + b*x + c
+a*sin(b*x)
+exp(a*x)
+x^a @ x > 0
+a^x @ a > 0
+(a*x + b)^n @ a*x + b > 0
+ln(a*x) @ a > 0, x > 0

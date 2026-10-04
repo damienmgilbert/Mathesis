@@ -1,0 +1,274 @@
+# Calculus: limits (d5-calculus.md, "Limits"). Function-valued variables are checked with concrete smooth functions; limits are checked by
+# Richardson extrapolation toward the point (see tests/Mathesis.Knowledge.Tests/Verification/LawEvaluator.cs).
+
+domain calc.lim "Limits"
+
+definition def "Epsilon-delta limit"
+  vars:      f: function(R -> R), a, L
+  statement: limit(f(x), x, a) = L <=> forall ε in R: ε > 0 => exists δ in R: δ > 0 and forall x in R: 0 < abs(x - a) and abs(x - a) < δ => abs(f(x) - L) < ε
+  level:     Calculus1
+  course:    Calculus
+  explain:   "The limit of f({x}) as x → {a} is {L} when f({x}) can be made as close to {L} as we like by taking x close enough to {a}."
+  refs:      book:"Stewart, Calculus, 9e, §2.4"
+
+theorem one-sided "Two-sided limit from one-sided limits"
+  vars:      f: function(R -> R), a, L
+  statement: limit(f(x), x, a) = L <=> limit(f(x), x, a, "-") = L and limit(f(x), x, a, "+") = L
+  level:     Calculus1
+  course:    Calculus
+  explain:   "A two-sided limit exists exactly when both one-sided limits exist and are equal."
+  refs:      book:"Stewart, Calculus, 9e, §2.3"
+  verify:    numeric
+
+definition infinite "Infinite limit"
+  vars:      f: function(R -> R), a
+  statement: limit(f(x), x, a) = oo <=> forall M in R: exists δ in R: δ > 0 and forall x in R: 0 < abs(x - a) and abs(x - a) < δ => f(x) > M
+  level:     Calculus1
+  course:    Calculus
+  explain:   "f grows without bound as x → {a}."
+  refs:      book:"Stewart, Calculus, 9e, §2.2"
+
+definition at-infinity "Limit at infinity"
+  vars:      f: function(R -> R), L
+  statement: limit(f(x), x, oo) = L <=> forall ε in R: ε > 0 => exists m in R: forall x in R: x > m => abs(f(x) - L) < ε
+  level:     Calculus1
+  course:    Calculus
+  explain:   "f({x}) approaches {L} as x grows without bound."
+  refs:      book:"Stewart, Calculus, 9e, §2.6"
+
+law sum "Sum law for limits"
+  vars:      f: function(R -> R), g: function(R -> R), a
+  statement: limit(f + g, x, a) = limit(f, x, a) + limit(g, x, a)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      limit-laws
+  explain:   "The limit of a sum is the sum of the limits (when both limits are finite)."
+  sample:    a in [-2, 2]
+
+law constant-multiple "Constant multiple law for limits"
+  vars:      c, f: function(R -> R), a
+  statement: limit(c*f, x, a) = c*limit(f, x, a)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      limit-laws
+  explain:   "A constant factor comes out of the limit."
+  sample:    a in [-2, 2]
+
+law product "Product law for limits"
+  vars:      f: function(R -> R), g: function(R -> R), a
+  statement: limit(f*g, x, a) = limit(f, x, a)*limit(g, x, a)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      limit-laws
+  explain:   "The limit of a product is the product of the limits (when both limits are finite)."
+  sample:    a in [-2, 2]
+
+law quotient "Quotient law for limits"
+  vars:      f: function(R -> R), g: function(R -> R), a
+  statement: limit(f/g, x, a) = limit(f, x, a)/limit(g, x, a)
+  where:     limit(g, x, a) != 0
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      limit-laws
+  explain:   "The limit of a quotient is the quotient of the limits when the limit of the denominator is not 0."
+  sample:    a in [-2, 2]
+
+law power "Power law for limits"
+  vars:      f: function(R -> R), n: natural, a
+  statement: limit(f^n, x, a) = limit(f, x, a)^n
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      limit-laws
+  explain:   "The limit of a power is the power of the limit."
+  sample:    a in [-2, 2], n in 0..5
+
+law root "Root law for limits"
+  vars:      f: function(R -> R), n: integer, a
+  statement: limit(root(f, n), x, a) = root(limit(f, x, a), n)
+  where:     n >= 1 and (n mod 2 = 1 or limit(f, x, a) > 0)
+  orient:    ltr
+  level:     Calculus1
+  course:    Calculus
+  tags:      limit-laws
+  explain:   "The limit of an n-th root is the n-th root of the limit (odd n, or a positive limit)."
+  sample:    a in [-2, 2], n in 1..6
+
+theorem composition "Limit of a composition"
+  level:   Calculus1
+  course:  Calculus
+  explain: "If g is continuous at the limit of f(x) as x → a, then the limit of g(f(x)) is g(limit of f(x))."
+  refs:    book:"Stewart, Calculus, 9e, §2.5"
+
+theorem direct-substitution "Direct substitution"
+  level:   Calculus1
+  course:  Calculus
+  explain: "If f is continuous at a, then the limit of f(x) as x → a is f(a)."
+  refs:    book:"Stewart, Calculus, 9e, §2.5"
+
+theorem squeeze "Squeeze theorem"
+  level:   Calculus1
+  course:  Calculus
+  explain: "If g ≤ f ≤ h near a and the limits of g and h at a are both L, then the limit of f at a is L."
+  refs:    book:"Stewart, Calculus, 9e, §2.3"
+
+law sin-over-x "Fundamental trigonometric limit"
+  statement: limit(sin(x)/x, x, 0) = 1
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "sin x / x → 1 as x → 0."
+
+law one-minus-cos-over-x "Cosine limit"
+  statement: limit((1 - cos(x))/x, x, 0) = 0
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "(1 − cos x)/x → 0 as x → 0."
+
+law one-minus-cos-over-x2 "Cosine limit (second order)"
+  statement: limit((1 - cos(x))/x^2, x, 0) = 1/2
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "(1 − cos x)/x² → 1/2 as x → 0."
+
+law tan-over-x "Tangent limit"
+  statement: limit(tan(x)/x, x, 0) = 1
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "tan x / x → 1 as x → 0."
+
+law exp-minus-one "Exponential limit"
+  statement: limit((e^x - 1)/x, x, 0) = 1
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "(e^x − 1)/x → 1 as x → 0."
+
+law power-minus-one "General exponential limit"
+  vars:      a
+  statement: limit((a^x - 1)/x, x, 0) = ln(a)
+  where:     a > 0
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "(a^x − 1)/x → ln {a} as x → 0."
+
+law log-one-plus "Logarithm limit"
+  statement: limit(ln(1 + x)/x, x, 0) = 1
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "ln(1 + x)/x → 1 as x → 0."
+
+law e-sequence "Definition of e as a limit"
+  statement: limit((1 + 1/n)^n, n, oo) = e
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "(1 + 1/n)^n → e as n → ∞."
+
+law e-general "Compound growth limit"
+  vars:      a
+  statement: limit((1 + a/n)^n, n, oo) = e^a
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "(1 + {a}/n)^n → e^{a} as n → ∞."
+  sample:    a in [-3, 3]
+
+law e-zero "e as a limit at 0"
+  statement: limit((1 + x)^(1/x), x, 0) = e
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "(1 + x)^(1/x) → e as x → 0."
+
+law x-ln-x "x ln x at 0"
+  statement: limit(x*ln(x), x, 0, "+") = 0
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "x ln x → 0 as x → 0⁺."
+
+law x-to-x "x to the x at 0"
+  statement: limit(x^x, x, 0, "+") = 1
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "x^x → 1 as x → 0⁺."
+
+law nth-root-n "n-th root of n"
+  statement: limit(n^(1/n), n, oo) = 1
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "n^(1/n) → 1 as n → ∞."
+
+law geometric "Powers of a fraction"
+  vars:      r
+  statement: limit(r^n, n, oo) = 0
+  where:     abs(r) < 1
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "{r}^n → 0 as n → ∞ when |{r}| < 1."
+  sample:    r in (-0.95, 0.95)
+
+law arctan-infinity "Arctangent at infinity"
+  statement: limit(arctan(x), x, oo) = pi/2
+  orient:    none
+  level:     Calculus1
+  course:    Calculus
+  tags:      standard-limit
+  explain:   "arctan x → π/2 as x → ∞."
+
+theorem growth-hierarchy "Growth hierarchy"
+  level:   Calculus1
+  course:  Calculus
+  explain: "As x → ∞ (p, q > 0, b > 1): (ln x)^q ≪ x^p ≪ b^x ≪ x! ≪ x^x, each ratio of a term to the next tending to 0."
+  refs:    book:"Stewart, Calculus, 9e, §4.4"
+
+theorem rational-at-infinity "Rational functions at infinity"
+  level:   Calculus1
+  course:  Calculus
+  explain: "The limit at ∞ of a rational function is 0, the ratio of the leading coefficients, or ±∞, according to the degrees of numerator and denominator."
+  refs:    book:"Stewart, Calculus, 9e, §2.6"
+
+definition indeterminate-forms "Indeterminate forms"
+  level:   Calculus1
+  course:  Calculus
+  explain: "The forms 0/0, ∞/∞, 0·∞, ∞ − ∞, 0^0, 1^∞ and ∞^0 do not determine a limit by themselves."
+  refs:    book:"Stewart, Calculus, 9e, §4.4"
+
+theorem lhopital "L'Hôpital's rule"
+  level:   Calculus1
+  course:  Calculus
+  explain: "If f/g has the form 0/0 or ±∞/±∞ at a, f and g are differentiable near a, g′ ≠ 0 near a, and the limit of f′/g′ exists or is ±∞, then the limit of f/g equals the limit of f′/g′."
+  refs:    book:"Stewart, Calculus, 9e, §4.4"
+
+method log-trick "Exponential indeterminate forms"
+  level:   Calculus1
+  course:  Calculus
+  explain: "For 0^0, 1^∞ and ∞^0: take the logarithm, find its limit L, and the answer is e^L."
+  refs:    book:"Stewart, Calculus, 9e, §4.4"

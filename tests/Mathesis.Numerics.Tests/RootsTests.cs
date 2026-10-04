@@ -216,4 +216,13 @@ public class RootsTests
         Assert.AreEqual(Convergence.FunctionTolerance, fromCriteria.Reason);
         Assert.IsTrue(Math.Abs(fromCriteria.FunctionValue) <= 1e-6);
     }
+
+    [TestMethod]
+    public void BisectionDefaultIterationCapCoversAnyFiniteBracket()
+    {
+        // Halving [-1e300, 1e300] down to double resolution near 3 takes about 1000 steps, more than the usual 100.
+        var result = Roots.Bisection<double>(x => x - 3, -1e300, 1e300);
+        Assert.IsTrue(result.Converged, $"iterations={result.Iterations} error={result.ErrorEstimate}");
+        Assert.AreEqual(3.0, result.Root, 1e-12);
+    }
 }

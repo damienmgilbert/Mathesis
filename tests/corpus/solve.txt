@@ -1,0 +1,257 @@
+# Solving corpus. eq | equation | expected [| flags]; ineq | relation | intervals; sys | equations ; ... | variables | expected.
+# Expected: {a, b} exact points; empty; all; approx: v1, v2 (numeric roots); image: e1(k) ; e2(k) (families over integers k; checked as sets over [-20, 20]);
+# intervals like (-oo,-2) U [2,oo); for systems {(x,y), ...} tuples or param (a parametric family).
+# Flag rej: at least one candidate must be rejected with an alg.eq.extraneous step. (tests/Mathesis.Tests/SolveTests.cs)
+
+# Linear equations
+eq | 2*x + 3 = 7 | {2}
+eq | 3*x - 5 = 4 | {3}
+eq | -4*x + 1 = 9 | {-2}
+eq | 5*x + 0 = 10 | {2}
+eq | 1*x + 7 = 7 | {0}
+eq | 7*x - 3 = 11 | {2}
+eq | -1*x + 4 = 1 | {3}
+eq | x/2 + x/3 = 5 | {6}
+eq | (x - 1)/3 = (x + 2)/5 | {11/2}
+eq | 3*(x - 2) = 2*(x + 1) | {8}
+eq | 2*x - 5 = 2*x + 1 | empty
+eq | 2*(x + 1) = 2*x + 2 | all
+eq | 0.5*x = 3 | {6}
+eq | x/4 - 1 = 3 | {16}
+eq | 5 - x = 2*x - 7 | {4}
+
+# Quadratic equations
+eq | x^2 - (5)*x + (6) = 0 | {2, 3}
+eq | x^2 - (3)*x + (-4) = 0 | {-1, 4}
+eq | x^2 - (5)*x + (0) = 0 | {0, 5}
+eq | x^2 - (-5)*x + (6) = 0 | {-3, -2}
+eq | x^2 - (2)*x + (1) = 0 | {1}
+eq | x^2 - (0)*x + (-49) = 0 | {-7, 7}
+eq | x^2 - (-3)*x + (-10) = 0 | {-5, 2}
+eq | x^2 - (7)*x + (6) = 0 | {1, 6}
+eq | x^2 - 2 = 0 | {-sqrt(2), sqrt(2)}
+eq | x^2 - 12 = 0 | {-2*sqrt(3), 2*sqrt(3)}
+eq | x^2 + x - 1 = 0 | {(-1 - sqrt(5))/2, (-1 + sqrt(5))/2}
+eq | 2*x^2 - 4*x - 3 = 0 | {(2 - sqrt(10))/2, (2 + sqrt(10))/2}
+eq | x^2 + 4*x + 1 = 0 | {-2 - sqrt(3), -2 + sqrt(3)}
+eq | 3*x^2 - 6*x + 2 = 0 | {1 - sqrt(3)/3, 1 + sqrt(3)/3}
+eq | x^2 + 1 = 0 | empty
+eq | x^2 + 2*x + 5 = 0 | empty
+eq | 2*x^2 - x + 3 = 0 | empty
+eq | x^2 = 9 | {-3, 3}
+eq | x^2 = x | {0, 1}
+eq | (x - 1)*(x + 2) = 4 | {-3, 2}
+eq | x^2 + 6*x + 9 = 0 | {-3}
+eq | 4*x^2 - 4*x + 1 = 0 | {1/2}
+eq | x*(x - 3) = 10 | {-2, 5}
+eq | x^2 - 5*x + 6 = 0 | {2, 3}
+eq | (2*x - 1)^2 = 9 | {-1, 2}
+
+# Higher-degree polynomials
+eq | x^3 - 6*x^2 + 11*x - 6 = 0 | {1, 2, 3}
+eq | x^3 - x = 0 | {-1, 0, 1}
+eq | x^3 + x^2 - 4*x - 4 = 0 | {-2, -1, 2}
+eq | 2*x^3 - 3*x^2 - 11*x + 6 = 0 | {-2, 1/2, 3}
+eq | x^3 - 1 = 0 | {1}
+eq | x^3 = 8 | {2}
+eq | x^3 + 27 = 0 | {-3}
+eq | x^3 - 2 = 0 | {2^(1/3)}
+eq | x^4 - 5*x^2 + 4 = 0 | {-2, -1, 1, 2}
+eq | x^4 - 1 = 0 | {-1, 1}
+eq | x^4 = 16 | {-2, 2}
+eq | x^4 - 3*x^2 - 4 = 0 | {-2, 2}
+eq | x^4 + x^2 + 1 = 0 | empty
+eq | x^4 - 4*x^2 + 1 = 0 | {-sqrt(2 + sqrt(3)), -sqrt(2 - sqrt(3)), sqrt(2 - sqrt(3)), sqrt(2 + sqrt(3))}
+eq | x^6 - 7*x^3 - 8 = 0 | {-1, 2}
+eq | x^3 - 3*x^2 + 3*x - 1 = 0 | {1}
+eq | x^4 - 2*x^3 - x^2 + 2*x = 0 | {-1, 0, 1, 2}
+eq | x^5 - x - 1 = 0 | approx: 1.1673039782614187
+eq | x^3 - 3*x + 1 = 0 | approx: -1.8793852415718167, 0.3472963553338607, 1.5320888862379562
+eq | x^5 - 5*x + 3 = 0 | approx: -1.6180339887498936, 0.6180339887498949, 1.275682203650984
+
+# Rational equations (extraneous solutions)
+eq | (x^2 - 1)/(x - 1) = 0 | {-1} | rej
+eq | (x^2 - 4)/(x - 2) = 0 | {-2} | rej
+eq | (x^2 - 9)/(x + 3) = 0 | {3} | rej
+eq | x/(x - 1) = 1/(x - 1) | empty | rej
+eq | 1/x + 1/(x + 1) = 1 | {(1 - sqrt(5))/2, (1 + sqrt(5))/2}
+eq | 1/x = x | {-1, 1}
+eq | 1/(x - 2) + 1/(x + 2) = 4/(x^2 - 4) | empty | rej
+eq | (x + 1)/(x - 1) = 3 | {2}
+eq | 2/(x - 3) = 4/(x + 1) | {7}
+eq | 1/x + 2/x = 3 | {1}
+eq | x + 1/x = 2 | {1}
+eq | x + 1/x = 5/2 | {1/2, 2}
+eq | (x^2 - 3*x + 2)/(x - 2) = 0 | {1} | rej
+eq | 1/(x - 1) = 2 | {3/2}
+eq | (x - 2)/(x + 3) = (x + 1)/(x - 4) | approx: 0.5
+eq | 5/(x - 2) = 2/(x + 1) | {-3}
+eq | x/(x + 2) + 2/(x - 2) = 8/(x^2 - 4) | empty | rej
+eq | (x^2 + x - 6)/(x - 2) = 5 | empty | rej
+
+# Radical equations (extraneous solutions)
+eq | sqrt(x + 2) = x | {2} | rej
+eq | sqrt(2*x + 1) = x - 1 | {4} | rej
+eq | sqrt(x) = 3 | {9}
+eq | sqrt(x) = -3 | empty
+eq | sqrt(x + 5) = x - 1 | {4} | rej
+eq | sqrt(3*x + 4) = x | {4} | rej
+eq | sqrt(x - 1) + 1 = x | {1, 2}
+eq | sqrt(x + 7) + 5 = x | {9} | rej
+eq | sqrt(2*x - 3) = sqrt(x + 4) | {7}
+eq | sqrt(x) + sqrt(x + 5) = 5 | {4}
+eq | x - 3*sqrt(x) + 2 = 0 | {1, 4}
+eq | x^(1/3) = 2 | {8}
+eq | x^(2/3) = 4 | {-8, 8}
+eq | sqrt(x^2 - 4) = x - 1 | {5/2}
+eq | sqrt(x^2 + 9) = 5 | {-4, 4}
+eq | sqrt(1 - x) = x + 1 | {0} | rej
+eq | (x + 1)^(1/2) = x - 1 | {3} | rej
+eq | sqrt(x) = x | {0, 1}
+eq | 2*sqrt(x) = x | {0, 4}
+eq | sqrt(2 - x) = x | {1} | rej
+
+# Absolute value
+eq | abs(x - 3) = 2 | {1, 5}
+eq | abs(2*x + 1) = 5 | {-3, 2}
+eq | abs(x) = -1 | empty
+eq | abs(x) = 0 | {0}
+eq | abs(x - 1) = abs(x + 3) | {-1}
+eq | abs(x^2 - 4) = 3 | {-sqrt(7), -1, 1, sqrt(7)}
+eq | abs(x + 2) = 2*x + 1 | {1} | rej
+eq | 2*abs(x) + 3 = 11 | {-4, 4}
+eq | abs(x)^2 - 3*abs(x) + 2 = 0 | {-2, -1, 1, 2}
+eq | abs(x^2 - 2*x) = 3 | {-1, 3}
+eq | abs(1 - x) = 3 | {-2, 4}
+
+# Exponential and logarithmic
+eq | 2^x = 8 | {3}
+eq | 3^x = 1/9 | {-2}
+eq | 2^x = 5 | {ln(5)/ln(2)}
+eq | exp(x) = 5 | {ln(5)}
+eq | exp(x) = -1 | empty
+eq | 4^x - 3*2^x + 2 = 0 | {0, 1}
+eq | exp(2*x) - 3*exp(x) + 2 = 0 | {0, ln(2)}
+eq | 2^(2*x) = 16 | {2}
+eq | 2^(x + 1) = 3^x | {ln(2)/(ln(3) - ln(2))}
+eq | 2^x = 3^x | {0}
+eq | 5^(x - 1) = 25 | {3}
+eq | 9^x - 4*3^x + 3 = 0 | {0, 1}
+eq | ln(x) = 2 | {exp(2)}
+eq | ln(x) = 0 | {1}
+eq | ln(x + 1) = 1 | {e - 1}
+eq | log(x, 2) = 3 | {8}
+eq | log(x) = 2 | {100}
+eq | ln(x) + ln(x - 2) = ln(3) | {3} | rej
+eq | log(x, 2) + log(x - 2, 2) = 3 | {4} | rej
+eq | ln(x - 1) + ln(x + 1) = ln(8) | {3} | rej
+eq | (ln(x))^2 - 3*ln(x) + 2 = 0 | {e, exp(2)}
+eq | ln(x) = ln(5 - x) | {5/2}
+eq | log(x, 3) + log(x + 6, 3) = 3 | {3} | rej
+eq | ln(2*x - 1) = ln(x + 3) | {4}
+eq | ln(x) + ln(x + 1) = ln(6) | {2} | rej
+
+# Trigonometric equations
+eq | sin(x) = 1/2 | image: pi/6 + 2*pi*k ; 5*pi/6 + 2*pi*k
+eq | sin(x) = 0 | image: 2*pi*k ; pi + 2*pi*k
+eq | sin(x) = 1 | image: pi/2 + 2*pi*k
+eq | sin(x) = -1 | image: -pi/2 + 2*pi*k
+eq | sin(x) = 2 | empty
+eq | cos(x) = 1/2 | image: pi/3 + 2*pi*k ; -pi/3 + 2*pi*k
+eq | cos(x) = 0 | image: pi/2 + 2*pi*k ; -pi/2 + 2*pi*k
+eq | cos(x) = -1 | image: pi + 2*pi*k
+eq | cos(x) = -2 | empty
+eq | tan(x) = 1 | image: pi/4 + pi*k
+eq | tan(x) = 0 | image: pi*k
+eq | tan(x) = sqrt(3) | image: pi/3 + pi*k
+eq | cot(x) = 1 | image: pi/4 + pi*k
+eq | 2*sin(x) = 1 | image: pi/6 + 2*pi*k ; 5*pi/6 + 2*pi*k
+eq | sqrt(2)*cos(x) = 1 | image: pi/4 + 2*pi*k ; -pi/4 + 2*pi*k
+eq | 2*sin(x)^2 - sin(x) - 1 = 0 | image: pi/2 + 2*pi*k ; -pi/6 + 2*pi*k ; 7*pi/6 + 2*pi*k
+eq | 2*cos(x)^2 - 1 = 0 | image: pi/4 + 2*pi*k ; -pi/4 + 2*pi*k ; 3*pi/4 + 2*pi*k ; -3*pi/4 + 2*pi*k
+eq | sin(x)^2 = 1/4 | image: pi/6 + 2*pi*k ; 5*pi/6 + 2*pi*k ; -pi/6 + 2*pi*k ; -5*pi/6 + 2*pi*k
+eq | tan(x)^2 = 3 | image: pi/3 + pi*k ; -pi/3 + pi*k
+eq | sin(2*x) = 1/2 | image: pi/12 + pi*k ; 5*pi/12 + pi*k
+eq | sin(3*x) = 1/2 | image: pi/18 + 2*pi*k/3 ; 5*pi/18 + 2*pi*k/3
+eq | cos(2*x) = cos(x) | image: 2*pi*k ; 2*pi/3 + 2*pi*k ; -2*pi/3 + 2*pi*k
+eq | sin(2*x) = sin(x) | image: 2*pi*k ; pi + 2*pi*k ; pi/3 + 2*pi*k ; -pi/3 + 2*pi*k
+eq | sin(x) = cos(x) | image: pi/4 + pi*k
+eq | sin(x) + cos(x) = 1 | image: 2*pi*k ; pi/2 + 2*pi*k
+eq | sin(x) + cos(x) = 0 | image: -pi/4 + pi*k
+eq | sin(x)*cos(x) = 0 | image: pi*k ; pi/2 + pi*k
+eq | sin(x) - sqrt(3)*cos(x) = 0 | image: pi/3 + pi*k
+eq | cos(2*x) + 3*sin(x) - 2 = 0 | image: pi/2 + 2*pi*k ; pi/6 + 2*pi*k ; 5*pi/6 + 2*pi*k
+eq | sin(x + pi/3) = 1/2 | image: -pi/6 + 2*pi*k ; pi/2 + 2*pi*k
+eq | sin(x)^2 + cos(x) = 1 | image: pi/2 + 2*pi*k ; -pi/2 + 2*pi*k ; 2*pi*k
+
+# Identities and contradictions
+eq | x + 1 = 1 + x | all
+eq | (x + 1)^2 = x^2 + 2*x + 1 | all
+eq | x = x + 1 | empty
+eq | sin(x)^2 + cos(x)^2 = 1 | all
+eq | x^2 + 1 = 0 | empty
+
+# No closed form: numeric roots
+eq | cos(x) = x | approx: 0.7390851332151607
+eq | x*exp(x) = 1 | approx: 0.5671432904097838
+eq | exp(x) = 3*x | approx: 0.6190612867359451, 1.5121345516578424
+eq | x^2 = 2^x | approx: -0.7666646959621432, 2, 4
+eq | ln(x) = x - 2 | approx: 0.15859433956303937, 3.146193220620583
+
+# Inequalities
+ineq | x^2 - 4 > 0 | (-oo,-2) U (2,oo)
+ineq | x^2 - 4 >= 0 | (-oo,-2] U [2,oo)
+ineq | x^2 - 5*x + 6 <= 0 | [2,3]
+ineq | x^2 - 5*x + 6 < 0 | (2,3)
+ineq | x^2 + 1 > 0 | all
+ineq | x^2 + 1 < 0 | empty
+ineq | x^2 <= 0 | [0,0]
+ineq | (x - 1)/(x + 2) >= 0 | (-oo,-2) U [1,oo)
+ineq | (x - 1)/(x + 2) < 0 | (-2,1)
+ineq | 1/x < 1 | (-oo,0) U (1,oo)
+ineq | 1/x >= 1 | (0,1]
+ineq | x^3 - x > 0 | (-1,0) U (1,oo)
+ineq | x^3 - x <= 0 | (-oo,-1] U [0,1]
+ineq | (x - 1)*(x - 2)*(x - 3) < 0 | (-oo,1) U (2,3)
+ineq | abs(x - 1) < 2 | (-1,3)
+ineq | abs(x - 1) >= 2 | (-oo,-1] U [3,oo)
+ineq | abs(2*x + 3) <= 1 | [-2,-1]
+ineq | sqrt(x) < 3 | [0,9)
+ineq | sqrt(x + 1) > 2 | (3,oo)
+ineq | 2*x + 3 > 7 | (2,oo)
+ineq | -3*x + 6 >= 0 | (-oo,2]
+ineq | x != 3 | (-oo,3) U (3,oo)
+ineq | exp(x) > 2 | (ln(2),oo)
+ineq | ln(x) < 1 | (0,e)
+ineq | x^2 - 2 >= 0 | (-oo,-sqrt(2)] U [sqrt(2),oo)
+ineq | x^2 - x - 1 < 0 | ((1 - sqrt(5))/2,(1 + sqrt(5))/2)
+ineq | x^4 - 5*x^2 + 4 > 0 | (-oo,-2) U (-1,1) U (2,oo)
+ineq | (x^2 - 1)/(x^2 - 4) > 0 | (-oo,-2) U (-1,1) U (2,oo)
+ineq | x/(x - 1) <= 2 | (-oo,1) U [2,oo)
+ineq | x^2 > x | (-oo,0) U (1,oo)
+ineq | (x + 1)^2 > 0 | (-oo,-1) U (-1,oo)
+ineq | 1/(x - 2) > 0 | (2,oo)
+
+# Systems
+sys | x + y = 3 ; x - y = 1 | x,y | {(2,1)}
+sys | 2*x + y = 5 ; x - 3*y = -8 | x,y | {(1,3)}
+sys | 3*x - 2*y = 4 ; x + 4*y = 6 | x,y | {(2,1)}
+sys | x/2 + y/3 = 4 ; x - y = 3 | x,y | {(6,3)}
+sys | x + y = 3 ; 2*x + 2*y = 6 | x,y | param
+sys | x + y = 3 ; x + y = 4 | x,y | empty
+sys | x - 2*y = 1 ; -2*x + 4*y = -2 | x,y | param
+sys | x + y + z = 6 ; x - y + z = 2 ; 2*x + y - z = 1 | x,y,z | {(1,2,3)}
+sys | x + y + z = 6 ; x - y = 0 ; y - z = -1 | x,y,z | {(5/3,5/3,8/3)}
+sys | x + y + z = 1 ; x + y + z = 2 ; x - y = 0 | x,y,z | empty
+sys | x + y + z = 3 ; 2*x + 2*y + 2*z = 6 ; x - y = 0 | x,y,z | param
+sys | 2*x + 3*y = 7 ; 4*x - y = 7 | x,y | {(2,1)}
+sys | x + y - z = 0 ; x - y + z = 2 ; -x + y + z = 4 | x,y,z | {(1,2,3)}
+sys | x + y = 3 ; x*y = 2 | x,y | {(1,2),(2,1)}
+sys | y = x^2 ; y = 2*x + 3 | x,y | {(-1,1),(3,9)}
+sys | x^2 + y^2 = 25 ; x + y = 7 | x,y | {(3,4),(4,3)}
+sys | x^2 + y^2 = 1 ; x = y | x,y | {(-sqrt(2)/2,-sqrt(2)/2),(sqrt(2)/2,sqrt(2)/2)}
+sys | x^2 - y = 0 ; x - y = -2 | x,y | {(-1,1),(2,4)}
+sys | x^2 + y^2 = 1 ; x + y = 2 | x,y | empty
+sys | y = 2*x + 1 ; y = x^2 - 2 | x,y | {(-1,-1),(3,7)}
+sys | x*y = 6 ; x + y = 5 | x,y | {(2,3),(3,2)}
+sys | x - y = 2 ; x^2 - y^2 = 8 | x,y | {(3,1)}

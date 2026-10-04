@@ -1,0 +1,474 @@
+# Algebra: absolute value, logarithms and complex arithmetic (d1-algebra.md).
+
+domain alg.abs "Absolute value"
+
+law def "Definition of absolute value"
+  vars:      a
+  statement: abs(a) = Piecewise[(a, a >= 0), (-a, true)]
+  orient:    none
+  level:     PreAlgebra
+  course:    Algebra
+  tags:      abs-cases
+  explain:   "|{a}| is {a} when {a} ≥ 0 and −{a} otherwise."
+
+law nonneg "Non-negativity of absolute value"
+  vars:      a
+  statement: abs(a) >= 0
+  orient:    none
+  level:     Algebra1
+  course:    Algebra
+  tags:      sign-analysis
+  explain:   "An absolute value is never negative."
+
+law zero "Absolute value is zero only at zero"
+  vars:      a
+  statement: abs(a) = 0 <=> a = 0
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      abs-equation
+  explain:   "|{a}| = 0 exactly when {a} = 0."
+
+law even "Symmetry of absolute value"
+  vars:      a
+  statement: abs(-a) = abs(a)
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      abs-simplify
+  explain:   "Opposite numbers have the same absolute value."
+
+law product "Absolute value of a product"
+  vars:      a, b
+  statement: abs(a*b) = abs(a)*abs(b)
+  complex:   true
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      abs-simplify
+  explain:   "The absolute value of a product is the product of the absolute values."
+
+law quotient "Absolute value of a quotient"
+  vars:      a, b
+  statement: abs(a/b) = abs(a)/abs(b)
+  where:     b != 0
+  complex:   b != 0
+  orient:    both
+  level:     Algebra1
+  course:    Algebra
+  tags:      abs-simplify
+  explain:   "The absolute value of a quotient is the quotient of the absolute values."
+
+law power "Absolute value of a power"
+  vars:      a, n: integer
+  statement: abs(a^n) = abs(a)^n
+  where:     a != 0 or n > 0
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      abs-simplify
+  explain:   "|{a}^{n}| = |{a}|^{n} for an integer exponent."
+
+law square "Square and absolute value"
+  vars:      a
+  statement: abs(a)^2 = a^2
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      abs-simplify
+  explain:   "Squaring erases the absolute value for real numbers."
+
+law max "Absolute value as a maximum"
+  vars:      a
+  statement: abs(a) = max(a, -a)
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      abs-cases
+  explain:   "|{a}| is the larger of {a} and −{a}."
+
+law triangle "Triangle inequality"
+  vars:      a, b
+  statement: abs(a + b) <= abs(a) + abs(b)
+  complex:   true
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      abs-inequality
+  explain:   "The absolute value of a sum is at most the sum of the absolute values."
+
+law reverse-triangle "Reverse triangle inequality"
+  vars:      a, b
+  statement: abs(abs(a) - abs(b)) <= abs(a - b)
+  complex:   true
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      abs-inequality
+  explain:   "The difference of absolute values is at most the absolute value of the difference."
+
+law eq "Absolute-value equation"
+  vars:      a, b
+  statement: abs(a) = b <=> b >= 0 and (a = b or a = -b)
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      abs-equation
+  explain:   "|{a}| = {b} means {a} = {b} or {a} = −{b}, and requires {b} ≥ 0."
+
+law lt "Absolute-value less-than inequality"
+  vars:      a, b
+  statement: abs(a) < b <=> -b < a < b
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      abs-inequality
+  explain:   "|{a}| < {b} means −{b} < {a} < {b}."
+
+law gt "Absolute-value greater-than inequality"
+  vars:      a, b
+  statement: abs(a) > b <=> a < -b or a > b
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      abs-inequality
+  explain:   "|{a}| > {b} means {a} < −{b} or {a} > {b}."
+
+law eq-abs "Equal absolute values"
+  vars:      a, b
+  statement: abs(a) = abs(b) <=> a = b or a = -b
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      abs-equation
+  explain:   "Two numbers have the same absolute value exactly when they are equal or opposite."
+
+domain alg.log "Logarithms"
+
+definition def "Definition of the logarithm"
+  vars:      x, b, y
+  defines:   log(x, b) = y
+  iff:       b^y = x
+  where:     b > 0 and b != 1 and x > 0
+  level:     Algebra2
+  course:    Algebra
+  explain:   "log_{b}({x}) = {y} means {b}^{y} = {x}."
+
+law natural "Natural logarithm"
+  vars:      x
+  statement: ln(x) = log(x, e)
+  where:     x > 0
+  orient:    rtl
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-base
+  explain:   "ln is the logarithm to base e."
+
+law of-one "Logarithm of one"
+  vars:      b
+  statement: log(1, b) = 0
+  where:     b > 0 and b != 1
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-simplify
+  explain:   "Every logarithm of 1 is 0."
+
+law of-base "Logarithm of the base"
+  vars:      b
+  statement: log(b, b) = 1
+  where:     b > 0 and b != 1
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-simplify
+  explain:   "log_{b}({b}) = 1."
+
+law inverse-exp "Exponential undoes the logarithm"
+  vars:      x, b
+  statement: b^log(x, b) = x
+  where:     x > 0 and b > 0 and b != 1
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-simplify
+  explain:   "{b}^(log_{b}({x})) = {x}."
+
+law inverse-log "Logarithm undoes the exponential"
+  vars:      x, b
+  statement: log(b^x, b) = x
+  where:     b > 0 and b != 1
+  complex:   b != 0 and b != 1 and -pi < im(x*ln(b)) and im(x*ln(b)) <= pi
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-simplify
+  explain:   "log_{b}({b}^{x}) = {x}."
+
+law product "Logarithm of a product"
+  vars:      x, y, b
+  statement: log(x*y, b) = log(x, b) + log(y, b)
+  where:     x > 0 and y > 0 and b > 0 and b != 1
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log | combine-log
+  explain:   "The logarithm of a product is the sum of the logarithms."
+
+law quotient "Logarithm of a quotient"
+  vars:      x, y, b
+  statement: log(x/y, b) = log(x, b) - log(y, b)
+  where:     x > 0 and y > 0 and b > 0 and b != 1
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log | combine-log
+  explain:   "The logarithm of a quotient is the difference of the logarithms."
+
+law power "Logarithm of a power"
+  vars:      x, r, b
+  statement: log(x^r, b) = r*log(x, b)
+  where:     x > 0 and b > 0 and b != 1
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log | combine-log
+  explain:   "The exponent comes down in front of the logarithm."
+
+law ln-product "Natural logarithm of a product"
+  vars:      x, y
+  statement: ln(x*y) = ln(x) + ln(y)
+  where:     x > 0 and y > 0
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log | combine-log
+  explain:   "The natural logarithm of a product is the sum of the natural logarithms."
+
+law ln-quotient "Natural logarithm of a quotient"
+  vars:      x, y
+  statement: ln(x/y) = ln(x) - ln(y)
+  where:     x > 0 and y > 0
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log | combine-log
+  explain:   "The natural logarithm of a quotient is the difference of the natural logarithms."
+
+law ln-power "Natural logarithm of a power"
+  vars:      x, r
+  statement: ln(x^r) = r*ln(x)
+  where:     x > 0
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log | combine-log
+  explain:   "ln({x}^{r}) = {r}·ln({x}) for a positive base."
+
+law ln-exp "Natural logarithm undoes the exponential"
+  vars:      x
+  statement: ln(exp(x)) = x
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-simplify
+  explain:   "ln(e^{x}) = {x}."
+
+law exp-ln "The exponential undoes the natural logarithm"
+  vars:      x
+  statement: exp(ln(x)) = x
+  where:     x > 0
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-simplify
+  explain:   "e^(ln {x}) = {x} for {x} > 0."
+
+law even-power "Logarithm of an even power"
+  vars:      x, k: integer
+  statement: ln(x^(2*k)) = 2*k*ln(abs(x))
+  where:     x != 0
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log
+  explain:   "For an even power the argument needs an absolute value: ln({x}^(2{k})) = 2{k}·ln|{x}|."
+
+law reciprocal "Logarithm of a reciprocal"
+  vars:      x
+  statement: ln(1/x) = -ln(x)
+  where:     x > 0
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log
+  explain:   "ln(1/{x}) = −ln({x})."
+
+law root "Logarithm of a root"
+  vars:      x, n: integer
+  statement: ln(root(x, n)) = ln(x)/n
+  where:     x > 0 and n >= 1
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand-log
+  explain:   "The logarithm of an n-th root is the logarithm divided by n."
+
+law change-of-base "Change of base"
+  vars:      x, b, c
+  statement: log(x, b) = ln(x)/ln(b) and ln(x)/ln(b) = log(x, c)/log(b, c)
+  where:     x > 0 and b > 0 and b != 1 and c > 0 and c != 1
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-base
+  explain:   "log_{b}({x}) = ln({x})/ln({b}), or in any other base."
+
+law swap "Reciprocal bases"
+  vars:      a, b
+  statement: log(a, b) = 1/log(b, a)
+  where:     a > 0 and a != 1 and b > 0 and b != 1
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-base
+  explain:   "Swapping argument and base takes the reciprocal."
+
+law power-base "Logarithm with a power as base"
+  vars:      x, b, k
+  statement: log(x, b^k) = log(x, b)/k
+  where:     x > 0 and b > 0 and b != 1 and k != 0
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-base
+  explain:   "A power of the base divides the logarithm by the exponent."
+
+law one-to-one "Logarithm is one-to-one"
+  vars:      x, y, b
+  statement: log(x, b) = log(y, b) <=> x = y
+  where:     x > 0 and y > 0 and b > 0 and b != 1
+  orient:    both
+  level:     Algebra2
+  course:    Algebra
+  tags:      logarithmic-equation
+  explain:   "Equal logarithms with the same base have equal arguments."
+
+law monotone "Monotonicity of logarithms"
+  vars:      x, y, b
+  statement: x < y <=> log(x, b) < log(y, b)
+  where:     x > 0 and y > 0 and b > 1
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      logarithmic-inequality
+  explain:   "For a base above 1 the logarithm is increasing (it reverses for bases between 0 and 1)."
+
+law ln-e "Natural logarithm of e"
+  statement: ln(e) = 1
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      log-simplify
+  explain:   "ln e = 1."
+
+law complex-product "Complex logarithm of a product"
+  vars:      z: complex, w: complex
+  statement: ln(z*w) - ln(z) - ln(w) in {-2*pi*I, 0, 2*pi*I}
+  where:     z != 0 and w != 0
+  orient:    none
+  level:     University
+  course:    Algebra
+  explain:   "With principal logarithms ln(zw) = ln z + ln w + 2πik for some k ∈ {−1, 0, 1}."
+
+domain alg.cplx "Complex numbers: arithmetic"
+
+law i-squared "The imaginary unit"
+  statement: I^2 = -1
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      complex-simplify
+  explain:   "i² = −1."
+
+law powers-of-i "Powers of i"
+  vars:      n: integer
+  statement: I^n = I^(n mod 4)
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      complex-simplify
+  explain:   "The powers of i repeat with period 4."
+
+law standard-form "Standard form"
+  vars:      a, b
+  statement: re(a + b*I) = a and im(a + b*I) = b
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  explain:   "For real a and b, the real part of a + bi is a and the imaginary part is b."
+
+law equality "Equality of complex numbers"
+  vars:      a, b, c, d
+  statement: a + b*I = c + d*I <=> a = c and b = d
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      complex-equation
+  explain:   "Two complex numbers are equal exactly when their real and imaginary parts are equal."
+
+law mul "Multiplication of complex numbers"
+  vars:      a, b, c, d
+  statement: (a + b*I)*(c + d*I) = (a*c - b*d) + (a*d + b*c)*I
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      complex-simplify
+  explain:   "Multiply as binomials and use i² = −1."
+
+law conj-product "Conjugate product"
+  vars:      z: complex
+  statement: z*conj(z) = re(z)^2 + im(z)^2
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      complex-simplify
+  explain:   "A complex number times its conjugate is the sum of the squares of its parts."
+
+law div "Division by the conjugate"
+  vars:      w: complex, z: complex
+  statement: w/z = w*conj(z)/(z*conj(z))
+  where:     z != 0
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      complex-simplify
+  explain:   "Multiply numerator and denominator by the conjugate of the denominator."
+
+law conj-sum "Conjugate of a sum and of a product"
+  vars:      z: complex, w: complex
+  statement: conj(z + w) = conj(z) + conj(w) and conj(z*w) = conj(z)*conj(w)
+  orient:    none
+  level:     Algebra2
+  course:    Algebra
+  tags:      complex-simplify
+  explain:   "Conjugation respects sums and products."
+
+law sqrt-neg "Square root of a negative number"
+  vars:      a
+  statement: sqrt(-a) = I*sqrt(a)
+  where:     a >= 0
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      complex-simplify
+  explain:   "For a ≥ 0, sqrt(−a) = i·sqrt(a)."
+
+law modulus "Modulus"
+  vars:      a, b
+  statement: abs(a + b*I) = sqrt(a^2 + b^2)
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      complex-simplify
+  explain:   "The modulus of a + bi is the square root of a² + b²."

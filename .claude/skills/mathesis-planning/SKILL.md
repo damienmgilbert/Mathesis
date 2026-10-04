@@ -5,7 +5,7 @@ description: Plan, hand off and review Mathesis work done by Claude Code — dra
 
 # Mathesis planning and review
 
-Mathesis is built by Claude Code, one phase per session, from `Plan 1 Math library.md` (saved in the repo as `PLAN.md`) and the design docs in `docs/design/`. This Project holds the same docs. The user's job in chat is usually one of four things: prepare the next prompt, check what Claude Code reported, change a design decision cleanly, or plan the next milestone. Each has a workflow below.
+Mathesis is built by Claude Code, one phase per session, from `PLAN.md` and the design docs in `docs/design/`. This Project holds the same docs. The user's job in chat is usually one of four things: prepare the next prompt, check what Claude Code reported, change a design decision cleanly, or plan the next milestone. Each has a workflow below.
 
 Always `project_read` the documents involved instead of relying on memory; phases cite exact sections, and small differences (a tolerance, a corpus size) are what the exit checks test.
 

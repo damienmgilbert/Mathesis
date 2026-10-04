@@ -16,6 +16,10 @@
     <Project Path="tests/Mathesis.Knowledge.Tests/Mathesis.Knowledge.Tests.csproj" />
     <Project Path="tests/Mathesis.Tests/Mathesis.Tests.csproj" />
   </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/AotSmoke/AotSmoke.csproj" />
+    <File Path="samples/repl.cs" />
+  </Folder>
   <Folder Name="/eng/">
     <File Path="eng/policy-check.cs" />
   </Folder>

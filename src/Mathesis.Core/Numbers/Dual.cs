@@ -94,7 +94,7 @@ public readonly struct Dual<T> : INumberBase<Dual<T>>
     // ----- Equality -----
 
     /// <inheritdoc />
-    public bool Equals(Dual<T> other) => Value == other.Value && Derivative == other.Derivative;
+    public bool Equals(Dual<T> other) => Value.Equals(other.Value) && Derivative.Equals(other.Derivative);
 
     /// <inheritdoc />
     public override bool Equals(object? obj) => obj is Dual<T> other && Equals(other);

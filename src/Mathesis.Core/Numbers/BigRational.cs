@@ -150,9 +150,15 @@ public readonly struct BigRational : INumber<BigRational>, ISignedNumber<BigRati
 
     /// <summary>Raises <paramref name="value"/> to an integer power. 0⁰ is 1 (see catalog convention <c>conv.zero-to-the-zero</c>).</summary>
     /// <exception cref="DivideByZeroException"><paramref name="value"/> is zero and <paramref name="exponent"/> is negative.</exception>
+    /// <exception cref="OverflowException"><paramref name="exponent"/> is <see cref="int.MinValue"/> and <paramref name="value"/> is not 1 or −1 (the result would not fit in memory).</exception>
     public static BigRational Pow(BigRational value, int exponent)
     {
         if (exponent == 0) return One;
+        if (exponent == int.MinValue)
+        {
+            if (value.Sign == 0) throw new DivideByZeroException();
+            return value == One || value == NegativeOne ? One : throw new OverflowException("The result is too large to represent.");
+        }
         var baseValue = exponent < 0 ? Reciprocal(value) : value;
         var e = (uint)Math.Abs((long)exponent);
         return new BigRational(
@@ -418,7 +424,9 @@ public readonly struct BigRational : INumber<BigRational>, ISignedNumber<BigRati
         var q = BigInteger.DivRem(scaledN, scaledD, out var remainder);
         if (!remainder.IsZero) q |= BigInteger.One;
 
-        var drop = (int)q.GetBitLength() - 53;
+        // Keep 53 significant bits, or fewer in the subnormal range, so the value is rounded once and ScaleB is exact.
+        var exponent = (int)q.GetBitLength() - 1 - shift;
+        var drop = (int)q.GetBitLength() - Math.Clamp(exponent + 1075, 0, 53);
         var mantissa = q >> drop;
         var rest = q - (mantissa << drop);
         var half = BigInteger.One << (drop - 1);
@@ -628,6 +636,36 @@ public readonly struct BigRational : INumber<BigRational>, ISignedNumber<BigRati
             "D" or "d" => ToDecimalString(),
             _ => throw new FormatException($"Unknown format '{format}'. Use G, R or D."),
         };
+
+    /// <summary>
+    /// Rounds to <paramref name="fractionDigits"/> decimal places with ties going away from zero (the school convention,
+    /// catalog <c>conv.rounding</c>), unlike <see cref="Math.Round(decimal)"/> whose default is half to even. The result is exact.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="fractionDigits"/> is negative.</exception>
+    public BigRational Round(int fractionDigits)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(fractionDigits);
+        var scale = new BigRational(BigInteger.Pow(10, fractionDigits));
+        var scaled = Abs(this) * scale;
+        var rounded = Floor(scaled + OneHalf);
+        var magnitude = new BigRational(rounded) / scale;
+        return Sign < 0 ? -magnitude : magnitude;
+    }
+
+    private static readonly BigRational OneHalf = new(BigInteger.One, new BigInteger(2));
+
+    /// <summary>
+    /// Formats the value rounded half away from zero to exactly <paramref name="fractionDigits"/> decimal places,
+    /// for example <c>0.125</c> to 2 places is <c>0.13</c> and −2.5 to 0 places is <c>-3</c>.
+    /// </summary>
+    public string ToFixedString(int fractionDigits)
+    {
+        var rounded = Round(fractionDigits);
+        var digits = BigInteger.Abs(rounded._numerator * BigInteger.Pow(10, fractionDigits) / rounded.Denominator).ToString(CultureInfo.InvariantCulture);
+        if (fractionDigits > 0) digits = digits.PadLeft(fractionDigits + 1, '0');
+        var text = fractionDigits > 0 ? digits[..^fractionDigits] + "." + digits[^fractionDigits..] : digits;
+        return rounded.Sign < 0 ? "-" + text : text;
+    }
 
     /// <summary>
     /// The exact decimal expansion, with a repeating block in parentheses: <c>1/8</c> → <c>0.125</c>, <c>1/6</c> → <c>0.1(6)</c>,

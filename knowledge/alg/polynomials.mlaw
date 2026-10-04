@@ -1,0 +1,484 @@
+# Algebra: polynomials, factoring, division and roots, quadratics (d1-algebra.md).
+
+domain alg.poly "Polynomials"
+
+law like-terms "Combine like terms"
+  vars:      a, b, x, n: integer
+  statement: a*x^n + b*x^n = (a + b)*x^n
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      combine-like-terms
+  explain:   "Terms with the same variable part add their coefficients."
+
+law foil "Product of binomials (FOIL)"
+  vars:      a, b, c, d
+  statement: (a + b)*(c + d) = a*c + a*d + b*c + b*d
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      expand
+  explain:   "Multiply first, outer, inner and last terms."
+
+law square-sum "Square of a sum"
+  vars:      a, b
+  statement: (a + b)^2 = a^2 + 2*a*b + b^2
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      expand
+  explain:   "({a} + {b})² = {a}² + 2{a}{b} + {b}²."
+
+law square-diff "Square of a difference"
+  vars:      a, b
+  statement: (a - b)^2 = a^2 - 2*a*b + b^2
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      expand
+  explain:   "({a} − {b})² = {a}² − 2{a}{b} + {b}²."
+
+law sum-times-diff "Sum times difference"
+  vars:      a, b
+  statement: (a + b)*(a - b) = a^2 - b^2
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      expand
+  explain:   "({a} + {b})({a} − {b}) = {a}² − {b}²."
+
+law cube-sum "Cube of a sum"
+  vars:      a, b
+  statement: (a + b)^3 = a^3 + 3*a^2*b + 3*a*b^2 + b^3
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      expand
+  explain:   "({a} + {b})³ = {a}³ + 3{a}²{b} + 3{a}{b}² + {b}³."
+
+law cube-diff "Cube of a difference"
+  vars:      a, b
+  statement: (a - b)^3 = a^3 - 3*a^2*b + 3*a*b^2 - b^3
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      expand
+  explain:   "({a} − {b})³ = {a}³ − 3{a}²{b} + 3{a}{b}² − {b}³."
+
+law square-trinomial "Square of a trinomial"
+  vars:      a, b, c
+  statement: (a + b + c)^2 = a^2 + b^2 + c^2 + 2*a*b + 2*a*c + 2*b*c
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      expand
+  explain:   "Square each term and add twice every product of two different terms."
+
+law binomial-theorem "Binomial theorem"
+  vars:      a, b, n: natural
+  statement: (a + b)^n = sum(binomial(n, k)*a^(n - k)*b^k, k, 0, n)
+  orient:    ltr
+  level:     Algebra2
+  course:    Algebra
+  tags:      expand
+  explain:   "Expand ({a} + {b})^{n} with binomial coefficients."
+  see:       alg.exp.zero
+
+theorem multinomial-theorem "Multinomial theorem"
+  level:     University
+  course:    Algebra
+  explain:   "(x1 + … + xm)^n is the sum over k1 + … + km = n of multinomial(n; k1, …, km)·x1^k1·…·xm^km."
+
+theorem degree-product "Degree of a product"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "deg(p·q) = deg p + deg q for non-zero polynomials over an integral domain."
+
+theorem degree-sum "Degree of a sum"
+  level:     Algebra2
+  course:    Algebra
+  explain:   "deg(p + q) ≤ max(deg p, deg q)."
+
+domain alg.factor "Factoring"
+
+pattern gcf "Greatest common factor"
+  vars:      a, b, c
+  match:     a*b + a*c
+  yields:    a*(b + c)
+  level:     Algebra1
+  course:    Algebra
+  tags:      factor
+  explain:   "Factor the common factor {a} out of both terms."
+
+method grouping "Factor by grouping"
+  vars:       a, b, x, y
+  applies-to: a*x + a*y + b*x + b*y
+  result:     (a + b)*(x + y)
+  level:      Algebra1
+  course:     Algebra
+  tags:       factor
+  explain:    "Group the terms in pairs, factor each pair, then factor the common binomial."
+
+pattern diff-squares "Difference of squares"
+  vars:   a, b
+  match:  a^2 - b^2
+  yields: (a - b)*(a + b)
+  level:  Algebra1
+  course: Algebra
+  tags:   factor
+  explain: "{a}² − {b}² is a difference of squares, so it factors as ({a} − {b})({a} + {b})."
+
+pattern perfect-square-plus "Perfect-square trinomial (sum)"
+  vars:   a, b
+  match:  a^2 + 2*a*b + b^2
+  yields: (a + b)^2
+  level:  Algebra1
+  course: Algebra
+  tags:   factor
+  explain: "{a}² + 2{a}{b} + {b}² is the square of ({a} + {b})."
+
+pattern perfect-square-minus "Perfect-square trinomial (difference)"
+  vars:   a, b
+  match:  a^2 - 2*a*b + b^2
+  yields: (a - b)^2
+  level:  Algebra1
+  course: Algebra
+  tags:   factor
+  explain: "{a}² − 2{a}{b} + {b}² is the square of ({a} − {b})."
+
+pattern sum-cubes "Sum of cubes"
+  vars:   a, b
+  match:  a^3 + b^3
+  yields: (a + b)*(a^2 - a*b + b^2)
+  level:  Algebra2
+  course: Algebra
+  tags:   factor
+  explain: "{a}³ + {b}³ = ({a} + {b})({a}² − {a}{b} + {b}²)."
+
+pattern diff-cubes "Difference of cubes"
+  vars:   a, b
+  match:  a^3 - b^3
+  yields: (a - b)*(a^2 + a*b + b^2)
+  level:  Algebra2
+  course: Algebra
+  tags:   factor
+  explain: "{a}³ − {b}³ = ({a} − {b})({a}² + {a}{b} + {b}²)."
+
+pattern diff-powers "Difference of n-th powers"
+  vars:   a, b, n: integer
+  where:  n >= 1
+  match:  a^n - b^n
+  yields: (a - b)*sum(a^(n - 1 - k)*b^k, k, 0, n - 1)
+  level:  Algebra2
+  course: Algebra
+  tags:   factor
+  explain: "{a}^{n} − {b}^{n} has the factor ({a} − {b})."
+
+pattern sum-odd-powers "Sum of odd powers"
+  vars:   a, b, n: integer
+  where:  n >= 1 and n mod 2 = 1
+  match:  a^n + b^n
+  yields: (a + b)*sum((-1)^k*a^(n - 1 - k)*b^k, k, 0, n - 1)
+  level:  Algebra2
+  course: Algebra
+  tags:   factor
+  explain: "For odd {n}, {a}^{n} + {b}^{n} has the factor ({a} + {b})."
+
+pattern simple-trinomial "Monic trinomial"
+  vars:   x, p, q
+  match:  x^2 + (p + q)*x + p*q
+  yields: (x + p)*(x + q)
+  level:  Algebra1
+  course: Algebra
+  tags:   factor
+  explain: "Find two numbers with product {p}{q} and sum {p}+{q}: x² + ({p}+{q})x + {p}{q} = (x + {p})(x + {q})."
+
+method ac-method "AC method"
+  vars:       a, b, c, x
+  applies-to: a*x^2 + b*x + c
+  level:      Algebra1
+  course:     Algebra
+  explain:    "For a·x² + b·x + c with integer coefficients, find m and n with m·n = a·c and m + n = b, split the middle term and factor by grouping."
+
+theorem by-roots "Factor from roots"
+  level:   Algebra2
+  course:  Algebra
+  explain: "If r1 and r2 are the roots of a·x² + b·x + c, then a·x² + b·x + c = a(x − r1)(x − r2)."
+
+pattern quadratic-in-form "Quadratic in form"
+  vars:   a, b, c, x, k: integer
+  match:  a*x^(2*k) + b*x^k + c
+  yields: a*(x^k)^2 + b*(x^k) + c
+  level:  Algebra2
+  course: Algebra
+  tags:   factor | solve-quadratic-in-form
+  explain: "With u = x^{k}, the expression is the quadratic a·u² + b·u + c."
+
+pattern sophie-germain "Sophie Germain identity"
+  vars:   a, b
+  match:  a^4 + 4*b^4
+  yields: (a^2 + 2*a*b + 2*b^2)*(a^2 - 2*a*b + 2*b^2)
+  level:  Advanced
+  course: Algebra
+  tags:   factor
+  explain: "a⁴ + 4b⁴ factors into two quadratics."
+
+definition irreducible-quadratic "Irreducible over the reals"
+  level:   Algebra2
+  course:  Algebra
+  explain: "a·x² + b·x + c with b² − 4ac < 0 has no real factorization; it factors only over the complex numbers."
+
+definition content-primitive "Content and primitive part"
+  level:   Algebra2
+  course:  Algebra
+  explain: "Over the integers a polynomial p equals content(p) times primitive(p), where the content is the gcd of the coefficients."
+
+method square-free "Square-free factorization (Yun)"
+  level:   University
+  course:  Algebra
+  explain: "In characteristic 0, p = product of q_i^i with each q_i square-free and the q_i pairwise coprime (Yun's algorithm)."
+  implemented-by: M:Mathesis.Polynomials.PolynomialAlgorithms.SquareFree
+
+method over-q "Factorization over the rationals"
+  level:   University
+  course:  Algebra
+  explain: "Berlekamp–Zassenhaus with Hensel lifting factors a polynomial into irreducibles over ℚ (Milestone 2)."
+
+domain alg.poly "Polynomial division and roots"
+
+theorem division-algorithm "Division algorithm"
+  level:   Algebra2
+  course:  Algebra
+  explain: "For d ≠ 0 over a field, p = d·q + r with deg r < deg d, and q and r are unique."
+
+method long-division "Polynomial long division"
+  level:   Algebra2
+  course:  Algebra
+  explain: "Divide leading terms, multiply back, subtract, and repeat until the remainder has lower degree than the divisor."
+
+method synthetic-division "Synthetic division"
+  level:   Algebra2
+  course:  Algebra
+  explain: "Divide by a monic linear x − c using a table of coefficients."
+
+theorem remainder-theorem "Remainder theorem"
+  level:   Algebra2
+  course:  Algebra
+  explain: "The remainder of p ÷ (x − c) is p(c)."
+
+theorem factor-theorem "Factor theorem"
+  level:   Algebra2
+  course:  Algebra
+  explain: "x − c divides p exactly when p(c) = 0."
+
+theorem rational-root "Rational Root Theorem"
+  level:   Algebra2
+  course:  Algebra
+  tags:    rational-roots
+  explain: "If p/q in lowest terms is a root of a_n·x^n + … + a_0 with integer coefficients, then p divides a_0 and q divides a_n."
+
+theorem fta "Fundamental Theorem of Algebra"
+  level:   PreCalculus
+  course:  Algebra
+  explain: "A polynomial of degree n ≥ 1 with complex coefficients has exactly n complex roots counted with multiplicity."
+  refs:    book:"Stewart, Calculus, 9e, Appendix G"
+
+theorem conjugate-roots "Complex conjugate roots"
+  level:   Algebra2
+  course:  Algebra
+  explain: "For real coefficients, if z is a root then so is its conjugate."
+
+theorem irrational-conjugates "Irrational conjugate roots"
+  level:   Algebra2
+  course:  Algebra
+  explain: "For rational coefficients, if a + sqrt(b) is a root with sqrt(b) irrational, so is a − sqrt(b)."
+
+theorem descartes "Descartes' rule of signs"
+  level:   PreCalculus
+  course:  Algebra
+  explain: "The number of positive real roots is the number of sign changes in p(x) minus an even number; negative roots follow from p(−x)."
+
+theorem bound-theorem "Upper and lower bound theorem"
+  level:   PreCalculus
+  course:  Algebra
+  explain: "Synthetic division by x − c with c > 0 giving no negative entries shows no root exceeds c (alternating signs with c < 0 bound the roots below)."
+
+theorem cauchy-bound "Cauchy root bound"
+  level:   University
+  course:  Algebra
+  explain: "Every root r of a_n·x^n + … + a_0 satisfies |r| ≤ 1 + max |a_i/a_n|."
+
+theorem vieta "Vieta's formulas"
+  level:   Algebra2
+  course:  Algebra
+  explain: "The sum of the roots is −a_(n−1)/a_n and their product is (−1)^n·a_0/a_n; in general the elementary symmetric polynomials of the roots are (−1)^k·a_(n−k)/a_n."
+
+theorem ivt "Sign change implies a root"
+  level:   PreCalculus
+  course:  Algebra
+  explain: "If p(a)·p(b) < 0 for a real polynomial then p has a root in (a, b)."
+
+definition multiplicity "Multiplicity of a root"
+  level:   Algebra2
+  course:  Algebra
+  explain: "r has multiplicity m if (x − r)^m divides p and (x − r)^(m+1) does not."
+
+method gcd "Euclidean algorithm for polynomials"
+  level:   University
+  course:  Algebra
+  explain: "gcd(p, q) = gcd(q, p mod q) and gcd(p, 0) = monic(p), over a field."
+  implemented-by: M:Mathesis.Polynomials.PolynomialAlgorithms.Gcd
+
+theorem lcm "LCM via GCD"
+  level:   University
+  course:  Algebra
+  explain: "lcm(p, q) = p·q/gcd(p, q) up to a unit, for non-zero p and q."
+
+domain alg.quad "Quadratics"
+
+definition standard-form "Standard form of a quadratic"
+  level:   Algebra1
+  course:  Algebra
+  explain: "a·x² + b·x + c with a ≠ 0."
+
+formula vertex-form "Vertex form"
+  vars:      a, b, c, x
+  statement: a*x^2 + b*x + c = a*(x + b/(2*a))^2 + (c - b^2/(4*a))
+  where:     a != 0
+  level:     Algebra1
+  course:    Algebra
+  tags:      complete-square
+  explain:   "a·x² + b·x + c = a(x − h)² + k with h = −b/(2a) and k = c − b²/(4a)."
+
+definition discriminant "Discriminant"
+  vars:      a, b, c, d
+  statement: d = b^2 - 4*a*c
+  level:     Algebra1
+  course:    Algebra
+  explain:   "The discriminant of a·x² + b·x + c is b² − 4ac."
+
+theorem root-nature "Nature of the roots"
+  level:   Algebra1
+  course:  Algebra
+  explain: "For real coefficients: D > 0 gives two distinct real roots, D = 0 one repeated real root, D < 0 two complex-conjugate roots."
+
+formula quadratic-formula "Quadratic formula"
+  vars:       a: complex, b: complex, c: complex, x: complex
+  statement:  a*x^2 + b*x + c = 0 <=> (x = (-b + sqrt(b^2 - 4*a*c)) / (2*a) or x = (-b - sqrt(b^2 - 4*a*c)) / (2*a))
+  where:      a != 0
+  solve-for:  x
+  quantities: a "leading coefficient", b "linear coefficient", c "constant term"
+  level:      Algebra1
+  course:     Algebra
+  tags:       solve-quadratic
+  explain:    "The roots of {a}x² + {b}x + {c} = 0 are x = (−{b} ± sqrt({b}² − 4{a}{c}))/(2{a})."
+  implemented-by: M:Mathesis.Solving.Quadratic.Solve
+
+method completing-the-square "Completing the square"
+  vars:       a, b, c, x
+  where:      a != 0
+  applies-to: a*x^2 + b*x + c
+  steps:      "Factor a out of the x terms"      a*(x^2 + (b/a)*x) + c
+              "Add and subtract (b/(2a))^2"      a*(x^2 + (b/a)*x + (b/(2*a))^2) + c - a*(b/(2*a))^2
+              "Write the perfect square"         a*(x + b/(2*a))^2 + c - b^2/(4*a)
+  result:     a*(x + b/(2*a))^2 + (4*a*c - b^2)/(4*a)
+  level:      Algebra1
+  course:     Algebra
+  tags:       complete-square
+  implemented-by: M:Mathesis.Algebra.CompleteSquare.Apply
+
+formula axis "Axis of symmetry"
+  vars:      x, a, b
+  statement: x = -b/(2*a)
+  where:     a != 0
+  level:     Algebra1
+  course:    Algebra
+  explain:   "The parabola y = a·x² + b·x + c is symmetric about x = −b/(2a)."
+
+theorem extremum "The vertex is the extremum"
+  level:   Algebra1
+  course:  Algebra
+  explain: "The vertex value k is the minimum when a > 0 and the maximum when a < 0."
+
+theorem vieta "Sum and product of the roots"
+  level:   Algebra1
+  course:  Algebra
+  explain: "The roots of a·x² + b·x + c satisfy r1 + r2 = −b/a and r1·r2 = c/a."
+
+formula from-roots "Quadratic from its roots"
+  vars:      x, r1, r2
+  statement: (x - r1)*(x - r2) = x^2 - (r1 + r2)*x + r1*r2
+  level:     Algebra1
+  course:    Algebra
+  explain:   "The quadratic with roots r1 and r2 is x² − (r1 + r2)x + r1·r2."
+
+domain alg.rat "Rational expressions"
+
+definition domain "Domain of a rational expression"
+  level:   Algebra1
+  course:  Algebra
+  explain: "The domain of a rational expression is all x for which the denominator is not zero."
+
+law cancel "Cancel common factors"
+  vars:      a, b, c
+  statement: (a*c)/(b*c) = a/b
+  where:     b != 0 and c != 0
+  orient:    ltr
+  level:     Algebra1
+  course:    Algebra
+  tags:      fraction-simplify
+  explain:   "Cancel the common factor {c} (assuming {c} ≠ 0)."
+  see:       alg.frac.equivalent
+
+method lcd "Least common denominator"
+  level:   Algebra1
+  course:  Algebra
+  explain: "To add or subtract rational expressions, rewrite them over the LCM of the denominators."
+
+method complex-fraction "Simplify a complex fraction"
+  level:   Algebra2
+  course:  Algebra
+  explain: "Multiply numerator and denominator by the LCD of the inner fractions."
+
+definition proper "Proper rational function"
+  level:   Algebra2
+  course:  Algebra
+  explain: "P/Q is proper when deg P < deg Q; otherwise divide first."
+
+domain alg.pf "Partial fractions"
+
+formula distinct-linear "Distinct linear factors"
+  vars:      p1, p0, a, b, x
+  statement: (p1*x + p0)/((x - a)*(x - b)) = ((p1*a + p0)/(a - b))/(x - a) + ((p1*b + p0)/(b - a))/(x - b)
+  where:     a != b and x != a and x != b
+  level:     Calculus2
+  course:    Algebra
+  tags:      partial-fractions
+  explain:   "A proper fraction with distinct linear factors splits into A/(x − a) + B/(x − b)."
+
+formula repeated-linear "Repeated linear factor"
+  vars:      A: function(N -> R), a, k: natural, x
+  statement: sum(A(j)*(x - a)^(k - j), j, 1, k)/(x - a)^k = sum(A(j)/(x - a)^j, j, 1, k)
+  level:     Calculus2
+  course:    Algebra
+  tags:      partial-fractions
+  explain:   "A repeated linear factor (x − a)^k contributes one term for each power 1, …, k."
+
+formula quadratic "Irreducible quadratic factor"
+  vars:      s: function(N -> R), t: function(N -> R), p, q, k: natural, x
+  statement: sum((s(j)*x + t(j))*(x^2 + p*x + q)^(k - j), j, 1, k)/(x^2 + p*x + q)^k = sum((s(j)*x + t(j))/(x^2 + p*x + q)^j, j, 1, k)
+  where:     p^2 - 4*q < 0
+  level:     Calculus2
+  course:    Algebra
+  tags:      partial-fractions
+  explain:   "An irreducible quadratic factor contributes terms (Bx + C)/(x² + px + q)^j."
+
+method cover-up "Heaviside cover-up"
+  level:   Calculus2
+  course:  Algebra
+  explain: "For a simple root a of Q, the coefficient A of 1/(x − a) is P(a)/Q′(a)."
+
+theorem uniqueness "Uniqueness of partial fractions"
+  level:   Calculus2
+  course:  Algebra
+  explain: "The partial-fraction decomposition of a proper rational function over the reals is unique."

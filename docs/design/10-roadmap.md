@@ -1,6 +1,6 @@
 # 10 Roadmap
 
-The full scope is eight milestones. Milestone 1 is `Plan 1 Math library.md`; each later milestone gets its own plan file, drafted by Claude Code from this roadmap and the domain docs once the previous milestone ships.
+The full scope is eight milestones. Milestone 1 is `PLAN.md`; each later milestone gets its own plan file, drafted by Claude Code from this roadmap and the domain docs once the previous milestone ships.
 
 ## Milestones
 
@@ -19,7 +19,7 @@ Milestones 3, 6 and 7 can run in parallel with 2, 4 and 5 once Milestone 1 is do
 
 ## Milestone 1: Foundation
 
-Delivered by `Plan 1 Math library.md`.
+Delivered by `PLAN.md`.
 
 - `BigRational`, `Complex<T>`, `Dual<T>`; numerical core (roots, quadrature, ODEs, interpolation, finite differences); dense linear algebra and polynomials.
 - `Expr` with all node kinds, the operator registry with the built-in catalog, sorts, three canonical levels, parser (linear text and LaTeX subset), printers (text, LaTeX), JSON.

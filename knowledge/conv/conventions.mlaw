@@ -1,0 +1,45 @@
+# Conventions (docs/design/06-knowledge-catalog.md; d1-algebra.md, "Conventions"; d2-trigonometry.md for conv.arccot-range).
+# The parser, evaluator and printers are configured by these; the unit tests of the engines check them.
+
+domain conv "Conventions"
+
+convention order-of-operations "Order of operations"
+  level:     PreAlgebra
+  course:    Algebra
+  rationale: "Parentheses, exponents (right to left), multiplication and division (left to right), addition and subtraction (left to right); implicit multiplication has the same precedence as *. Implemented by the parser precedence table (docs/design/05)."
+
+convention zero-to-the-zero "0^0 = 1"
+  statement: 0^0 = 1
+  level:     Algebra1
+  course:    Algebra
+  see:       calc.lim.indeterminate-forms
+  rationale: "Keeps the binomial theorem, power series and polynomial evaluation uniform; matches IEEE 754 pow and Math.Pow(0, 0). As a limit form 0^0 remains indeterminate (calc.lim.indeterminate-forms)."
+
+convention real-odd-root "Real odd roots"
+  vars:      x, p: integer, q: integer
+  statement: x^(p/q) = root(x, q)^p
+  where:     q mod 2 = 1 and q >= 1 and gcd(p, q) = 1 and x < 0
+  level:     Algebra2
+  course:    Algebra
+  verify:    none
+  rationale: "Textbook convention: (-8)^(1/3) = -2 in real mode; complex mode uses the principal branch. The numeric verifier treats a literal exponent p/q as this root, a computed exponent as the principal real power."
+
+convention bare-log-base-10 "Bare log is base 10"
+  level:     Algebra2
+  course:    Algebra
+  rationale: "School convention: log x is the base-10 logarithm unless ParserOptions.LogMeansNatural is set."
+
+convention rounding "Rounding for display"
+  level:     PreAlgebra
+  course:    Algebra
+  rationale: "Round half away from zero (school convention). .NET Math.Round defaults to MidpointRounding.ToEven, so printers pass MidpointRounding.AwayFromZero explicitly."
+
+convention decimal-exact "Decimal literals are exact"
+  level:     PreAlgebra
+  course:    Algebra
+  rationale: "0.1 parses as the rational 1/10, never as a binary floating-point number."
+
+convention arccot-range "Range of arccot"
+  level:     PreCalculus
+  course:    Trigonometry
+  rationale: "arccot maps the reals onto (0, π) (so arccot(x) = π/2 − arctan(x)); some texts use (−π/2, π/2]."
