@@ -178,6 +178,7 @@ internal static class Lexer
             // "3." is read as 3 followed by a dot token only when something other than a digit follows; leave the dot alone.
         }
         var hasExponent = false;
+        var mantissaEnd = i;
         if (i < text.Length && (text[i] == 'e' || text[i] == 'E'))
         {
             var j = i + 1;
@@ -199,10 +200,17 @@ internal static class Lexer
         }
         if (hasExponent && !value.IsInteger)
         {
-            // A scientific literal prints back as a plain decimal with the fewest fractional digits that are exact.
-            var digits = 0;
-            while (digits < 400 && value.Round(digits) != value) digits++;
-            display = NumberDisplay.Decimal(digits);
+            // A scientific literal prints back as a plain decimal with the fewest fractional digits that are exact, at most 400.
+            // The value is the mantissa digits times 10^(exponent - fractionDigits), so the count follows from the text: the
+            // fractional digits minus the exponent, less the trailing zeros of the mantissa digits. (Rounding a huge value
+            // digit by digit instead took 0.6 s for 1e-100000.)
+            var exponent = int.Parse(text.AsSpan(mantissaEnd + 1, i - mantissaEnd - 1), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture);
+            var trailingZeros = 0;
+            for (var k = mantissaEnd - 1; k >= start && text[k] is '0' or '.'; k--)
+            {
+                if (text[k] == '0') trailingZeros++;
+            }
+            display = NumberDisplay.Decimal(Math.Clamp(fractionDigits - exponent - trailingZeros, 0, 400));
         }
         else if (hasFraction)
         {
