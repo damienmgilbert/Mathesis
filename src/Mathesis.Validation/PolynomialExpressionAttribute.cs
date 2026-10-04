@@ -61,6 +61,9 @@ public sealed class PolynomialExpressionAttribute : MathValidationAttribute
 
     internal override int ExtraPlaceholderCount => 2;
 
+    // DegreeTooHigh fills {1} with the degree and {2} with the maximum; NotAPolynomial fills {2} with the maximum.
+    internal override int NumericPlaceholders => (1 << 1) | (1 << 2);
+
     internal override bool IsSupported(object value) => value is Expr;
 
     internal override string? ValidateOptions()

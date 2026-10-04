@@ -333,6 +333,36 @@ public class MathValidationAttributeTests
     }
 
     [TestMethod]
+    public void FormatSpecifiersThatNumbersRejectAreConfigurationErrors()
+    {
+        // TooLong fills {1} with an int limit, NonNumericEntry fills {1} and {2} with a row and a column, DegreeTooHigh fills {2} with the maximum.
+        // "Q" is no numeric format, so these templates would throw while validating bad input; they must fail at startup instead.
+        var misconfigured = new MathValidationAttribute[]
+        {
+            new RationalNumberAttribute { ErrorMessage = "{0}: {1:Q}" },
+            new ProbeAttribute { ErrorMessage = "{0}: {1:Q}" },
+            new MathMatrixAttribute { ErrorMessage = "{0}: {2:Q}" },
+            new PolynomialExpressionAttribute("x") { ErrorMessage = "{0}: {2:Q}" },
+        };
+        foreach (var attribute in misconfigured)
+        {
+            var text = attribute.GetConfigurationError();
+            Assert.IsNotNull(text, attribute.GetType().Name);
+            StringAssert.Contains(text, attribute.GetType().Name);
+            Assert.AreEqual(text, Assert.ThrowsExactly<InvalidOperationException>(() => attribute.IsValid(null)).Message);
+        }
+
+        // Placeholders that are always text ignore format specifiers, so those templates stay valid, and numeric specifiers keep working.
+        var range = new ExactRangeAttribute("0", "1") { ErrorMessage = "{0} {2:Q} {3:Q}" };
+        Assert.IsNull(range.GetConfigurationError());
+        Assert.AreEqual("Value 0 1", range.Check("2")!.ErrorMessage);
+        Assert.IsNull(new MathExpressionAttribute { ErrorMessage = "{0}: {2:Q}" }.GetConfigurationError());
+        Assert.IsNull(new RationalNumberAttribute { ErrorMessage = "{0}: {1:N0}" }.GetConfigurationError());
+        Assert.IsNull(new MathMatrixAttribute { ErrorMessage = "{0}: row {1:D2}, column {2:D2}" }.GetConfigurationError());
+        Assert.AreEqual("Value: row 01, column 02", new MathMatrixAttribute { ErrorMessage = "{0}: row {1:D2}, column {2:D2}" }.Check("[[1, x]]")!.ErrorMessage);
+    }
+
+    [TestMethod]
     public void WhitespaceOnlyTemplateFallsBackToTheDefaultSoTheMessageIsNeverEmpty()
     {
         var probe = new ProbeAttribute { ErrorMessage = "   " };

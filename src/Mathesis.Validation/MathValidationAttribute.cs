@@ -59,6 +59,12 @@ public abstract class MathValidationAttribute : ValidationAttribute
     /// <summary>How many message placeholders after <c>{0}</c> this attribute can fill (at least 1: the limit of <see cref="MathValidationCode.TooLong"/>).</summary>
     internal virtual int ExtraPlaceholderCount => 1;
 
+    /// <summary>
+    /// The placeholders that can receive a number, as a bit mask (bit i for <c>{i}</c>): <c>{1}</c> always, for the limit of <see cref="MathValidationCode.TooLong"/>.
+    /// A developer template is checked with numbers in these places, because a format such as <c>{1:Q}</c> is ignored for text but throws for a number.
+    /// </summary>
+    internal virtual int NumericPlaceholders => 1 << 1;
+
     /// <summary>Whether <paramref name="value"/>, which is not text, is a typed value this attribute can check.</summary>
     internal virtual bool IsSupported(object value) => false;
 
@@ -177,7 +183,7 @@ public abstract class MathValidationAttribute : ValidationAttribute
         if (custom is not null && !ReferenceEquals(custom, DefaultMessage) && !string.IsNullOrWhiteSpace(custom))
         {
             var args = new object[1 + ExtraPlaceholderCount];
-            Array.Fill(args, string.Empty);
+            for (var i = 0; i < args.Length; i++) args[i] = (NumericPlaceholders & (1 << i)) != 0 ? 0 : string.Empty;
             try
             {
                 _ = string.Format(CultureInfo.InvariantCulture, custom, args);

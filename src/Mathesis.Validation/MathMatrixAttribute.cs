@@ -49,6 +49,9 @@ public sealed class MathMatrixAttribute : MathValidationAttribute
 
     internal override int ExtraPlaceholderCount => 2;
 
+    // NonNumericEntry fills {1} and {2} with the row and the column.
+    internal override int NumericPlaceholders => (1 << 1) | (1 << 2);
+
     internal override bool IsSupported(object value) => value is Expr;
 
     internal override string? ValidateOptions()
