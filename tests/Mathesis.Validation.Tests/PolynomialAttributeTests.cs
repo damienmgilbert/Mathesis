@@ -256,6 +256,21 @@ public class PolynomialAttributeTests
     }
 
     [TestMethod]
+    public void NestedConstantPowersCannotOverflowTheExpansionGuard()
+    {
+        // The bound on coefficient bits saturates at long.MaxValue; degree times bits must not wrap around and let an astronomically large expansion start.
+        const string nested = "((((((((1e100000)^64)^64)^64)^64)^64)^64)^64)^64";
+        foreach (var degree in new[] { 21, 22, 64, 255, 256 })
+        {
+            var text = $"x^{degree}*{nested}";
+            var work = Task.Run(() => X.Check(text));
+
+            Assert.IsTrue(work.Wait(TimeSpan.FromSeconds(3)), $"x^{degree} times the nested power did not finish in 3 s");
+            Assert.AreEqual(TooHigh(degree), work.Result?.ErrorMessage, $"x^{degree}");
+        }
+    }
+
+    [TestMethod]
     public void ConfigurationErrorsThrowAsSpecified()
     {
         var rows = new (string Label, PolynomialExpressionAttribute Attribute, string Message)[]

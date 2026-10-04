@@ -105,8 +105,9 @@ public sealed class PolynomialExpressionAttribute : MathValidationAttribute
         if (Measure(canonical, x) is not { } size) return new MathDiagnostic(MathValidationCode.NotAPolynomial, [NameOffender(raw, x), MaxDegree]);
         if (!size.BeyondMaxExponent && size.Degree <= MaxDegree) return null;
 
-        // Written above the maximum: only the expanded polynomial knows whether terms cancel.
-        if (!size.BeyondMaxExponent && size.Degree <= MaxExpandedDegree && size.Degree * size.Bits <= MaxExpansionWork && PolynomialConversion.TryToPolynomial(canonical, x, out var polynomial))
+        // Written above the maximum: only the expanded polynomial knows whether terms cancel. The work bound divides instead of multiplying,
+        // because Bits saturates at long.MaxValue and degree times bits would wrap around (here 1 <= Degree <= 256).
+        if (!size.BeyondMaxExponent && size.Degree <= MaxExpandedDegree && size.Bits <= MaxExpansionWork / size.Degree && PolynomialConversion.TryToPolynomial(canonical, x, out var polynomial))
         {
             var degree = Math.Max(polynomial.Degree, 0);
             return degree <= MaxDegree ? null : new MathDiagnostic(MathValidationCode.DegreeTooHigh, [degree, MaxDegree]);
