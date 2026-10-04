@@ -102,14 +102,7 @@ public class MathExpressionAttribute : MathValidationAttribute
         }
         else
         {
-            var text = (string)value;
-            var options = _parserOptions.Value;
-            var parsed = Format == InputFormat.Latex ? LatexParser.Parse(text, options) : Parser.Parse(text, options);
-            if (parsed.Expr is not { } tree)
-            {
-                var error = parsed.Errors[0];
-                return new MathDiagnostic(MathValidationCode.Syntax, [error.Message], error.Span, error.Suggestion);
-            }
+            if (ParseText((string)value, Format, _parserOptions.Value, out var parsed) is { } syntax) return syntax;
 
             if (WarningsAreErrors && !parsed.Warnings.IsDefaultOrEmpty)
             {
@@ -117,7 +110,7 @@ public class MathExpressionAttribute : MathValidationAttribute
                 return new MathDiagnostic(warning.Code == "UnknownFunction" ? MathValidationCode.UnknownFunction : MathValidationCode.Ambiguous, [warning.Message], warning.Span);
             }
 
-            expr = tree;
+            expr = parsed.Expr!;
         }
 
         if (CheckSorts && SortChecker.Check(expr) is { IsValid: false } sorts)

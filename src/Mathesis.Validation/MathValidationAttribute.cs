@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Reflection;
+using Mathesis.Symbolics.Parsing;
 
 namespace Mathesis.Validation;
 
@@ -116,7 +117,16 @@ public abstract class MathValidationAttribute : ValidationAttribute
     public sealed override string FormatErrorMessage(string name)
     {
         if (_configurationError.Value is { } problem) throw new InvalidOperationException(problem);
-        return Message(name, Messages.Get("Invalid"), []);
+        return Message(name, null, []);
+    }
+
+    /// <summary>Parses <paramref name="text"/> in <paramref name="format"/>; a syntax error becomes the <see cref="MathValidationCode.Syntax"/> verdict with the parser's text, span and suggestion, unchanged.</summary>
+    internal static MathDiagnostic? ParseText(string text, InputFormat format, ParserOptions options, out ParseResult parsed)
+    {
+        parsed = format == InputFormat.Latex ? LatexParser.Parse(text, options) : Parser.Parse(text, options);
+        if (parsed.Success) return null;
+        var error = parsed.Errors[0];
+        return new MathDiagnostic(MathValidationCode.Syntax, [error.Message], error.Span, error.Suggestion);
     }
 
     private MathDiagnostic? Verdict(object? value)
@@ -138,10 +148,13 @@ public abstract class MathValidationAttribute : ValidationAttribute
     }
 
     private MathValidationResult Result(MathDiagnostic diagnostic, string displayName, string? memberName) =>
-        new(diagnostic.Code, Message(displayName, Messages.Get(diagnostic.Code.ToString()), diagnostic.Details), string.IsNullOrEmpty(memberName) ? null : [memberName], diagnostic.Span, diagnostic.Suggestion);
+        new(diagnostic.Code, Message(displayName, diagnostic.Code, diagnostic.Details), string.IsNullOrEmpty(memberName) ? null : [memberName], diagnostic.Span, diagnostic.Suggestion);
 
-    /// <summary>Formats the developer's template, or <paramref name="defaultTemplate"/> when there is none or it formats to nothing, so the message is never empty.</summary>
-    private string Message(string displayName, string defaultTemplate, object?[] details)
+    /// <summary>
+    /// Formats the developer's template, or the default template of <paramref name="code"/> (<c>null</c> for the generic one) when there is none or it formats
+    /// to nothing, so the message is never empty. The default is read from the resources only when it is used.
+    /// </summary>
+    private string Message(string displayName, MathValidationCode? code, object?[] details)
     {
         var args = new object?[1 + Math.Max(ExtraPlaceholderCount, details.Length)];
         args[0] = displayName;
@@ -161,7 +174,7 @@ public abstract class MathValidationAttribute : ValidationAttribute
 
         string? custom = ErrorMessageString;
         var text = custom is null || ReferenceEquals(custom, DefaultMessage) ? null : Format(custom);
-        return string.IsNullOrWhiteSpace(text) ? Format(defaultTemplate) : text;
+        return string.IsNullOrWhiteSpace(text) ? Format(Messages.Get(code?.ToString() ?? "Invalid")) : text;
     }
 
     private string? FindConfigurationError()

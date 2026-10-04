@@ -73,15 +73,8 @@ public sealed class MathMatrixAttribute : MathValidationAttribute
         }
         else
         {
-            var text = (string)value;
-            var parsed = Format == InputFormat.Latex ? LatexParser.Parse(text, Options) : Parser.Parse(text, Options);
-            if (parsed.Expr is not { } tree)
-            {
-                var error = parsed.Errors[0];
-                return new MathDiagnostic(MathValidationCode.Syntax, [error.Message], error.Span, error.Suggestion);
-            }
-
-            expr = tree;
+            if (ParseText((string)value, Format, Options, out var parsed) is { } syntax) return syntax;
+            expr = parsed.Expr!;
         }
 
         if (expr is not MatrixLiteral matrix)
