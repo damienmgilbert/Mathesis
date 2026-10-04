@@ -133,6 +133,12 @@ public static partial class Solver
         ArgumentNullException.ThrowIfNull(x);
         var c = new Ctx(math ?? MathContext.Default, budget ?? new Budget(maxSteps: 50_000, maxTime: TimeSpan.FromSeconds(30)), options ?? new SolveOptions());
         equation = Canon(equation);
+
+        // Canonical decides relations between constants, so 0 = 0 arrives as true and 1 = 0 as false.
+        if (equation is Constant { Id: ConstantId.True or ConstantId.False } truth)
+        {
+            return Wrap(equation, truth.Id == ConstantId.True ? SolutionSet.All : SolutionSet.Empty, c);
+        }
         if (equation is Apply { Operator: var op, Arguments: [var l, var r] } && (op == Operators.Lt || op == Operators.Le || op == Operators.Gt || op == Operators.Ge || op == Operators.Ne))
         {
             return SolveInequality(equation, op, l, r, x, c);

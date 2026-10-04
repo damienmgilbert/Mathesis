@@ -184,6 +184,13 @@ public static class Cas
     }
 
     /// <summary>
+    /// Applies one catalog law, named by a generated handle such as <c>Laws.Trigonometry.Sum.SinOfSum</c>, at the node of
+    /// <paramref name="expr"/> at <paramref name="at"/>. The result is a one-step derivation citing the law.
+    /// </summary>
+    public static Outcome<Expr> Apply(EntryId law, Expr expr, ExprPath at = default, MathContext? math = null) =>
+        Apply(law.Value, expr, at, math);
+
+    /// <summary>
     /// Applies one catalog law, by entry ID (<c>trig.sum.sin-of-sum</c>, or <c>…~rtl</c> for the reverse direction), at the node of <paramref name="expr"/> at
     /// <paramref name="at"/>. The result is a one-step derivation citing the law.
     /// </summary>

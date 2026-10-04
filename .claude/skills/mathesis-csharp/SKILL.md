@@ -7,7 +7,7 @@ description: Write, review or refactor C# code for the Mathesis math library so 
 
 Mathesis's design docs make specific choices that ordinary C# habits contradict (throwing on failure, `^` operator overloads, `System.Linq.Expressions`, reflection, helper-method sprawl). This skill keeps code consistent with those choices so Claude Code's phase exit checks pass and the code stays trustworthy.
 
-Before writing code for a subsystem, read the design doc section for it (`project_read`): numbers → `04-type-system.md`; tree, parser, printers → `05-syntax-trees-and-notation.md`; engines → `07-engines.md`; namespaces and API style → `03-namespaces-and-packages.md`; tests → `09-verification.md`; phase scope → `Plan 1 Math library.md`. If the code you are asked for would differ from the design, say where and ask rather than silently diverging — the plan treats docs and code disagreeing as a stop-and-ask event.
+Before writing code for a subsystem, read the design doc section for it (`project_read`): numbers → `04-type-system.md`; tree, parser, printers → `05-syntax-trees-and-notation.md`; engines → `07-engines.md`; namespaces and API style → `03-namespaces-and-packages.md`; tests → `09-verification.md`; phase scope → `PLAN.md`. If the code you are asked for would differ from the design, say where and ask rather than silently diverging — the plan treats docs and code disagreeing as a stop-and-ask event.
 
 ## Platform and build
 

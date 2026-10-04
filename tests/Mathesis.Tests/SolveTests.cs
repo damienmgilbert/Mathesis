@@ -387,4 +387,14 @@ public class SolveBehaviorTests
         Assert.AreEqual(Mathesis.Symbolics.Canonical.Normalizer.Canonical(Expr.Parse("x^2 - 5*x + 6 = 0")), result.Steps.Start);
         Assert.AreEqual(result.Set.Set, result.Steps.End);
     }
+
+    [TestMethod]
+    public void EquationsThatCanonicalizeToATruthValueAreSolved()
+    {
+        // Canonical turns 0 = 0 into true and 1 = 0 into false; every x satisfies the first and none the second.
+        Assert.AreEqual(SolutionKind.All, Run("0 = 0").Set.Kind);
+        Assert.AreEqual(SolutionKind.All, Run("2 < 3").Set.Kind);
+        Assert.AreEqual(SolutionKind.Empty, Run("1 = 0").Set.Kind);
+        Assert.AreEqual(SolutionKind.Empty, Run("3 < 2").Set.Kind);
+    }
 }

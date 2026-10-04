@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using Mathesis.Calculus;
 using Mathesis.Explanation;
+using Mathesis.Knowledge;
 using Mathesis.LinearAlgebra;
 using Mathesis.Numbers;
 using Mathesis.Solving;
@@ -196,5 +197,14 @@ public class CasTests
         var low = new MathContext { Level = Mathesis.Knowledge.CurriculumLevel.PreAlgebra };
         var outcome = Cas.Differentiate(P("sin(x)"), X, 1, low);
         Assert.IsNotInstanceOfType<Outcome<Expr>.Success>(outcome);
+    }
+
+    [TestMethod]
+    public void ApplyTakesAGeneratedLawHandle()
+    {
+        // docs/design/08-features-and-abilities.md shows Cas.Apply with a typed handle, so the EntryId overload must exist.
+        var byHandle = (Outcome<Expr>.Success)Cas.Apply(Laws.Trigonometry.Sum.SinOfSum, Expr.Parse("sin(a + b)"));
+        var byId = (Outcome<Expr>.Success)Cas.Apply("trig.sum.sin-of-sum", Expr.Parse("sin(a + b)"));
+        Assert.AreEqual(byId.Value, byHandle.Value);
     }
 }

@@ -49,7 +49,7 @@ Entries added during Milestone 1 that the domain documents do not list: `alg.log
 - **Simplification:** `sqrt(8)` stays as written; multivariate factoring, cancellation and partial fractions are not implemented.
 - **Explanations:** solving steps describe equations and are not replayable; the substitution check is the verification.
 - Several façade abilities of `docs/design/08-features-and-abilities.md` belong to later milestones (domain and range analysis, conics, sums, differential equations, finite mathematics, proofs).
-- **Naming:** the catalog functions are `Cas.Get`, `Cas.Find` and `Cas.ByDomain`; the design's `Knowledge.Find` cannot be a static class in the `Mathesis` namespace because `Mathesis.Knowledge` is a namespace.
+- **Naming:** the catalog functions are `Cas.Get`, `Cas.Find` and `Cas.ByDomain`. The design originally wrote them as `Knowledge.Find`, which cannot be a static class in the `Mathesis` namespace because `Mathesis.Knowledge` is a namespace; `docs/design/08-features-and-abilities.md` now records the `Cas.*` names.
 
 ### NativeAOT
 
