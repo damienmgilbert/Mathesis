@@ -8,4 +8,9 @@
     <ProjectReference Include="../Mathesis.Symbolics/Mathesis.Symbolics.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- The attributes are the only public derivation point; the test project derives a test-only attribute to exercise the base rules. -->
+    <InternalsVisibleTo Include="Mathesis.Validation.Tests" />
+  </ItemGroup>
+
 </Project>

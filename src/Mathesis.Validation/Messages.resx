@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <!-- {0} is the display name of the validated member. Each code documents its other placeholders on MathValidationCode. -->
+  <data name="Invalid" xml:space="preserve">
+    <value>{0} is not valid.</value>
+  </data>
+  <data name="TooLong" xml:space="preserve">
+    <value>{0} must be at most {1} characters long.</value>
+  </data>
+  <data name="NotANumber" xml:space="preserve">
+    <value>{0} must be a number, for example 3, -1/2 or 0.25.</value>
+  </data>
+  <data name="NotAnInteger" xml:space="preserve">
+    <value>{0} must be a whole number.</value>
+  </data>
+  <data name="FractionNotAllowed" xml:space="preserve">
+    <value>{0} must not be a fraction.</value>
+  </data>
+  <data name="DecimalNotAllowed" xml:space="preserve">
+    <value>{0} must not be a decimal number.</value>
+  </data>
+  <data name="OutOfRange" xml:space="preserve">
+    <value>{0} must be in the range {1}.</value>
+  </data>
+  <data name="Zero" xml:space="preserve">
+    <value>{0} must not be zero.</value>
+  </data>
+  <data name="Syntax" xml:space="preserve">
+    <value>{0} is not valid: {1}</value>
+  </data>
+  <data name="Ambiguous" xml:space="preserve">
+    <value>{0} is ambiguous: {1}</value>
+  </data>
+  <data name="UnknownFunction" xml:space="preserve">
+    <value>{0} uses a function that is not known: {1}</value>
+  </data>
+  <data name="IllSorted" xml:space="preserve">
+    <value>{0} does not make sense: {1}</value>
+  </data>
+  <data name="WrongShape" xml:space="preserve">
+    <value>{0} must be {1}, but it is {2}.</value>
+  </data>
+  <data name="UnknownVariable" xml:space="preserve">
+    <value>{0} uses a variable that is not allowed: {1}.</value>
+  </data>
+  <data name="MissingVariable" xml:space="preserve">
+    <value>{0} must use: {1}.</value>
+  </data>
+  <data name="DisallowedFunction" xml:space="preserve">
+    <value>{0} uses a function that is not allowed: {1}.</value>
+  </data>
+  <data name="NotAPolynomial" xml:space="preserve">
+    <value>{0} must be a polynomial, but it contains {1}.</value>
+  </data>
+  <data name="DegreeTooHigh" xml:space="preserve">
+    <value>{0} has degree {1}, but the highest allowed degree is {2}.</value>
+  </data>
+  <data name="NotAMatrix" xml:space="preserve">
+    <value>{0} must be a matrix, for example [[1, 2], [3, 4]].</value>
+  </data>
+  <data name="WrongDimensions" xml:space="preserve">
+    <value>{0} must be a matrix of size {1}, but it is {2}.</value>
+  </data>
+  <data name="NotSquare" xml:space="preserve">
+    <value>{0} must be a square matrix, but it is {1}.</value>
+  </data>
+  <data name="NonNumericEntry" xml:space="preserve">
+    <value>{0} must contain only numbers; the entry in row {1}, column {2} is not a number.</value>
+  </data>
+  <data name="DimensionTooLarge" xml:space="preserve">
+    <value>{0} is {1}, which is larger than the allowed size {2}.</value>
+  </data>
+</root>

@@ -2,22 +2,24 @@ using System.Reflection;
 
 namespace Mathesis.Validation.Tests;
 
-/// <summary>Placeholder checks for the package skeleton (ADR-15); the attribute tests arrive with Phases 1-5 of PLAN-M9.md.</summary>
+/// <summary>Package skeleton checks (ADR-15): the package references Symbolics and nothing outside the framework and Mathesis.</summary>
 [TestClass]
 public class SkeletonTests
 {
     [TestMethod]
-    public void ValidationAssemblyLoadsAndReferencesOnlyFrameworkAndMathesisAssemblies()
+    public void ValidationAssemblyReferencesSymbolicsAndOnlyFrameworkAndMathesisAssemblies()
     {
-        var assembly = Assembly.Load("Mathesis.Validation");
+        var names = typeof(MathValidationAttribute).Assembly.GetReferencedAssemblies().Select(a => a.Name ?? string.Empty).ToList();
 
-        foreach (var reference in assembly.GetReferencedAssemblies())
+        CollectionAssert.Contains(names, "Mathesis.Symbolics");
+        foreach (var name in names)
         {
-            var name = reference.Name ?? string.Empty;
             var allowed = name.StartsWith("System", StringComparison.Ordinal)
                 || name.StartsWith("Microsoft.", StringComparison.Ordinal)
                 || name.StartsWith("Mathesis.", StringComparison.Ordinal);
             Assert.IsTrue(allowed, $"Mathesis.Validation references '{name}', which is outside System.*, Microsoft.* and Mathesis.*.");
         }
+
+        Assert.IsFalse(names.Any(n => n.Contains("Windows", StringComparison.Ordinal) || n.Contains("Maui", StringComparison.Ordinal) || n.Contains("Blazor", StringComparison.Ordinal)), "no UI-framework reference");
     }
 }
