@@ -145,12 +145,27 @@ public class BigRationalTests
     [DataRow("0.1(6")]
     [DataRow("1e")]
     [DataRow("1e999999")]
+    [DataRow("1e100001")]
+    [DataRow("1e-100001")]
+    [DataRow("1e99999999999")]
     [DataRow(".")]
     [DataRow("1.2.3")]
     public void RejectsMalformedText(string text)
     {
         Assert.IsFalse(BigRational.TryParse(text, null, out _));
         Assert.Throws<FormatException>(() => BigRational.Parse(text));
+    }
+
+    [TestMethod]
+    public void ExponentsUpToTheLimitAreAcceptedAndBeyondItRejected()
+    {
+        var limit = BigRational.MaxExponentMagnitude;
+        Assert.IsTrue(BigRational.TryParse($"1e{limit}", null, out var largest));
+        Assert.AreEqual(BigInteger.Pow(10, limit), largest.Numerator);
+        Assert.IsTrue(BigRational.TryParse($"1e-{limit}", null, out var smallest));
+        Assert.AreEqual(BigInteger.Pow(10, limit), smallest.Denominator);
+        Assert.IsFalse(BigRational.TryParse($"1e{limit + 1}", null, out _));
+        Assert.IsFalse(BigRational.TryParse($"1e-{limit + 1}", null, out _));
     }
 
     [TestMethod]

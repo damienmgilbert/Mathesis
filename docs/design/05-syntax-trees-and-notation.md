@@ -247,4 +247,5 @@ Behaviors the design left open, as implemented (change them here first):
 - Relation chains `a < b < c` parse to left-nested binary `and`.
 - Variable names that are constants (`e`, `I`, `pi`) are rejected in quantifiers and in `d/dx`.
 - LaTeX: the imaginary unit prints as `\mathrm{i}` and parses back to `I`; `\bmod`, `A^{\top}`, `\frac{d}{dx} f` and `\frac{d^{n}}{dx^{n}} f` round trip. Region and line integrals are unsupported.
+- A number literal with an exponent (`1.5e-3`) is exact; an exponent whose magnitude exceeds `BigRational.MaxExponentMagnitude` (100,000) is a `ParseError` spanning the literal, never the number 0. LaTeX has no exponent literal.
 - Mathesis JSON writes numbers as exact strings (`"3/4"`), operators as `{"op": id, "args": [...]}` and symbols as `{"sym": name}`; it never reads or writes display hints.

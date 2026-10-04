@@ -15,7 +15,11 @@ namespace Mathesis.Numbers;
 /// </remarks>
 public readonly struct BigRational : INumber<BigRational>, ISignedNumber<BigRational>, IExactNumber
 {
-    private const int MaxExponentMagnitude = 100_000;
+    /// <summary>
+    /// The largest magnitude of the exponent accepted in text such as <c>1.5e-3</c>. Larger exponents are rejected by
+    /// <see cref="TryParse(ReadOnlySpan{char}, IFormatProvider?, out BigRational)"/> instead of being computed.
+    /// </summary>
+    public const int MaxExponentMagnitude = 100_000;
 
     private readonly BigInteger _numerator;
 

@@ -139,6 +139,19 @@ public class PrinterTests
         Assert.IsFalse(result.Success);
     }
 
+    [TestMethod]
+    public void LatexNumbersNeverBecomeZeroSilently()
+    {
+        // LaTeX has no exponent literal: in "1e999999999" the e is Euler's number, never part of the number.
+        var result = LatexParser.Parse("1e999999999");
+        Assert.IsTrue(!result.Success || result.Expr!.Walk().All(w => w.Expr is not Number n || n.Value != BigRational.Zero), $"{result.Expr}");
+
+        // Long literals are read exactly.
+        const string digits = "123456789012345678901234567890";
+        Assert.AreEqual(System.Numerics.BigInteger.Parse(digits), ((Number)LatexParser.Parse(digits).Expr!).Value.Numerator);
+        Assert.AreEqual(BigRational.Parse("0.125"), ((Number)LatexParser.Parse("0.125").Expr!).Value);
+    }
+
     // ----- Round trips over random trees -----
 
     [TestMethod]

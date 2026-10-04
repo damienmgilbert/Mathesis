@@ -63,7 +63,8 @@ internal static class Lexer
 
             if (IsAsciiDigit(c) || (c == '.' && i + 1 < text.Length && IsAsciiDigit(text[i + 1])))
             {
-                i = ReadNumber(text, i, out var value, out var display);
+                i = ReadNumber(text, i, out var value, out var display, out var numberError);
+                if (numberError is not null) return (tokens.ToImmutable(), numberError);
                 tokens.Add(new Token(TokenKind.Number, text[start..i], start, i, space, value, display));
             }
             else if (IsIdentifierStart(text, i, out var width))
@@ -157,8 +158,9 @@ internal static class Lexer
     }
 
     // digits [. digits] [e|E [+-] digits]; the exponent is taken only when digits follow it, so "2e" stays 2 times e.
-    private static int ReadNumber(string text, int start, out BigRational value, out NumberDisplay display)
+    private static int ReadNumber(string text, int start, out BigRational value, out NumberDisplay display, out ParseError? error)
     {
+        error = null;
         var i = start;
         while (i < text.Length && IsAsciiDigit(text[i])) i++;
         var hasFraction = false;
@@ -188,8 +190,13 @@ internal static class Lexer
             }
         }
         var literal = text[start..i];
-        value = TryParseExact(literal);
         display = NumberDisplay.Default;
+        if (!BigRational.TryParse(literal, CultureInfo.InvariantCulture, out value))
+        {
+            // The literal is only digits, a fraction and an exponent, so the exponent is what BigRational rejects.
+            error = new ParseError($"The exponent of this number is out of range: its magnitude must be at most {BigRational.MaxExponentMagnitude}.", new TextSpan(start, i - start), []);
+            return i;
+        }
         if (hasExponent && !value.IsInteger)
         {
             // A scientific literal prints back as a plain decimal with the fewest fractional digits that are exact.
@@ -203,7 +210,4 @@ internal static class Lexer
         }
         return i;
     }
-
-    private static BigRational TryParseExact(string literal) =>
-        BigRational.TryParse(literal, CultureInfo.InvariantCulture, out var v) ? v : BigRational.Zero;
 }
