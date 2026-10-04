@@ -141,8 +141,11 @@ internal static class LawVerifier
             else
             {
                 var conditionHolds = condition is null ? true : evaluator.Truth(condition, env);
-                var value = evaluator.Truth(statement, env);
-                if (conditionHolds is null || value is null) continue;
+                if (conditionHolds is null) continue;
+
+                // Where the conditions hold, a failed comparison is a counterexample only beyond the round-off measured at the sample.
+                var value = evaluator.Truth(statement, env, robust: conditionHolds == true);
+                if (value is null) continue;
                 if (conditionHolds == false)
                 {
                     if (value == true) violatingHolds++;

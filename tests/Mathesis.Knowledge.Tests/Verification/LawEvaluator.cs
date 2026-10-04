@@ -54,6 +54,16 @@ internal sealed class LawEvaluator
     // Inside a limit the underflow of a quantity that tends to 0 is the expected behavior, not a loss of precision.
     private int _limitDepth;
 
+    // Round-off measurement (see Sensitivity): while _noise is set, the result of every operation is perturbed by up to one ulp.
+    private const int NoiseRuns = 8;
+    private const double NoiseFactor = 8;
+    private const int NoiseSeed = 0x5EED;
+    private static readonly double Ulp = Math.BitIncrement(1.0) - 1.0;
+    private Random? _noise;
+
+    // Set by Truth: a failed comparison is then a counterexample only beyond the round-off measured at the sample.
+    private bool _robust;
+
     private void Note(Complex<double> value)
     {
         var m = value.Magnitude;
@@ -126,7 +136,42 @@ internal sealed class LawEvaluator
         // Likewise a non-zero result in the subnormal range has lost its precision: the sample is skipped.
         var magnitude = result.Magnitude;
         if (magnitude > 0 && magnitude < 1e-290 && _limitDepth == 0) return NaN;
-        return result;
+        return _noise is null ? result : Perturb(result);
+    }
+
+    // Up to one ulp of relative error on each non-integer part. Integers stay exact: they are the operands of discrete tests (exponents,
+    // sum bounds, floor).
+    private Complex<double> Perturb(Complex<double> z)
+    {
+        double P(double x) => double.IsFinite(x) && x != Math.Floor(x) ? x * (1 + (_noise!.NextDouble() * 2 - 1) * Ulp) : x;
+        return new(P(z.Real), P(z.Imaginary));
+    }
+
+    // The round-off allowance of a comparison: how far each side moves when the result of every operation is perturbed by up to one ulp
+    // (stochastic arithmetic: Vignes' CESTAC, Parker's Monte Carlo arithmetic). Unlike perturbing the sample, this exposes amplification
+    // inside the expression, such as the rounding error of cos(x) near -1 divided through by 1 + cos(x). The seed is fixed, so runs repeat.
+    private double Sensitivity(Expr left, Expr right, Env env, Complex<double> l, Complex<double> r)
+    {
+        var scale = _additiveScale;
+        _noise = new Random(NoiseSeed);
+        double spreadLeft = 0, spreadRight = 0;
+        try
+        {
+            for (var i = 0; i < NoiseRuns; i++)
+            {
+                // A perturbed value that is undefined or infinite gives a NaN or infinite deviation, which is ignored.
+                var dl = (Eval(left, env) - l).Magnitude;
+                var dr = (Eval(right, env) - r).Magnitude;
+                if (double.IsFinite(dl) && dl > spreadLeft) spreadLeft = dl;
+                if (double.IsFinite(dr) && dr > spreadRight) spreadRight = dr;
+            }
+        }
+        finally
+        {
+            _noise = null;
+            _additiveScale = scale;
+        }
+        return NoiseFactor * (spreadLeft + spreadRight);
     }
 
     private Complex<double> EvalApplyCore(Apply a, Env env)
@@ -757,9 +802,10 @@ internal sealed class LawEvaluator
     // ----- Propositions -----
 
     /// <summary>Evaluates a proposition; <c>null</c> when something in it is undefined.</summary>
-    public bool? Truth(Expr e, Env env)
+    public bool? Truth(Expr e, Env env, bool robust = false)
     {
         _additiveScale = 0;
+        _robust = robust;
         return TruthCore(e, env);
     }
 
@@ -850,18 +896,26 @@ internal sealed class LawEvaluator
             var l = Eval(args[0], env);
             var r = Eval(args[1], env);
             if (IsNaN(l) || IsNaN(r)) return null;
-            return Compare(op, l, r);
+            var verdict = Compare(op, l, r);
+            if (!_robust || _noise is not null || verdict != false) return verdict;
+
+            // The comparison failed: that is a counterexample only if it still fails with the computed difference off by the measured
+            // round-off. Otherwise the sample cannot decide the relation.
+            var slack = Sensitivity(args[0], args[1], env, l, r);
+            return slack > 0 && Compare(op, l, r, slack) != false ? null : verdict;
         }
         return null;
     }
 
-    private bool? Compare(Operator op, Complex<double> l, Complex<double> r)
+    private bool? Compare(Operator op, Complex<double> l, Complex<double> r, double slack = 0)
     {
-        // Relative tolerance, plus an absolute allowance for cancellation in additions (see _additiveScale).
+        // Relative tolerance, plus an absolute allowance for cancellation in additions (see _additiveScale). A round-off allowance (see
+        // Sensitivity) moves the tolerance the way that favors the relation: wider for equality and non-strict order, narrower for
+        // inequality and strict order.
         static double Finite(double x) => double.IsFinite(x) ? x : 0;
         var noise = (Tolerance > 1e-9 ? Tolerance : 1e-12) * _additiveScale;
         var floor = Tolerance > 1e-9 ? 1.0 : 0.0; // numeric limits, derivatives and integrals are only accurate to an absolute tolerance
-        var tolerance = Tolerance * Math.Max(floor, Math.Max(Finite(l.Magnitude), Finite(r.Magnitude))) + noise;
+        var tolerance = Tolerance * Math.Max(floor, Math.Max(Finite(l.Magnitude), Finite(r.Magnitude))) + noise + (op == Operators.Ne || op == Operators.Lt || op == Operators.Gt ? -slack : slack);
         bool Equal()
         {
             if (double.IsInfinity(l.Real) || double.IsInfinity(r.Real)) return l.Real == r.Real && l.Imaginary == r.Imaginary;
