@@ -1,5 +1,38 @@
 # Release notes
 
+## Unreleased
+
+### Mathesis.Validation (Milestone 9, `PLAN-M9.md`)
+
+A new optional package with seven `System.ComponentModel.DataAnnotations` attributes that check mathematical input in forms. They are plain `ValidationAttribute`s, so every UI stack that consumes DataAnnotations uses them as it uses `[Required]`; the package references `Mathesis.Symbolics` only, has no UI-framework reference, and is not part of the `Mathesis` package (ADR-15 to ADR-18 in `docs/design/02-architecture.md`).
+
+- **Numbers:** `RationalNumber` (`IntegerOnly`, `AllowFractions`, `AllowDecimals`), `ExactRange` (bounds compared as exact rationals, so `0.1 + 0.2` is above `3/10`) and `NonZero`, on text and on `BigRational`, `BigInteger`, `int`, `long`, `decimal`, `double` and `float` values. Text is read with the invariant culture: `0,5` gets a suggestion naming `.`, U+2212 is a minus sign, and an exponent beyond 100,000 is not a number.
+- **Expressions:** `MathExpression` (shape, allowed and required variables, disallowed operator families, parser warnings as errors, sort checks, text or LaTeX) and `MathEquation`. Parser errors keep their span and suggestion.
+- **Polynomials and matrices:** `PolynomialExpression("x", MaxDegree = n)` names the construct that is not polynomial and computes the exact degree when terms cancel; `MathMatrix` checks dimensions and numeric entries without evaluating them.
+- **Results:** a failure is a `MathValidationResult` with a stable `Code`, the `Span` of the text and a `Suggestion`; default messages are neutral English in an embedded `Messages.resx`, replaced by `ErrorMessage` or `ErrorMessageResourceType`. A misconfigured attribute throws `InvalidOperationException` on first use, and `GetConfigurationError()` reports the same text for startup checks.
+- **Bounded:** input is parsed and inspected, never evaluated; text beyond `MaxLength` (default 1,000 characters) is rejected before parsing.
+- **AOT:** `samples/AotSmoke` validates with all seven attributes through the trim-safe entry points (a `ValidationContext` with a display name and `GetValidationResult`); `Validator` and `new ValidationContext(instance)` use reflection and are not trim-safe.
+
+Known limits: an equation or inequality is a single relation, as `Solve` reads it, so `1 < x < 5` is a statement; polynomial coefficients must be rational, and an expression whose written degree exceeds 256 is reported with that degree instead of being expanded; messages and parser texts are English (localization is Milestone 8); async validation needs .NET 11 and is not offered.
+
+### Fixes
+
+- `Expr.Parse("1e999999999")` returned 0; an exponent beyond `BigRational.MaxExponentMagnitude` (100,000) is now a `ParseError` spanning the literal.
+- Parsing `1e-100000` took about 0.6 s; the display digits of a literal are now computed from its text.
+- LaTeX subscripts and `\operatorname` names that cannot be symbol names (`x_{a+b}`, `k_}`, `\operatorname{a+b}`) threw `ArgumentException` from `LatexParser.Parse`; they are `ParseError`s now.
+- `Normalizer.Canonical` took minutes on exact roots of huge numbers (`sqrt(1e100000)`) and about half a second near 20,000 bits; roots are now found by Newton's iteration, with the same results in milliseconds.
+
+### Gates
+
+| Gate | Result |
+| --- | --- |
+| Build with `TreatWarningsAsErrors` and XML docs on every public API | 0 warnings |
+| Tests (`dotnet test --solution Mathesis.slnx`) | all pass |
+| Package policy, catalog lint, generated handles, catalog coverage | passed; no catalog change |
+| `dotnet pack` | seven `.nupkg` files |
+| NativeAOT publish of `samples/AotSmoke` (`-r win-x64`, `InvariantGlobalization` on) | zero ILC warnings; a 6.1 MB self-contained executable passes all sixteen checks, ten of them for validation |
+| README | twenty-one examples, five of them for validation, each executed by a test |
+
 ## 0.1.0 (Milestone 1)
 
 The first release: six packages (`Mathesis`, `Mathesis.Core`, `Mathesis.Numerics`, `Mathesis.LinearAlgebra`, `Mathesis.Symbolics`, `Mathesis.Knowledge`), a catalog of 548 verified entries, and the `Cas` façade over the engines.

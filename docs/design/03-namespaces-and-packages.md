@@ -115,6 +115,12 @@ Namespaces follow mathematical domains; packages follow layers. A domain can spa
 | `Mathesis.Extensions.Logging` | `ILogger` sinks for derivations and budget events |
 | `Mathesis.Extensions.AI` | `AIFunction` tools (simplify, solve, differentiate, integrate, evaluate, explain) for any `IChatClient` |
 
+### `Mathesis.Validation` package (optional)
+
+| Namespace | Contents |
+| --- | --- |
+| `Mathesis.Validation` | `System.ComponentModel.DataAnnotations` attributes that check mathematical input: the base `MathValidationAttribute`, `MathValidationResult` (code, span, suggestion), `MathValidationCode`, and `RationalNumberAttribute`, `ExactRangeAttribute`, `NonZeroAttribute`, `MathExpressionAttribute`, `MathEquationAttribute`, `PolynomialExpressionAttribute`, `MathMatrixAttribute` with the small enums their options use |
+
 ## Naming conventions
 
 - **Avoid BCL collisions.** Never name a type `Math`, `Vector`, `Matrix`, `Vector<T>`, `Complex` (non-generic) or `Range`. Use `DenseVector<T>`, `DenseMatrix<T>`, `Complex<T>`, `Interval<T>`. The façade is `Cas`, not `Math`.
@@ -123,6 +129,7 @@ Namespaces follow mathematical domains; packages follow layers. A domain can spa
 - **Catalog IDs are stable kebab-case dotted paths** (`alg.exp.product-of-powers`). Generated C# handles use PascalCase (`Laws.Algebra.Exponents.ProductOfPowers`). IDs never change after release; renamed entries keep their old ID as an alias.
 - **Exactness in names.** `Solve` returns exact solutions; `NSolve` (numeric) and `Approximate` say so in the name.
 - **Async only where I/O or long work exists.** Engines are synchronous with a `Budget`; `…Async` overloads exist only in `Mathesis.Extensions`.
+- **Attributes end in `Attribute`** and never reuse a `System.ComponentModel.DataAnnotations` name (`Range`, `Required`, `Compare` …): `ExactRange`, not `Range`.
 
 ## Public API style
 

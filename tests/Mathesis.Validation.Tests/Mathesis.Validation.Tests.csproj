@@ -6,8 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="MSTest" />
-    <ProjectReference Include="../../src/Mathesis/Mathesis.csproj" />
-    <!-- The README examples include the optional validation attributes. -->
     <ProjectReference Include="../../src/Mathesis.Validation/Mathesis.Validation.csproj" />
     <ProjectReference Include="../Mathesis.Testing/Mathesis.Testing.csproj" />
   </ItemGroup>

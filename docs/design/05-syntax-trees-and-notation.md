@@ -153,6 +153,7 @@ The same linear notation is used in the parser, in `.mlaw` catalog files, and in
 ### Conventions the parser applies
 
 - **Decimals are exact.** `0.1` is the rational 1/10 with a decimal display hint. Floats come only from numeric evaluation, `N(…)`, or C# `double` values.
+- **Culture.** Input is culture-invariant: `.` is the decimal point and `,` separates arguments, whatever `CultureInfo.CurrentCulture` says. `0,5`, `1,000` and `1 000` are not numbers (syntax errors), and `1_000` is not 1000 (it reads as 1 times a symbol). U+2212 (−) is accepted as minus. Culture affects only how messages format their values.
 - **Implicit multiplication.** `2x`, `3(x + 1)`, `(x + 1)(x − 1)`, `x y`, `2 sin x`. With the default option `SingleLetterVariables`, `xy` means `x·y`, except for known function and constant names and Greek letter names (`theta`, `alpha`).
 - **Function application without parentheses.** `sin x` means `sin(x)`; `sin 2x` means `sin(2x)`; `sin x cos x` means `sin(x)·cos(x)`.
 - **Powers of functions.** `sin^2 x` means `(sin x)^2`. `sin^-1 x` means `arcsin x` (textbook convention); write `(sin x)^-1` or `1/sin x` for the reciprocal.
@@ -246,6 +247,6 @@ Behaviors the design left open, as implemented (change them here first):
 - `!` after an operand is factorial and before one is logical not; `|` between operands is divides and `|x|` is absolute value; `(a, b)` is a tuple, an interval needs a bracket (`[a, b)`); `[a, b, c]` is a column vector; `f(x)` is a call when `f` is declared, listed in `ParserOptions.FunctionSymbols` (default `f`, `g`, `h`) or not a single letter.
 - Relation chains `a < b < c` parse to left-nested binary `and`.
 - Variable names that are constants (`e`, `I`, `pi`) are rejected in quantifiers and in `d/dx`.
-- LaTeX: the imaginary unit prints as `\mathrm{i}` and parses back to `I`; `\bmod`, `A^{\top}`, `\frac{d}{dx} f` and `\frac{d^{n}}{dx^{n}} f` round trip. Region and line integrals are unsupported.
+- LaTeX: the imaginary unit prints as `\mathrm{i}` and parses back to `I`; `\bmod`, `A^{\top}`, `\frac{d}{dx} f` and `\frac{d^{n}}{dx^{n}} f` round trip. Region and line integrals are unsupported. A subscript (`x_{12}`, `a_{ij}`) or an `\operatorname{…}` name becomes part of a symbol name, so one with characters other than letters, digits, `_` and primes (`x_{a+b}`, `k_}`) is a `ParseError`, never an exception.
 - A number literal with an exponent (`1.5e-3`) is exact; an exponent whose magnitude exceeds `BigRational.MaxExponentMagnitude` (100,000) is a `ParseError` spanning the literal, never the number 0. LaTeX has no exponent literal.
 - Mathesis JSON writes numbers as exact strings (`"3/4"`), operators as `{"op": id, "args": [...]}` and symbols as `{"sym": name}`; it never reads or writes display hints.

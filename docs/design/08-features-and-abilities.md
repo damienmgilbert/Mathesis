@@ -150,3 +150,4 @@ Cells show the milestone (see `10-roadmap.md`) in which the ability is complete 
 | Dependency injection and options | `Mathesis.Extensions` (`services.AddMathesis()`) | 8 |
 | AI tools for `IChatClient` | `Mathesis.Extensions.AI` | 8 |
 | Plotting data for MAUI apps | `Cas.Sample`, `Ode.VectorField` (rendering stays in the app) | 2 / 4 |
+| Input validation for forms (numbers, expressions, equations, polynomials, matrices) | `Mathesis.Validation` (`[MathExpression]`, `[ExactRange]` …) | 9 |

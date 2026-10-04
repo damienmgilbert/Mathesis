@@ -140,6 +140,41 @@ public class PrinterTests
     }
 
     [TestMethod]
+    public void LatexNamesThatCannotBeSymbolNamesAreParseErrorsNotExceptions()
+    {
+        // A subscript's text becomes part of the symbol name, and so does \operatorname{...}; names allow only letters, digits, '_' and primes
+        // (docs/design/09, Fuzzing: a tree or a ParseError, never an exception).
+        foreach (var input in new[] { "k_}", "x_{a+b}", "x_{(}", "x_{1,2}", @"\alpha_{)}", "x_+", "x_{a=b}", @"\theta_{!}", "f_{a+}(x)", "x_{a}+y_{b-c}" })
+        {
+            var result = LatexParser.Parse(input);
+
+            Assert.IsFalse(result.Success, $"'{input}' is not a symbol name: {result.Expr}");
+            Assert.AreEqual(1, result.Errors.Length, input);
+            StringAssert.Contains(result.Errors[0].Message, "subscript", input);
+            Assert.IsTrue(result.Errors[0].Span.Start >= 0 && result.Errors[0].Span.Length > 0 && result.Errors[0].Span.End <= input.Length, $"'{input}': span {result.Errors[0].Span}");
+        }
+
+        foreach (var input in new[] { @"\operatorname{a+b}(x)", @"\operatorname{}", @"\operatorname{a+b}", @"\mathrm{x-y}" })
+        {
+            var result = LatexParser.Parse(input);
+
+            Assert.IsFalse(result.Success, $"'{input}' is not a name: {result.Expr}");
+            Assert.AreEqual(1, result.Errors.Length, input);
+            StringAssert.Contains(result.Errors[0].Message, "name", input);
+            Assert.IsTrue(result.Errors[0].Span.Start >= 0 && result.Errors[0].Span.End <= input.Length, $"'{input}': span {result.Errors[0].Span}");
+        }
+
+        // Subscripts and names that are valid names still work.
+        foreach (var (input, name) in new[] { ("x_1", "x_1"), ("x_{12}", "x_12"), ("a_{ij}", "a_ij"), (@"\theta_{n}", "θ_n"), (@"x_{\alpha}", "x_α"), ("x_{k_1}", "x_k_1"), ("x_n", "x_n"), ("x_{}", "x_"), (@"\operatorname{speed}", "speed"), (@"\mathrm{ab}", "ab") })
+        {
+            var result = LatexParser.Parse(input);
+
+            Assert.IsTrue(result.Success, $"'{input}': {(result.Success ? string.Empty : result.Errors[0])}");
+            Assert.AreEqual(name, result.Expr!.FreeSymbols.Single().Name, input);
+        }
+    }
+
+    [TestMethod]
     public void LatexNumbersNeverBecomeZeroSilently()
     {
         // LaTeX has no exponent literal: in "1e999999999" the e is Euler's number, never part of the number.

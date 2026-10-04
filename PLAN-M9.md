@@ -2,15 +2,22 @@
 
 Claude Code adds one package, `Mathesis.Validation`, on .NET 10 LTS with no external dependency: seven `System.ComponentModel.DataAnnotations` validation attributes that check mathematical input (numbers, expressions, equations, polynomials, matrices), in six phases that each end with a green build. The attributes are plain `ValidationAttribute` subclasses, so any UI stack that already consumes DataAnnotations (Blazor, MAUI, WPF, WinUI 3, Windows Forms) gets them for free; this plan contains no platform-specific code.
 
+## Status
+
+Done on 2026-10-04: Phases 0 to 5 are complete and every exit check passed (see "Unreleased" in `RELEASE-NOTES.md`). Two more Symbolics bugs surfaced during the phases and were fixed test-first in commits of their own: LaTeX subscripts and `\operatorname` names that cannot be symbol names threw `ArgumentException` instead of returning a `ParseError` (found by the Phase 3 fuzz run), and exact roots of huge numbers made `Normalizer.Canonical` run for minutes (found in Phase 4, whose polynomial attribute canonicalizes its input; roots now use Newton's iteration).
+
 ## How to run it
 
-1. Merge the parser fix for out-of-range exponent literals first (separate task: `1e999999999` currently parses as `0`; see "Prerequisite"). Phase 3 cannot be done without it.
+1. Both prerequisites below are merged, so the phases run in order from Phase 0.
 2. Open Claude Code in the repo and send: `Read PLAN-M9.md, CLAUDE.md and docs/design/00-index.md. Ask me the "Decide first" questions, then do Phase 0 only and stop with a summary.`
 3. Then one phase per session: `Do Phase N of PLAN-M9.md. Read the docs its "Read first" line names before writing code. Stop when its exit checks pass and summarize what changed.`
 
-## Prerequisite
+## Prerequisites
 
-`Expr.Parse("1e999999999")` returns the number 0 instead of an error (`Lexer.TryParseExact` and the LaTeX number token fall back to `BigRational.Zero` when `BigRational.TryParse` rejects the exponent). `[MathExpression]` would accept that text as valid. The fix, with its failing test first, belongs to Symbolics and is its own session. Phase 3's exit check includes this input.
+Two Symbolics bugs found while planning, fixed outside this plan:
+
+- **Done.** `Expr.Parse("1e999999999")` used to return the number 0. Merged in PR #5: an exponent beyond `BigRational.MaxExponentMagnitude` (100,000) is now a `ParseError` spanning the literal. The LaTeX parser was never affected (it has no exponent literal). Phase 3 keeps the input as a regression check.
+- **Done.** In a Release build `Parser.Parse("1e-100000")` took about 620 ms and `x + 1e100000 + 1e-100000` about 600 ms, against 8 ms for `BigRational.TryParse` on the same text, because the display-digit loop in `Lexer.ReadNumber` ran 400 roundings of a 332,000-bit denominator. Merged in PR #6 before Phase 3: the display digits are computed from the literal's text, and parsing `1e-100000` takes about 6 ms. `RationalNumber`, `ExactRange` and `NonZero` call `BigRational.TryParse` directly and were never affected.
 
 ## Decide first
 
@@ -107,7 +114,7 @@ samples/AotSmoke/                        # gains a Validation section and a proj
   - 10,000 seeded `BigRational` values, each formatted as fraction, terminating decimal, repeating decimal and exponent form, are accepted by `RationalNumber`, and `ExactRange` agrees with the exact `BigRational` comparison on 200 seeded bound pairs in all four inclusive/exclusive combinations with 0 mismatches;
   - text and typed values (`BigRational`, `decimal`, `long`) of the same number get the same verdict on all 10,000;
   - a 20-case `double` table passes (`0.1` in `["0", "1/10"]` is valid, `0.1 + 0.2` against maximum `3/10` is invalid, NaN and ±∞ are invalid, `-0.0` fails `NonZero`);
-  - a 40-case rejection table returns the expected code, including `""` (valid), `abc`, `1/0`, `--1`, `1e999999999` (`NotANumber`, never zero), `0,5` and `1,000` (suggestion names `.`), and U+2212 `−3` (accepted);
+  - a 40-case rejection table returns the expected code, including `""` (valid), `abc`, `1/0`, `--1`, `1e999999999` (`NotANumber`, never zero), `0,5` and `1,000` (suggestion names `.`), and U+2212 `−3` (accepted); `1e100000` and `1e-100000` are accepted and each call takes under 50 ms (measured about 8 ms);
   - verdicts are identical under `en-US`, `de-DE`, `fr-FR`, `ar-SA`, `tr-TR` and `ja-JP`, and only message formatting varies;
   - every configuration error row (unparsable bound, minimum above maximum, empty exclusive range, no bound, `MaxLength` outside 1–100,000) throws as specified; a 10 MB string returns `TooLong` in under 5 ms.
 
@@ -118,19 +125,20 @@ samples/AotSmoke/                        # gains a Validation section and a proj
 - **Done when:**
   - a table of at least 60 cases covers every code the two attributes can return, with spans and suggestions taken from `Parser.Parse` for the same text;
   - 2,000 seeded `ExprGen` expressions are accepted as `ToString()` text, and as `ToLatex()` text with `Format = Latex` where the existing LaTeX round-trip tests accept them; with `Variables` set to exactly an expression's free symbols it is accepted, and with one symbol removed it is rejected with `UnknownVariable` naming exactly that symbol; `RequiredVariables` behaves symmetrically;
-  - a 30-case shape table passes (`x^2 = 4` is an equation, `x < 3` an inequality, `[0, 1)` an interval, `x + 1` an expression), and an `Expr`-typed property gets the same semantic verdicts without parsing;
-  - `1/2x` is accepted by default and returns `Ambiguous` only with `WarningsAreErrors`;
-  - 20,000 seeded inputs (mutations of `tests/corpus/expressions.txt` plus random token streams, up to 1,200 characters) finish with no exception and no single call above 250 ms; adversarial inputs behave as probed: 400 nested parentheses give `Syntax` at column 151, and `2^999999999*x`, `(x+1)^999999999`, `9^9^9` and `x^x^x^x^x^x` are valid and return in under 50 ms because nothing is evaluated; `1e999999999` gives `Syntax` (needs the prerequisite).
+  - a 30-case shape table passes (`x^2 = 4` is an equation, `x < 3` and `x != 3` are inequalities, `[0, 1)` an interval, `x + 1` an expression), and an `Expr`-typed property gets the same semantic verdicts without parsing;
+  - parser warnings: `1/2x` is accepted by default and returns `Ambiguous` only with `WarningsAreErrors`; `sqr(x)` is accepted by default (a user function call) and returns `UnknownFunction` only with `WarningsAreErrors`;
+  - unknown multi-letter names behave as the parser reads them, pinned by test rows so nobody "fixes" them silently: `foo(x)` is the product f·∞·x (the parser reads `oo` as ∞), accepted by default and, with `Variables = ["x"]`, `UnknownVariable` naming `f`; with `SingleLetterVariables = false` it is a call to the function symbol `foo`, accepted even with `Variables = ["x"]`; `DisallowedFunction` is raised only for an operator of a family in `DisallowedFamilies` (for example `sin(x)` with `Trig`);
+  - 20,000 seeded inputs (mutations of `tests/corpus/expressions.txt` plus random token streams, up to 1,200 characters) finish with no exception and no single call above 250 ms; adversarial inputs behave as probed: 400 nested parentheses give `Syntax` at column 151, and `2^999999999*x`, `(x+1)^999999999`, `9^9^9`, `x^x^x^x^x^x`, `1e100000`, `1e-100000` and `x + 1e100000 + 1e-100000` are valid and return in under 50 ms because nothing is evaluated (the last two needed the prerequisite fixed in PR #6); `1e999999999` gives `Syntax`.
 
 ### Phase 4: Polynomial and matrix attributes
 
 - **Read first:** `domains/d1-algebra.md` (Polynomial division and roots), `04-type-system.md` (Representations), `domains/d7-linear-algebra.md` (Matrix algebra), `05-syntax-trees-and-notation.md` (Phase 4 notes on brackets).
 - `PolynomialExpression("x", MaxDegree = n)`: parse, canonicalize, convert with `PolynomialConversion.TryToPolynomial`, check the degree. When conversion fails the attribute names the offending construct (`sin`, `1/x`, `x^(1/2)`, `x^-1`, `x^65`, another symbol); an exponent above `PolynomialConversion.MaxExponent` (64) on an x-dependent base is `DegreeTooHigh`, not `NotAPolynomial`.
-- `MathMatrix` (`Rows`, `Columns`, `Square`, `NumericEntries`, `MaxDimension`, `Format`): parse and inspect the `Matrix` node. Numeric entries are checked structurally on the raw tree (an optionally signed integer, decimal or fraction literal); arithmetic in an entry is never evaluated. `[1, 2]` parses as an interval, so the diagnostic suggests `[[1],[2]]` for a two-entry column.
+- `MathMatrix` (`Rows`, `Columns`, `Square`, `NumericEntries`, `MaxDimension`, `Format`): parse and inspect the `Matrix` node. Numeric entries are checked structurally on the raw tree, never evaluated. Verified raw shapes: an integer or decimal literal is `Number` (`+1` is `1`, `2e3` is 2000), a negative one is `neg(Number)`, a fraction is `div(a, b)` and `-1/2` is `div(neg(1), 2)`; an entry is numeric when it is `Number`, `neg(Number)` or `div(a, b)` with `a` and `b` each `Number` or `neg(Number)`. Anything else, including a chained division such as `1/2/3` and any arithmetic such as `2^3`, is `NonNumericEntry`. `[1, 2]` parses as an interval, so the diagnostic suggests `[[1],[2]]` for a two-entry column.
 - **Done when:**
   - a 30-case polynomial table passes (`x^2 - 5x + 6`, `x/2 + 1`, `(x+1)^2`, `7` and `0` are valid; `1/x`, `sqrt(x)`, `x^(1/2)`, `x^-1`, `sin(x)` give `NotAPolynomial` naming the construct; `x*y` gives `UnknownVariable`; `(x+1)^65` and `x^100` give `DegreeTooHigh`; `x^2 = 4` gives `WrongShape`);
   - 1,000 seeded polynomials printed with `PolynomialConversion.FromPolynomial` are accepted at their degree and rejected with `DegreeTooHigh` at `MaxDegree = degree − 1`;
-  - a 40-case matrix table passes (2×2 and 3×1 valid; `[1, 2]` gives `NotAMatrix` with the suggestion; a 3×3 request on 2×3 reports both sizes; `[[1, x], [2, 3]]` gives `NonNumericEntry` at row 1, column 2 and is valid with `NumericEntries = false`; `[[2^3, 1]]` gives `NonNumericEntry`; ragged rows keep the parser's message; 11×11 gives `DimensionTooLarge`; `\begin{pmatrix}1&2\\3&4\end{pmatrix}` with `Format = Latex` is valid; `\begin{vmatrix}…` gives `NotAMatrix`);
+  - a 40-case matrix table passes (2×2 and 3×1 valid; `[1, 2]` gives `NotAMatrix` with the suggestion; a 3×3 request on 2×3 reports both sizes; `[[1, x], [2, 3]]` gives `NonNumericEntry` at row 1, column 2 and is valid with `NumericEntries = false`; `[[2^3, 1]]` and `[[1/2/3, 1]]` give `NonNumericEntry`; `[[-1/2, 1/-2], [+1, 0.25]]` is valid; ragged rows keep the parser's message; 11×11 gives `DimensionTooLarge`; `\begin{pmatrix}1&2\\3&4\end{pmatrix}` with `Format = Latex` is valid; `\begin{vmatrix}…` gives `NotAMatrix`);
   - 500 seeded `DenseMatrix<BigRational>` values printed as matrix literals are accepted with the right dimensions;
   - the Phase 3 fuzz run repeated over both attributes meets the same bounds.
 
@@ -146,7 +154,7 @@ samples/AotSmoke/                        # gains a Validation section and a proj
 
 Applies to every attribute; Phase 1 implements it and each later phase tests its attribute against it.
 
-- **Usage.** `AttributeTargets.Property | Field | Parameter`, `AllowMultiple = false`, as the BCL attributes. Options are `init` properties (collection expressions work for `string[]`, verified on .NET 10.0.401), immutable after first use, so shared attribute instances are thread-safe.
+- **Usage.** `AttributeTargets.Property | Field | Parameter`, `AllowMultiple = false`, as the BCL attributes. Options are `init` properties (collection expressions work for `string[]`, verified on .NET 10.0.401), immutable after first use, so shared attribute instances are thread-safe. Constructor arguments are also exposed as read-only properties (`Minimum`, `Maximum`, `Variable`), as the BCL `RangeAttribute` does. The repo's `latest-recommended` analyzers raise nothing for these shapes (an unsealed attribute class, `string[]` properties, constructor arguments without properties), checked in a scratch build.
 - **Presence.** Null, empty and whitespace-only strings are valid; presence is `[Required]`'s job.
 - **Supported values.** Other types are API misuse and throw `InvalidOperationException` naming the attribute and the type:
 
@@ -160,7 +168,7 @@ Applies to every attribute; Phase 1 implements it and each later phase tests its
 | `PolynomialExpression(string variable)` (`MaxDegree` ≤ 64, default 20, `Format`) | text or LaTeX | `Expr` |
 | `MathMatrix` (`Rows`, `Columns`, `Square`, `NumericEntries` default true, `MaxDimension` default 10, `Format`) | text or LaTeX | `Expr` |
 
-- **Options.** `Variables` constrains non-function symbols only; constants (`e`, `pi`, `I`) and bound symbols never count, and function symbols such as `f` in `f(x)` are not constrained. `LogMeansNatural` and `SingleLetterVariables` map to the existing `ParserOptions` fields with their existing defaults, so bare `log` stays base 10. `MaxLength` defaults to 1,000 on every text attribute.
+- **Options.** `Variables` constrains non-function symbols only; constants (`e`, `pi`, `I`) and bound symbols never count, and function symbols such as `f` in `f(x)` are not constrained. `Shape` values: `Any`; `Expression` (not a relation or logical statement); `Equation` (`=`); `Inequality` (`<`, `<=`, `>`, `>=`, `!=`); `Interval`. `DisallowedFamilies` is the only function restriction (`DisallowedFunction`); unknown multi-letter names are not functions to the attribute (see the Phase 3 checks). `LogMeansNatural` and `SingleLetterVariables` map to the existing `ParserOptions` fields with their existing defaults, so bare `log` stays base 10. `MaxLength` defaults to 1,000 on every text attribute.
 - **Verdict.** Computed once per attribute (`MathDiagnostic` internal to the base) and exposed through both `IsValid` overloads and a typed `Check(object? value, string displayName = "Value", string? memberName = null)` that returns `MathValidationResult?` (null when valid) without a `ValidationContext`.
 - **Results.** `MathValidationResult` carries `Code`, `Span` (`TextSpan?`), `Suggestion`; `MemberNames` is `[context.MemberName]` when non-null (without it, form frameworks cannot attach the error to a field); `ErrorMessage` is never empty.
 - **Messages.** Placeholder `{0}` is the display name; each attribute documents any extra ones (`ExactRange`: `{1}` the range in interval notation such as `[1/3, 5/2)`, `{2}` minimum text, `{3}` maximum text, as written). A developer-set message replaces all defaults. Implementation hint: pass a sentinel through the `ValidationAttribute(Func<string>)` constructor to tell "no custom message" from a set one, since the base class does not expose that.
@@ -191,7 +199,8 @@ public sealed class RootFinderForm
 | `NotANumber`, `NotAnInteger`, `FractionNotAllowed`, `DecimalNotAllowed` | `RationalNumber`, `ExactRange`, `NonZero` | none |
 | `OutOfRange` | `ExactRange` | `{1}`–`{3}` as above |
 | `Zero` | `NonZero` | none |
-| `Syntax`, `Ambiguous`, `IllSorted` | expression, polynomial, matrix attributes | `{1}` the parser or sort-check text |
+| `Syntax` | expression, polynomial, matrix attributes | `{1}` the parser text |
+| `Ambiguous`, `UnknownFunction`, `IllSorted` | `MathExpression`, `MathEquation` (the first two only with `WarningsAreErrors`, for the parser warnings of the same name; `IllSorted` with `CheckSorts`) | `{1}` the warning or sort-check text |
 | `WrongShape` | `MathExpression`, `MathEquation`, `PolynomialExpression` | `{1}` expected, `{2}` found |
 | `UnknownVariable`, `MissingVariable`, `DisallowedFunction` | `MathExpression`, `MathEquation` | `{1}` names |
 | `NotAPolynomial`, `DegreeTooHigh` | `PolynomialExpression` | `{1}` construct or degree, `{2}` maximum |
@@ -201,7 +210,9 @@ public sealed class RootFinderForm
 
 | Risk | Mitigation |
 | --- | --- |
-| Out-of-range exponent literal parses as 0 | Prerequisite fix; Phase 3 exit check includes `1e999999999` |
+| Out-of-range exponent literal parses as 0 | Fixed in PR #5; Phase 3 keeps `1e999999999` as a regression check |
+| `1e-100000` takes about 0.6 s to parse | Fixed in PR #6 before Phase 3 (Symbolics display-digit loop); Phase 3 times it and `x + 1e100000 + 1e-100000` under 50 ms |
+| Unknown multi-letter names read as products (`foo(x)` is f·∞·x) | Documented behavior pinned by Phase 3 test rows; `DisallowedFunction` means a disallowed operator family only; `SingleLetterVariables = false` for apps that want words as names |
 | Hostile or accidental huge input | `MaxLength` before parsing, parser depth limit 150, no evaluation, fuzz exit checks with numbers |
 | A `ValidationResult` subclass is not preserved by some caller | Verified through `Validator` on .NET 10.0.401 in Phase 1; callers that rebuild results still get the message and member name |
 | Trim or AOT warning from a BCL entry point | Phase 5 smoke app uses only trim-safe members; `IlcTreatWarningsAsErrors` is already on |

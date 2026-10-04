@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using Mathesis.Calculus;
 using Mathesis.Explanation;
@@ -5,6 +6,7 @@ using Mathesis.LinearAlgebra;
 using Mathesis.Numbers;
 using Mathesis.Solving;
 using Mathesis.Symbolics;
+using Mathesis.Validation;
 
 namespace Mathesis.Tests;
 
@@ -134,7 +136,62 @@ public class ReadmeTests
             var applied = (Outcome<Expr>.Success)Cas.Apply("trig.sum.sin-of-sum", Expr.Parse("sin(a + b)"));
             o.AppendLine(applied.Value.ToString());
         }),
+
+        // ----- Validating input (Mathesis.Validation) -----
+        ("Numbers, compared exactly", o =>
+        {
+            var range = new ExactRangeAttribute("0", "3/10");
+            o.AppendLine(range.Check(0.1 + 0.2, "Total")?.ErrorMessage ?? "valid");
+            o.AppendLine(range.Check("0.3", "Total")?.ErrorMessage ?? "valid");
+            var comma = new RationalNumberAttribute().Check("0,5", "Price")!;
+            o.AppendLine($"{comma.Code}: {comma.Suggestion}");
+        }),
+        ("Expressions and equations", o =>
+        {
+            var formula = new MathExpressionAttribute { Variables = ["x"], DisallowedFamilies = OperatorFamily.Trig };
+            o.AppendLine(formula.Check("x^2 + y", "Formula")?.ErrorMessage);
+            o.AppendLine(formula.Check("sin(x)", "Formula")?.ErrorMessage);
+            var syntax = formula.Check("2x +", "Formula")!;
+            o.AppendLine($"{syntax.ErrorMessage} (column {syntax.Span!.Value.Start + 1})");
+            o.AppendLine(new MathEquationAttribute().Check("x^2 - 4", "Equation")?.ErrorMessage);
+        }),
+        ("Polynomials", o =>
+        {
+            var cubic = new PolynomialExpressionAttribute("x") { MaxDegree = 3 };
+            o.AppendLine(cubic.Check("(x + 1)^4 - x^4", "Polynomial")?.ErrorMessage ?? "valid");
+            o.AppendLine(cubic.Check("x^4 - 1", "Polynomial")?.ErrorMessage);
+            o.AppendLine(cubic.Check("x^2 + 1/x", "Polynomial")?.ErrorMessage);
+            o.AppendLine(cubic.Check("x*y", "Polynomial")?.ErrorMessage);
+        }),
+        ("Matrices", o =>
+        {
+            var matrix = new MathMatrixAttribute { Rows = 2, Columns = 2 };
+            o.AppendLine(matrix.Check("[[1, -1/2], [0.25, 3]]", "A")?.ErrorMessage ?? "valid");
+            o.AppendLine(matrix.Check("[[1, x], [2, 3]]", "A")?.ErrorMessage);
+            o.AppendLine(matrix.Check("[[1, 2, 3], [4, 5, 6]]", "A")?.ErrorMessage);
+            var interval = matrix.Check("[1, 2]", "A")!;
+            o.AppendLine($"{interval.ErrorMessage} {interval.Suggestion}");
+        }),
+        ("Validate a form model", o =>
+        {
+            var form = new RootFinderForm { Polynomial = "x^7 - 1", LowerBound = "-100" };
+            var results = new List<ValidationResult>();
+            Validator.TryValidateObject(form, new ValidationContext(form), results, validateAllProperties: true);
+            foreach (var result in results) o.AppendLine($"{string.Join(", ", result.MemberNames)}: {result.ErrorMessage}");
+        }),
     ];
+
+    // The model of the last example; the README shows the same class.
+    private sealed class RootFinderForm
+    {
+        [Required, PolynomialExpression("x", MaxDegree = 6)]
+        [Display(Name = "Polynomial")]
+        public string? Polynomial { get; set; }
+
+        [ExactRange("-100", "100", MinimumIsExclusive = true)]
+        [Display(Name = "Lower bound")]
+        public string? LowerBound { get; set; }
+    }
 
     private static string Show(Outcome<LimitResult> outcome) => outcome is Outcome<LimitResult>.Success { Value: var v } ? v.ToExpression().ToString()! : outcome.ToString()!;
 
