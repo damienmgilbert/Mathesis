@@ -8,14 +8,18 @@ namespace Mathesis.Knowledge.Tests;
 [TestClass]
 public class LawVerifierTests
 {
-    private static VerifyReport Verify(string entry)
+    private static VerifyReport Verify(string entry, int seed = LawVerifier.DefaultSeed, string domain = "alg.t")
     {
-        var kb = KnowledgeBase.Load([("t.mlaw", "domain alg.t \"Test\"\n\n" + entry)]);
+        var kb = KnowledgeBase.Load([("t.mlaw", $"domain {domain} \"Test\"\n\n" + entry)]);
         Assert.AreEqual(0, kb.Errors.Count(), string.Join("\n", kb.Errors));
-        return LawVerifier.Verify(kb.Entries[0]);
+        return LawVerifier.Verify(kb.Entries[0], seed);
     }
 
     private const string Tail = "  level: Algebra1\n  course: Algebra\n";
+
+    // The half-angle tangent law of knowledge/trig/identities.mlaw, and the same statement with a deliberate error.
+    private static string HalfAngleTangent(string right = "sin(x)/(1 + cos(x))") =>
+        "law tan-sin \"Half angle (tangent)\"\n  vars: x\n  statement: tan(x/2) = " + right + "\n  where: cos(x) != -1\n" + Tail;
 
     [TestMethod]
     public void ATrueLawPasses()
@@ -284,5 +288,74 @@ public class LawVerifierTests
     {
         var entry = "law a \"A\"\n  vars: a, b\n  statement: (a + b)^2 = a^2 + b^2\n" + Tail;
         Assert.AreEqual(Verify(entry).Message, Verify(entry).Message);
+    }
+
+    [TestMethod]
+    public void ARelationThatFailsOnlyByAmplifiedRoundOffLeavesTheSampleUndecided()
+    {
+        // In IEEE arithmetic (1 + a) - 1 is 8e-8 (relative) off a for a = 1e-9, so 1/((1 + a) - 1) is 8e-8 off 1/a: far more than the
+        // tolerance, but pure round-off. The sample cannot decide the relation in either direction.
+        var env = new Env().With("a", 1e-9);
+        var evaluator = new LawEvaluator();
+        foreach (var relation in new[] { "=", ">=", ">" })
+        {
+            var statement = Expr.Parse($"1/((1 + a) - 1) {relation} 1/a");
+            Assert.AreEqual(false, evaluator.Truth(statement, env), relation);
+            Assert.IsNull(evaluator.Truth(statement, env, robust: true), relation);
+        }
+    }
+
+    [TestMethod]
+    public void TheHalfAngleTangentIsNotRefutedWhereOnePlusCosineLosesEightDigits()
+    {
+        // x = -9.424562900990509 is 2.2e-4 from -3*pi, where cos(x) = -1: 1 + cos(x) is about 2e-8, so the rounding error of cos(x) is a
+        // relative error of a few 1e-9 in the right-hand side (the sides, about -9.3e3, differ by 1.4e-9 relative). The law holds; the
+        // sample cannot refute it.
+        var env = new Env().With("x", -9.424562900990509);
+        var evaluator = new LawEvaluator();
+        Assert.AreNotEqual<bool?>(false, evaluator.Truth(Expr.Parse("tan(x/2) = sin(x)/(1 + cos(x))"), env, robust: true));
+    }
+
+    [TestMethod]
+    public void ARelationThatIsWrongByMoreThanTheMeasuredRoundOffStillFails()
+    {
+        var evaluator = new LawEvaluator();
+
+        // At the amplified samples the allowance is about 7e-4 (tangent) and 2e3 (cancellation); these errors are 1 and 1e6.
+        var amplified = new Env().With("x", -9.424562900990509);
+        Assert.AreEqual(false, evaluator.Truth(Expr.Parse("tan(x/2) = sin(x)/(1 + cos(x)) + 1"), amplified, robust: true));
+        Assert.AreEqual(false, evaluator.Truth(Expr.Parse("1/((1 + a) - 1) = 1/a + 1000000"), new Env().With("a", 1e-9), robust: true));
+
+        // At a well-conditioned sample the allowance is a few ulps: an error of 1e-8 is decisive.
+        var calm = new Env().With("x", 1.0);
+        Assert.AreEqual(true, evaluator.Truth(Expr.Parse("tan(x/2) = sin(x)/(1 + cos(x))"), calm, robust: true));
+        Assert.AreEqual(false, evaluator.Truth(Expr.Parse("tan(x/2) = sin(x)/(1 + cos(x)) + 1e-8"), calm, robust: true));
+    }
+
+    [TestMethod]
+    public void TheHalfAngleTangentLawVerifiesWhereRoundOffUsedToFailIt()
+    {
+        // Seed 2026 draws x = -9.424562900990509 for trig.half.tan-sin.
+        var report = Verify(HalfAngleTangent(), 2026, "trig.half");
+        Assert.AreEqual(VerifyOutcome.Passed, report.Outcome, report.Message);
+
+        for (var seed = 0; seed < 100; seed++)
+        {
+            report = Verify(HalfAngleTangent(), seed, "trig.half");
+            Assert.AreEqual(VerifyOutcome.Passed, report.Outcome, $"seed {seed}: {report.Message}");
+        }
+    }
+
+    [TestMethod]
+    public void SubtlyWrongVariantsOfTheHalfAngleTangentStillFail()
+    {
+        foreach (var wrong in new[] { "sin(x)/(1 + cos(x)) + 1e-6", "sin(x)/(1 + cos(x))*(1 + 1e-6)", "sin(x)/(1 + cos(x)) - 1e-8" })
+        {
+            foreach (var seed in new[] { 1, 2, 3, 7, 42, 2026, 98765 })
+            {
+                var report = Verify(HalfAngleTangent(wrong), seed, "trig.half");
+                Assert.AreEqual(VerifyOutcome.Failed, report.Outcome, $"{wrong}, seed {seed}: {report.Message}");
+            }
+        }
     }
 }
