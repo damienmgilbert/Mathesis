@@ -412,6 +412,50 @@ public class ParserTests
     }
 
     [TestMethod]
+    [DataRow("1e999999999", 1, 11)]
+    [DataRow("7e1000000", 1, 9)]
+    [DataRow("1e-999999999", 1, 12)]
+    [DataRow("1e100001", 1, 8)]
+    [DataRow("1E-100001", 1, 9)]
+    [DataRow("4e2147483648", 1, 12)]
+    [DataRow("1e99999999999", 1, 13)]
+    [DataRow("x + 1e999999999", 5, 11)]
+    [DataRow("2 * 3.25e999999999 + y", 5, 14)]
+    [DataRow("sin(x) + .5e999999999", 10, 12)]
+    public void OutOfRangeExponentLiteralsAreRejectedNotParsedAsZero(string text, int column, int length)
+    {
+        var result = Parser.Parse(text);
+        Assert.IsFalse(result.Success, $"'{text}' parsed as {result.Expr}");
+        Assert.IsNull(result.Expr);
+        var error = result.Errors.Single();
+        Assert.AreEqual(column, error.Column, $"{error}");
+        Assert.AreEqual(length, error.Span.Length, $"{error}");
+        StringAssert.Contains(error.Message, "exponent");
+        StringAssert.Contains(error.Message, "100000");
+        Assert.IsInstanceOfType<ParseException>(Assert.Throws<ParseException>(() => Expr.Parse(text)));
+    }
+
+    [TestMethod]
+    public void ExponentLiteralsWithinTheLimitKeepTheirExactValue()
+    {
+        Assert.AreEqual(BigRational.Parse("100000"), ((Number)P("1e5")).Value);
+        Assert.AreEqual(BigRational.Parse("3/2000"), ((Number)P("1.5e-3")).Value);
+        Assert.AreEqual(System.Numerics.BigInteger.Pow(10, 400), ((Number)P("1e400")).Value.Numerator);
+
+        // The limit itself is accepted in both directions.
+        var largest = (Number)P("1e100000");
+        Assert.AreEqual(System.Numerics.BigInteger.Pow(10, 100_000), largest.Value.Numerator);
+        Assert.AreEqual(System.Numerics.BigInteger.One, largest.Value.Denominator);
+        var smallest = (Number)P("1e-100000");
+        Assert.AreEqual(System.Numerics.BigInteger.One, smallest.Value.Numerator);
+        Assert.AreEqual(System.Numerics.BigInteger.Pow(10, 100_000), smallest.Value.Denominator);
+
+        // Zero stays zero whatever the exponent says only when it is in range.
+        Assert.AreEqual(BigRational.Zero, ((Number)P("0e5")).Value);
+        Assert.IsFalse(Parser.Parse("0e100001").Success);
+    }
+
+    [TestMethod]
     public void ErrorsCarryExpectedTokensAndSuggestions()
     {
         var closing = Parser.Parse("(1 + 2").Errors[0];
