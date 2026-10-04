@@ -2,9 +2,13 @@
 
 Claude Code adds one package, `Mathesis.Validation`, on .NET 10 LTS with no external dependency: seven `System.ComponentModel.DataAnnotations` validation attributes that check mathematical input (numbers, expressions, equations, polynomials, matrices), in six phases that each end with a green build. The attributes are plain `ValidationAttribute` subclasses, so any UI stack that already consumes DataAnnotations (Blazor, MAUI, WPF, WinUI 3, Windows Forms) gets them for free; this plan contains no platform-specific code.
 
+## Status
+
+Done on 2026-10-04: Phases 0 to 5 are complete and every exit check passed (see "Unreleased" in `RELEASE-NOTES.md`). Two more Symbolics bugs surfaced during the phases and were fixed test-first in commits of their own: LaTeX subscripts and `\operatorname` names that cannot be symbol names threw `ArgumentException` instead of returning a `ParseError` (found by the Phase 3 fuzz run), and exact roots of huge numbers made `Normalizer.Canonical` run for minutes (found in Phase 4, whose polynomial attribute canonicalizes its input; roots now use Newton's iteration).
+
 ## How to run it
 
-1. Phases 0–2 can start now. Phase 3 needs the open prerequisite below (parsing `1e-100000` takes about 0.6 s today); do not start it until that Symbolics fix is merged.
+1. Both prerequisites below are merged, so the phases run in order from Phase 0.
 2. Open Claude Code in the repo and send: `Read PLAN-M9.md, CLAUDE.md and docs/design/00-index.md. Ask me the "Decide first" questions, then do Phase 0 only and stop with a summary.`
 3. Then one phase per session: `Do Phase N of PLAN-M9.md. Read the docs its "Read first" line names before writing code. Stop when its exit checks pass and summarize what changed.`
 
@@ -13,7 +17,7 @@ Claude Code adds one package, `Mathesis.Validation`, on .NET 10 LTS with no exte
 Two Symbolics bugs found while planning, fixed outside this plan:
 
 - **Done.** `Expr.Parse("1e999999999")` used to return the number 0. Merged in PR #5: an exponent beyond `BigRational.MaxExponentMagnitude` (100,000) is now a `ParseError` spanning the literal. The LaTeX parser was never affected (it has no exponent literal). Phase 3 keeps the input as a regression check.
-- **Open, blocks Phase 3.** In a Release build `Parser.Parse("1e-100000")` takes about 620 ms and `x + 1e100000 + 1e-100000` about 600 ms, against 8 ms for `BigRational.TryParse` on the same text. The cause is the display-digit loop in `Lexer.ReadNumber`, which runs 400 roundings of a 332,000-bit denominator. Without the fix, one 9-character input stalls `[MathExpression]` for most of a second per call and the Phase 3 timing checks cannot pass. The fix belongs to Symbolics (its own session, failing test first). `RationalNumber`, `ExactRange` and `NonZero` call `BigRational.TryParse` directly and are not affected.
+- **Done.** In a Release build `Parser.Parse("1e-100000")` took about 620 ms and `x + 1e100000 + 1e-100000` about 600 ms, against 8 ms for `BigRational.TryParse` on the same text, because the display-digit loop in `Lexer.ReadNumber` ran 400 roundings of a 332,000-bit denominator. Merged in PR #6 before Phase 3: the display digits are computed from the literal's text, and parsing `1e-100000` takes about 6 ms. `RationalNumber`, `ExactRange` and `NonZero` call `BigRational.TryParse` directly and were never affected.
 
 ## Decide first
 
@@ -124,7 +128,7 @@ samples/AotSmoke/                        # gains a Validation section and a proj
   - a 30-case shape table passes (`x^2 = 4` is an equation, `x < 3` and `x != 3` are inequalities, `[0, 1)` an interval, `x + 1` an expression), and an `Expr`-typed property gets the same semantic verdicts without parsing;
   - parser warnings: `1/2x` is accepted by default and returns `Ambiguous` only with `WarningsAreErrors`; `sqr(x)` is accepted by default (a user function call) and returns `UnknownFunction` only with `WarningsAreErrors`;
   - unknown multi-letter names behave as the parser reads them, pinned by test rows so nobody "fixes" them silently: `foo(x)` is the product f·∞·x (the parser reads `oo` as ∞), accepted by default and, with `Variables = ["x"]`, `UnknownVariable` naming `f`; with `SingleLetterVariables = false` it is a call to the function symbol `foo`, accepted even with `Variables = ["x"]`; `DisallowedFunction` is raised only for an operator of a family in `DisallowedFamilies` (for example `sin(x)` with `Trig`);
-  - 20,000 seeded inputs (mutations of `tests/corpus/expressions.txt` plus random token streams, up to 1,200 characters) finish with no exception and no single call above 250 ms; adversarial inputs behave as probed: 400 nested parentheses give `Syntax` at column 151, and `2^999999999*x`, `(x+1)^999999999`, `9^9^9`, `x^x^x^x^x^x`, `1e100000`, `1e-100000` and `x + 1e100000 + 1e-100000` are valid and return in under 50 ms because nothing is evaluated (the last two need the open prerequisite); `1e999999999` gives `Syntax`.
+  - 20,000 seeded inputs (mutations of `tests/corpus/expressions.txt` plus random token streams, up to 1,200 characters) finish with no exception and no single call above 250 ms; adversarial inputs behave as probed: 400 nested parentheses give `Syntax` at column 151, and `2^999999999*x`, `(x+1)^999999999`, `9^9^9`, `x^x^x^x^x^x`, `1e100000`, `1e-100000` and `x + 1e100000 + 1e-100000` are valid and return in under 50 ms because nothing is evaluated (the last two needed the prerequisite fixed in PR #6); `1e999999999` gives `Syntax`.
 
 ### Phase 4: Polynomial and matrix attributes
 
@@ -207,7 +211,7 @@ public sealed class RootFinderForm
 | Risk | Mitigation |
 | --- | --- |
 | Out-of-range exponent literal parses as 0 | Fixed in PR #5; Phase 3 keeps `1e999999999` as a regression check |
-| `1e-100000` takes about 0.6 s to parse | Open prerequisite (Symbolics display-digit loop); Phase 3 timing checks include it and cannot pass without the fix |
+| `1e-100000` takes about 0.6 s to parse | Fixed in PR #6 before Phase 3 (Symbolics display-digit loop); Phase 3 times it and `x + 1e100000 + 1e-100000` under 50 ms |
 | Unknown multi-letter names read as products (`foo(x)` is f·∞·x) | Documented behavior pinned by Phase 3 test rows; `DisallowedFunction` means a disallowed operator family only; `SingleLetterVariables = false` for apps that want words as names |
 | Hostile or accidental huge input | `MaxLength` before parsing, parser depth limit 150, no evaluation, fuzz exit checks with numbers |
 | A `ValidationResult` subclass is not preserved by some caller | Verified through `Validator` on .NET 10.0.401 in Phase 1; callers that rebuild results still get the message and member name |

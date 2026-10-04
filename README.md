@@ -340,11 +340,122 @@ trig.id.pythagorean
 cos(b)*sin(a) + cos(a)*sin(b)
 ```
 
+## Validating input
+
+`Mathesis.Validation` adds seven `System.ComponentModel.DataAnnotations` attributes for forms: `RationalNumber`, `ExactRange` and `NonZero` for numbers, `MathExpression` and `MathEquation` for expressions and equations, `PolynomialExpression` and `MathMatrix`. They are ordinary validation attributes, so Blazor, MAUI, WPF, WinUI and Windows Forms use them the way they use `[Required]`. A failure is a `MathValidationResult` with a stable `Code`, the `Span` of the text concerned and a `Suggestion` when one is known. Input is only parsed and inspected, never evaluated, so even `9^9^9` costs nothing. `Check` validates a value without a `ValidationContext`. These examples also assume `using System.ComponentModel.DataAnnotations;` and `using Mathesis.Validation;`.
+
+### 17. Numbers, compared exactly
+
+```csharp
+var range = new ExactRangeAttribute("0", "3/10");
+Console.WriteLine(range.Check(0.1 + 0.2, "Total")?.ErrorMessage ?? "valid");
+Console.WriteLine(range.Check("0.3", "Total")?.ErrorMessage ?? "valid");
+var comma = new RationalNumberAttribute().Check("0,5", "Price")!;
+Console.WriteLine($"{comma.Code}: {comma.Suggestion}");
+```
+
+Output:
+
+```text
+Total must be in the range [0, 3/10].
+valid
+NotANumber: Use '.' as the decimal point, for example 0.5. Digit grouping is not accepted.
+```
+
+### 18. Expressions and equations
+
+```csharp
+var formula = new MathExpressionAttribute { Variables = ["x"], DisallowedFamilies = OperatorFamily.Trig };
+Console.WriteLine(formula.Check("x^2 + y", "Formula")?.ErrorMessage);
+Console.WriteLine(formula.Check("sin(x)", "Formula")?.ErrorMessage);
+var syntax = formula.Check("2x +", "Formula")!;
+Console.WriteLine($"{syntax.ErrorMessage} (column {syntax.Span!.Value.Start + 1})");
+Console.WriteLine(new MathEquationAttribute().Check("x^2 - 4", "Equation")?.ErrorMessage);
+```
+
+Output:
+
+```text
+Formula uses a variable that is not allowed: y.
+Formula uses a function that is not allowed: sin.
+Formula is not valid: Expected an expression but the input ended. (column 5)
+Equation must be an equation, but it is an expression.
+```
+
+### 19. Polynomials
+
+```csharp
+var cubic = new PolynomialExpressionAttribute("x") { MaxDegree = 3 };
+Console.WriteLine(cubic.Check("(x + 1)^4 - x^4", "Polynomial")?.ErrorMessage ?? "valid");
+Console.WriteLine(cubic.Check("x^4 - 1", "Polynomial")?.ErrorMessage);
+Console.WriteLine(cubic.Check("x^2 + 1/x", "Polynomial")?.ErrorMessage);
+Console.WriteLine(cubic.Check("x*y", "Polynomial")?.ErrorMessage);
+```
+
+Output:
+
+```text
+valid
+Polynomial has degree 4, but the highest allowed degree is 3.
+Polynomial must be a polynomial, but it contains 1/x.
+Polynomial uses a variable that is not allowed: y.
+```
+
+### 20. Matrices
+
+```csharp
+var matrix = new MathMatrixAttribute { Rows = 2, Columns = 2 };
+Console.WriteLine(matrix.Check("[[1, -1/2], [0.25, 3]]", "A")?.ErrorMessage ?? "valid");
+Console.WriteLine(matrix.Check("[[1, x], [2, 3]]", "A")?.ErrorMessage);
+Console.WriteLine(matrix.Check("[[1, 2, 3], [4, 5, 6]]", "A")?.ErrorMessage);
+var interval = matrix.Check("[1, 2]", "A")!;
+Console.WriteLine($"{interval.ErrorMessage} {interval.Suggestion}");
+```
+
+Output:
+
+```text
+valid
+A must contain only numbers; the entry in row 1, column 2 is not a number.
+A must be a matrix of size 2×2, but it is 2×3.
+A must be a matrix, for example [[1, 2], [3, 4]]. For a column vector write [[1], [2]].
+```
+
+### 21. Validate a form model
+
+```csharp
+var form = new RootFinderForm { Polynomial = "x^7 - 1", LowerBound = "-100" };
+var results = new List<ValidationResult>();
+Validator.TryValidateObject(form, new ValidationContext(form), results, validateAllProperties: true);
+foreach (var result in results)
+    Console.WriteLine($"{string.Join(", ", result.MemberNames)}: {result.ErrorMessage}");
+
+public sealed class RootFinderForm
+{
+    [Required, PolynomialExpression("x", MaxDegree = 6)]
+    [Display(Name = "Polynomial")]
+    public string? Polynomial { get; set; }
+
+    [ExactRange("-100", "100", MinimumIsExclusive = true)]
+    [Display(Name = "Lower bound")]
+    public string? LowerBound { get; set; }
+}
+```
+
+Output:
+
+```text
+Polynomial: Polynomial has degree 7, but the highest allowed degree is 6.
+LowerBound: Lower bound must be in the range (-100, 100].
+```
+
+`Validator` and `new ValidationContext(instance)` find attributes and display names by reflection, so they are not trim-safe. Under NativeAOT, create the context with a display name, `new ValidationContext(instance, "Polynomial", null, null)`, and call `attribute.GetValidationResult(value, context)` or `attribute.Check(value)`, as `samples/AotSmoke` does. Rules across properties belong in `IValidatableObject`. Default messages are neutral English; set `ErrorMessage` or `ErrorMessageResourceType` to replace them.
+
 ## Try it
 
 `samples/repl.cs` is a file-based REPL (`dotnet run samples/repl.cs`): type `simplify sin(x)^2 + cos(x)^2`, `solve x^2 - 4 = 0`, `integrate x*cos(x)`, `limit sin(x)/x at 0`, `find difference of squares`, or `help`.
 
-`samples/AotSmoke` is a console app that parses, simplifies with steps, differentiates, integrates, solves and looks up the catalog; it is published with NativeAOT in the release gate (`dotnet publish samples/AotSmoke -c Release -r <rid>`, which needs the platform's C++ toolchain).
+`samples/AotSmoke` is a console app that parses, simplifies with steps, differentiates, integrates, solves, looks up the catalog and validates input with the seven attributes; it is published with NativeAOT in the release gate (`dotnet publish samples/AotSmoke -c Release -r <rid>`, which needs the platform's C++ toolchain).
 
 ## Build and test
 
@@ -355,7 +466,7 @@ dotnet run eng/policy-check.cs            # package policy: System.*, Microsoft.
 dotnet run eng/mlaw-lint.cs               # lints the catalog (.mlaw files)
 dotnet run eng/gen-knowledge.cs -- --check
 dotnet run eng/check-catalog-coverage.cs  # coverage of the design documents' catalog tables
-dotnet pack Mathesis.slnx -c Release      # the six packages in artifacts/packages
+dotnet pack Mathesis.slnx -c Release      # the seven packages in artifacts/packages
 ```
 
 The design documents are in `docs/design` (`00-index.md` gives the reading order) and the catalog is in `knowledge/*/*.mlaw`. See `RELEASE-NOTES.md` for what the first release covers and does not.

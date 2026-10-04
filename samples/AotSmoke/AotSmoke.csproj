@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Mathesis/Mathesis.csproj" />
+    <ProjectReference Include="../../src/Mathesis.Validation/Mathesis.Validation.csproj" />
   </ItemGroup>
 
 </Project>
