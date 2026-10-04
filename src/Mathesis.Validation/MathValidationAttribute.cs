@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Reflection;
+using Mathesis.Symbolics.Parsing;
 
 namespace Mathesis.Validation;
 
@@ -59,6 +61,12 @@ public abstract class MathValidationAttribute : ValidationAttribute
     /// <summary>How many message placeholders after <c>{0}</c> this attribute can fill (at least 1: the limit of <see cref="MathValidationCode.TooLong"/>).</summary>
     internal virtual int ExtraPlaceholderCount => 1;
 
+    /// <summary>
+    /// The placeholders that can receive a number, as a bit mask (bit i for <c>{i}</c>): <c>{1}</c> always, for the limit of <see cref="MathValidationCode.TooLong"/>.
+    /// A developer template is checked with numbers in these places, because a format such as <c>{1:Q}</c> is ignored for text but throws for a number.
+    /// </summary>
+    internal virtual int NumericPlaceholders => 1 << 1;
+
     /// <summary>Whether <paramref name="value"/>, which is not text, is a typed value this attribute can check.</summary>
     internal virtual bool IsSupported(object value) => false;
 
@@ -109,7 +117,16 @@ public abstract class MathValidationAttribute : ValidationAttribute
     public sealed override string FormatErrorMessage(string name)
     {
         if (_configurationError.Value is { } problem) throw new InvalidOperationException(problem);
-        return Message(name, Messages.Get("Invalid"), []);
+        return Message(name, null, []);
+    }
+
+    /// <summary>Parses <paramref name="text"/> in <paramref name="format"/>; a syntax error becomes the <see cref="MathValidationCode.Syntax"/> verdict with the parser's text, span and suggestion, unchanged.</summary>
+    internal static MathDiagnostic? ParseText(string text, InputFormat format, ParserOptions options, out ParseResult parsed)
+    {
+        parsed = format == InputFormat.Latex ? LatexParser.Parse(text, options) : Parser.Parse(text, options);
+        if (parsed.Success) return null;
+        var error = parsed.Errors[0];
+        return new MathDiagnostic(MathValidationCode.Syntax, [error.Message], error.Span, error.Suggestion);
     }
 
     private MathDiagnostic? Verdict(object? value)
@@ -131,10 +148,13 @@ public abstract class MathValidationAttribute : ValidationAttribute
     }
 
     private MathValidationResult Result(MathDiagnostic diagnostic, string displayName, string? memberName) =>
-        new(diagnostic.Code, Message(displayName, Messages.Get(diagnostic.Code.ToString()), diagnostic.Details), string.IsNullOrEmpty(memberName) ? null : [memberName], diagnostic.Span, diagnostic.Suggestion);
+        new(diagnostic.Code, Message(displayName, diagnostic.Code, diagnostic.Details), string.IsNullOrEmpty(memberName) ? null : [memberName], diagnostic.Span, diagnostic.Suggestion);
 
-    /// <summary>Formats the developer's template, or <paramref name="defaultTemplate"/> when there is none or it formats to nothing, so the message is never empty.</summary>
-    private string Message(string displayName, string defaultTemplate, object?[] details)
+    /// <summary>
+    /// Formats the developer's template, or the default template of <paramref name="code"/> (<c>null</c> for the generic one) when there is none or it formats
+    /// to nothing, so the message is never empty. The default is read from the resources only when it is used.
+    /// </summary>
+    private string Message(string displayName, MathValidationCode? code, object?[] details)
     {
         var args = new object?[1 + Math.Max(ExtraPlaceholderCount, details.Length)];
         args[0] = displayName;
@@ -154,7 +174,7 @@ public abstract class MathValidationAttribute : ValidationAttribute
 
         string? custom = ErrorMessageString;
         var text = custom is null || ReferenceEquals(custom, DefaultMessage) ? null : Format(custom);
-        return string.IsNullOrWhiteSpace(text) ? Format(defaultTemplate) : text;
+        return string.IsNullOrWhiteSpace(text) ? Format(Messages.Get(code?.ToString() ?? "Invalid")) : text;
     }
 
     private string? FindConfigurationError()
@@ -173,11 +193,16 @@ public abstract class MathValidationAttribute : ValidationAttribute
         {
             return $"{name}: {ex.Message}";
         }
+        catch (TargetInvocationException ex)
+        {
+            // The message property of ErrorMessageResourceType threw; the base class reads it by reflection.
+            return $"{name}: reading {ErrorMessageResourceType?.Name}.{ErrorMessageResourceName} failed: {ex.InnerException?.Message ?? ex.Message}";
+        }
 
         if (custom is not null && !ReferenceEquals(custom, DefaultMessage) && !string.IsNullOrWhiteSpace(custom))
         {
             var args = new object[1 + ExtraPlaceholderCount];
-            Array.Fill(args, string.Empty);
+            for (var i = 0; i < args.Length; i++) args[i] = (NumericPlaceholders & (1 << i)) != 0 ? 0 : string.Empty;
             try
             {
                 _ = string.Format(CultureInfo.InvariantCulture, custom, args);

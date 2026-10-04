@@ -529,6 +529,57 @@ public class NumberAttributeTests
     }
 
     [TestMethod]
+    public void SpacesAroundOperatorsAreNotCalledDigitGrouping()
+    {
+        // Only a separator between two digits groups digits; spaces around a slash or after a sign are a different mistake.
+        AssertRows(
+        [
+            new(Rational(), "1 / 2", MathValidationCode.NotANumber, "Write the number without spaces or separators: 1/2."),
+            new(Rational(), "- 3", MathValidationCode.NotANumber, "Write the number without spaces or separators: -3."),
+            new(Rational(), "2 e5", MathValidationCode.NotANumber, "Write the number without spaces or separators: 2e5."),
+            new(Rational(), "1 000 / 4", MathValidationCode.NotANumber, "Write the number without spaces or separators: 1000/4."),
+            new(Rational(), "1 000", MathValidationCode.NotANumber, "Write the number without digit grouping: 1000."),
+            new(Rational(), "1_000_000", MathValidationCode.NotANumber, "Write the number without digit grouping: 1000000."),
+            new(Rational(), "12'345.5", MathValidationCode.NotANumber, "Write the number without digit grouping: 12345.5."),
+        ]);
+    }
+
+    [TestMethod]
+    public void NotationSuggestionsNeverPrintHugeNumbers()
+    {
+        // The suggestion is the same number in an allowed notation; for 10^100000 that would be 100,001 digits and a third of a second of formatting.
+        var noDecimals = Rational(decimals: false);
+        var noFractions = Rational(fractions: false);
+        var long1 = new RationalNumberAttribute { AllowFractions = false, MaxLength = 100_000 };
+        _ = noDecimals.Check("0.5");
+        _ = noFractions.Check("1/2");
+
+        foreach (var (attribute, text, code) in new (RationalNumberAttribute, string, MathValidationCode)[]
+        {
+            (noDecimals, "1e100000", MathValidationCode.DecimalNotAllowed),
+            (noDecimals, "1e-100000", MathValidationCode.DecimalNotAllowed),
+            (noDecimals, "3.5e5000", MathValidationCode.DecimalNotAllowed),
+            (long1, new string('9', 1_500) + "/1", MathValidationCode.FractionNotAllowed),
+            (long1, new string('7', 1_500) + "/7", MathValidationCode.FractionNotAllowed),
+        })
+        {
+            var watch = Stopwatch.StartNew();
+            var result = attribute.Check(text);
+            watch.Stop();
+
+            var label = text[..Math.Min(20, text.Length)];
+            Assert.AreEqual(code, result?.Code, label);
+            Assert.IsNull(result!.Suggestion, $"{label}: a suggestion of {result.Suggestion?.Length} characters");
+            Assert.IsTrue(watch.ElapsedMilliseconds < 50, $"{label}: {watch.ElapsedMilliseconds} ms");
+        }
+
+        // Ordinary numbers still get their suggestion.
+        Assert.AreEqual("Write it as 1/2.", noDecimals.Check("0.5")!.Suggestion);
+        Assert.AreEqual("Write it as 1000.", noDecimals.Check("1e3")!.Suggestion);
+        Assert.AreEqual("Write it as " + new string('9', 900) + ".", long1.Check(new string('9', 900) + "/1")!.Suggestion);
+    }
+
+    [TestMethod]
     public void TenMegabytesOfTextIsTooLongInUnderFiveMilliseconds()
     {
         var attributes = new MathValidationAttribute[] { Rational(), new NonZeroAttribute(), new ExactRangeAttribute("0", "1") };

@@ -256,6 +256,49 @@ public class PolynomialAttributeTests
     }
 
     [TestMethod]
+    public void NamingTheOffendingPartCostsLittleMoreThanTheCheckItself()
+    {
+        // Naming the culprit canonicalized every subtree again at every level: 2.7 s here, against 0.5 s for the same tree as a valid polynomial.
+        var notPolynomial = string.Concat(Enumerable.Repeat("(1e100000*1e100000) + (", 20)) + "sin(x)" + new string(')', 20);
+        var polynomial = string.Concat(Enumerable.Repeat("(1e100000*1e100000) + (", 20)) + "x" + new string(')', 20);
+        _ = X.Check(polynomial);
+
+        long Fastest(string text)
+        {
+            var fastest = long.MaxValue;
+            for (var i = 0; i < 2; i++)
+            {
+                var watch = Stopwatch.StartNew();
+                _ = X.Check(text);
+                fastest = Math.Min(fastest, watch.ElapsedMilliseconds);
+            }
+
+            return fastest;
+        }
+
+        var check = Fastest(polynomial);
+        var named = Fastest(notPolynomial);
+
+        Assert.AreEqual(NotPolynomial("sin(x)"), X.Check(notPolynomial)!.ErrorMessage);
+        Assert.IsTrue(named <= 3 * check + 100, $"naming the culprit took {named} ms, the check of the same tree {check} ms");
+    }
+
+    [TestMethod]
+    public void NestedConstantPowersCannotOverflowTheExpansionGuard()
+    {
+        // The bound on coefficient bits saturates at long.MaxValue; degree times bits must not wrap around and let an astronomically large expansion start.
+        const string nested = "((((((((1e100000)^64)^64)^64)^64)^64)^64)^64)^64";
+        foreach (var degree in new[] { 21, 22, 64, 255, 256 })
+        {
+            var text = $"x^{degree}*{nested}";
+            var work = Task.Run(() => X.Check(text));
+
+            Assert.IsTrue(work.Wait(TimeSpan.FromSeconds(3)), $"x^{degree} times the nested power did not finish in 3 s");
+            Assert.AreEqual(TooHigh(degree), work.Result?.ErrorMessage, $"x^{degree}");
+        }
+    }
+
+    [TestMethod]
     public void ConfigurationErrorsThrowAsSpecified()
     {
         var rows = new (string Label, PolynomialExpressionAttribute Attribute, string Message)[]

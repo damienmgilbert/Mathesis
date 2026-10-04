@@ -61,6 +61,9 @@ public sealed class PolynomialExpressionAttribute : MathValidationAttribute
 
     internal override int ExtraPlaceholderCount => 2;
 
+    // DegreeTooHigh fills {1} with the degree and {2} with the maximum; NotAPolynomial fills {2} with the maximum.
+    internal override int NumericPlaceholders => (1 << 1) | (1 << 2);
+
     internal override bool IsSupported(object value) => value is Expr;
 
     internal override string? ValidateOptions()
@@ -79,15 +82,8 @@ public sealed class PolynomialExpressionAttribute : MathValidationAttribute
         }
         else
         {
-            var text = (string)value;
-            var parsed = Format == InputFormat.Latex ? LatexParser.Parse(text, Options) : Parser.Parse(text, Options);
-            if (parsed.Expr is not { } tree)
-            {
-                var error = parsed.Errors[0];
-                return new MathDiagnostic(MathValidationCode.Syntax, [error.Message], error.Span, error.Suggestion);
-            }
-
-            raw = tree;
+            if (ParseText((string)value, Format, Options, out var parsed) is { } syntax) return syntax;
+            raw = parsed.Expr!;
         }
 
         var name = _variable.Value.Name;
@@ -105,8 +101,9 @@ public sealed class PolynomialExpressionAttribute : MathValidationAttribute
         if (Measure(canonical, x) is not { } size) return new MathDiagnostic(MathValidationCode.NotAPolynomial, [NameOffender(raw, x), MaxDegree]);
         if (!size.BeyondMaxExponent && size.Degree <= MaxDegree) return null;
 
-        // Written above the maximum: only the expanded polynomial knows whether terms cancel.
-        if (!size.BeyondMaxExponent && size.Degree <= MaxExpandedDegree && size.Degree * size.Bits <= MaxExpansionWork && PolynomialConversion.TryToPolynomial(canonical, x, out var polynomial))
+        // Written above the maximum: only the expanded polynomial knows whether terms cancel. The work bound divides instead of multiplying,
+        // because Bits saturates at long.MaxValue and degree times bits would wrap around (here 1 <= Degree <= 256).
+        if (!size.BeyondMaxExponent && size.Degree <= MaxExpandedDegree && size.Bits <= MaxExpansionWork / size.Degree && PolynomialConversion.TryToPolynomial(canonical, x, out var polynomial))
         {
             var degree = Math.Max(polynomial.Degree, 0);
             return degree <= MaxDegree ? null : new MathDiagnostic(MathValidationCode.DegreeTooHigh, [degree, MaxDegree]);
@@ -166,13 +163,27 @@ public sealed class PolynomialExpressionAttribute : MathValidationAttribute
     {
         // Descend while some part is itself not polynomial; symbols are never the culprit here (other variables were reported already).
         // A power is named whole (e^x, x^pi, x^(1/2)) unless its base contains the variable and fails on its own (sin(x)^2 names sin(x)).
-        bool Fails(Expr part) => part is not Symbol && Measure(Normalizer.Canonical(part), x) is null;
+        // Each test canonicalizes a part again, so the descent may canonicalize at most twice the leaves of the whole expression.
+        var budget = 2L * raw.LeafCount;
+        bool Fails(Expr part)
+        {
+            if (part is Symbol) return false;
+            budget -= part.LeafCount;
+            return budget >= 0 && Measure(Normalizer.Canonical(part), x) is null;
+        }
+
         var node = raw;
         while ((node is Apply { Operator.Id: "pow", Arguments: [var b, _] }
             ? (b.FreeSymbols.Any(s => s.Name == x.Name) && Fails(b) ? b : null)
             : node.Children.FirstOrDefault(Fails)) is { } failing)
         {
             node = failing;
+        }
+
+        // Out of budget: take the first part that has no place in a polynomial at all (a function, a constant, a binder, a literal), found without canonicalizing.
+        if (budget < 0)
+        {
+            node = node.Walk().Select(w => w.Expr).FirstOrDefault(e => e is not (Number or Symbol or Apply { Operator.Id: "add" or "sub" or "mul" or "neg" or "div" or "pow" })) ?? node;
         }
 
         if (ExpressionText.TryDescribe(node, 60, out var text)) return text;

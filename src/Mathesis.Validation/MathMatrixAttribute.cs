@@ -49,6 +49,9 @@ public sealed class MathMatrixAttribute : MathValidationAttribute
 
     internal override int ExtraPlaceholderCount => 2;
 
+    // NonNumericEntry fills {1} and {2} with the row and the column.
+    internal override int NumericPlaceholders => (1 << 1) | (1 << 2);
+
     internal override bool IsSupported(object value) => value is Expr;
 
     internal override string? ValidateOptions()
@@ -70,15 +73,8 @@ public sealed class MathMatrixAttribute : MathValidationAttribute
         }
         else
         {
-            var text = (string)value;
-            var parsed = Format == InputFormat.Latex ? LatexParser.Parse(text, Options) : Parser.Parse(text, Options);
-            if (parsed.Expr is not { } tree)
-            {
-                var error = parsed.Errors[0];
-                return new MathDiagnostic(MathValidationCode.Syntax, [error.Message], error.Span, error.Suggestion);
-            }
-
-            expr = tree;
+            if (ParseText((string)value, Format, Options, out var parsed) is { } syntax) return syntax;
+            expr = parsed.Expr!;
         }
 
         if (expr is not MatrixLiteral matrix)
