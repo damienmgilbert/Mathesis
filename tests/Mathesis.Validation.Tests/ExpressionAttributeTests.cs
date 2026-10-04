@@ -364,6 +364,14 @@ public class ExpressionAttributeTests
         Assert.IsNull(interval.Check("(0, 1, 2)")!.Suggestion);
         Assert.IsNull(interval.Check("x < 3")!.Suggestion);
         Assert.IsNull(interval.Check("]0, 1[") as object, "the suggested spelling is itself an interval");
+
+        // A huge element is not printed into the suggestion (it would be 100,001 digits and a third of a second of formatting).
+        var watch = Stopwatch.StartNew();
+        var huge = interval.Check("(1e100000, 2)")!;
+        watch.Stop();
+        Assert.AreEqual(MathValidationCode.WrongShape, huge.Code);
+        Assert.IsNull(huge.Suggestion, $"a suggestion of {huge.Suggestion?.Length} characters");
+        Assert.IsTrue(watch.ElapsedMilliseconds < 50, $"{watch.ElapsedMilliseconds} ms");
     }
 
     [TestMethod]

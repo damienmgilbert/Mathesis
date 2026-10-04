@@ -529,6 +529,41 @@ public class NumberAttributeTests
     }
 
     [TestMethod]
+    public void NotationSuggestionsNeverPrintHugeNumbers()
+    {
+        // The suggestion is the same number in an allowed notation; for 10^100000 that would be 100,001 digits and a third of a second of formatting.
+        var noDecimals = Rational(decimals: false);
+        var noFractions = Rational(fractions: false);
+        var long1 = new RationalNumberAttribute { AllowFractions = false, MaxLength = 100_000 };
+        _ = noDecimals.Check("0.5");
+        _ = noFractions.Check("1/2");
+
+        foreach (var (attribute, text, code) in new (RationalNumberAttribute, string, MathValidationCode)[]
+        {
+            (noDecimals, "1e100000", MathValidationCode.DecimalNotAllowed),
+            (noDecimals, "1e-100000", MathValidationCode.DecimalNotAllowed),
+            (noDecimals, "3.5e5000", MathValidationCode.DecimalNotAllowed),
+            (long1, new string('9', 1_500) + "/1", MathValidationCode.FractionNotAllowed),
+            (long1, new string('7', 1_500) + "/7", MathValidationCode.FractionNotAllowed),
+        })
+        {
+            var watch = Stopwatch.StartNew();
+            var result = attribute.Check(text);
+            watch.Stop();
+
+            var label = text[..Math.Min(20, text.Length)];
+            Assert.AreEqual(code, result?.Code, label);
+            Assert.IsNull(result!.Suggestion, $"{label}: a suggestion of {result.Suggestion?.Length} characters");
+            Assert.IsTrue(watch.ElapsedMilliseconds < 50, $"{label}: {watch.ElapsedMilliseconds} ms");
+        }
+
+        // Ordinary numbers still get their suggestion.
+        Assert.AreEqual("Write it as 1/2.", noDecimals.Check("0.5")!.Suggestion);
+        Assert.AreEqual("Write it as 1000.", noDecimals.Check("1e3")!.Suggestion);
+        Assert.AreEqual("Write it as " + new string('9', 900) + ".", long1.Check(new string('9', 900) + "/1")!.Suggestion);
+    }
+
+    [TestMethod]
     public void TenMegabytesOfTextIsTooLongInUnderFiveMilliseconds()
     {
         var attributes = new MathValidationAttribute[] { Rational(), new NonZeroAttribute(), new ExactRangeAttribute("0", "1") };

@@ -138,7 +138,9 @@ public class MathExpressionAttribute : MathValidationAttribute
                     _ => "an expression",
                 };
                 // A pair (a, b) is a tuple; the open interval is written with reversed brackets.
-                var suggestion = Shape == ExpressionShape.Interval && expr is TupleLiteral { Elements: [var from, var to] } ? $"For an open interval write ]{from}, {to}[." : null;
+                var suggestion = Shape == ExpressionShape.Interval && expr is TupleLiteral { Elements: [var from, var to] } && ExpressionText.TryDescribe(from, 30, out var lower) && ExpressionText.TryDescribe(to, 30, out var upper)
+                    ? $"For an open interval write ]{lower}, {upper}[."
+                    : null;
                 return new MathDiagnostic(MathValidationCode.WrongShape, [expected, found], Suggestion: suggestion);
             }
         }

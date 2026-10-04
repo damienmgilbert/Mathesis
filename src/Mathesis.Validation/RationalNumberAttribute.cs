@@ -43,13 +43,14 @@ public sealed class RationalNumberAttribute : MathValidationAttribute
         if (!AllowFractions && notation.HasFlag(Notation.Fraction))
         {
             // The same number in a notation the options allow: an integer, or a decimal when the denominator is small enough for its expansion to be short.
-            var suggestion = number.IsInteger ? number.ToString() : AllowDecimals && number.Denominator <= 500 ? number.ToDecimalString() : null;
+            // A number too long to print in a message gets no suggestion.
+            var suggestion = !ExpressionText.IsSmall(number) ? null : number.IsInteger ? number.ToString() : AllowDecimals && number.Denominator <= 500 ? number.ToDecimalString() : null;
             return new MathDiagnostic(MathValidationCode.FractionNotAllowed, [], Suggestion: suggestion is null ? null : $"Write it as {suggestion}.");
         }
 
         if (!AllowDecimals && notation.HasFlag(Notation.Decimal))
         {
-            var suggestion = number.IsInteger || AllowFractions ? number.ToString() : null;
+            var suggestion = ExpressionText.IsSmall(number) && (number.IsInteger || AllowFractions) ? number.ToString() : null;
             return new MathDiagnostic(MathValidationCode.DecimalNotAllowed, [], Suggestion: suggestion is null ? null : $"Write it as {suggestion}.");
         }
 
