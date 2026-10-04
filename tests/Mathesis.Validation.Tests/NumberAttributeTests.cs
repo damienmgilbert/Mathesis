@@ -529,6 +529,22 @@ public class NumberAttributeTests
     }
 
     [TestMethod]
+    public void SpacesAroundOperatorsAreNotCalledDigitGrouping()
+    {
+        // Only a separator between two digits groups digits; spaces around a slash or after a sign are a different mistake.
+        AssertRows(
+        [
+            new(Rational(), "1 / 2", MathValidationCode.NotANumber, "Write the number without spaces or separators: 1/2."),
+            new(Rational(), "- 3", MathValidationCode.NotANumber, "Write the number without spaces or separators: -3."),
+            new(Rational(), "2 e5", MathValidationCode.NotANumber, "Write the number without spaces or separators: 2e5."),
+            new(Rational(), "1 000 / 4", MathValidationCode.NotANumber, "Write the number without spaces or separators: 1000/4."),
+            new(Rational(), "1 000", MathValidationCode.NotANumber, "Write the number without digit grouping: 1000."),
+            new(Rational(), "1_000_000", MathValidationCode.NotANumber, "Write the number without digit grouping: 1000000."),
+            new(Rational(), "12'345.5", MathValidationCode.NotANumber, "Write the number without digit grouping: 12345.5."),
+        ]);
+    }
+
+    [TestMethod]
     public void NotationSuggestionsNeverPrintHugeNumbers()
     {
         // The suggestion is the same number in an allowed notation; for 10^100000 that would be 100,001 digits and a third of a second of formatting.

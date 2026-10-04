@@ -99,11 +99,17 @@ internal static class NumberInput
             return new MathDiagnostic(MathValidationCode.NotANumber, [], new TextSpan(start + comma, 1), $"Use '.' as the decimal point, for example {dotted}. Digit grouping is not accepted.");
         }
 
-        // 1 000 and 1_000.
+        // 1 000 and 1_000 group digits; spaces elsewhere (1 / 2, - 3) are a different mistake with the same cure.
         var ungrouped = string.Concat(trimmed.ToString().Split(GroupingCharacters));
         if (ungrouped.Length != trimmed.Length && TryParse(ungrouped, out _))
         {
-            return new MathDiagnostic(MathValidationCode.NotANumber, [], Suggestion: $"Write the number without digit grouping: {ungrouped}.");
+            var grouping = true;
+            for (var i = 0; i < trimmed.Length; i++)
+            {
+                if (GroupingCharacters.AsSpan().Contains(trimmed[i]) && !(i > 0 && i + 1 < trimmed.Length && char.IsAsciiDigit(trimmed[i - 1]) && char.IsAsciiDigit(trimmed[i + 1]))) grouping = false;
+            }
+
+            return new MathDiagnostic(MathValidationCode.NotANumber, [], Suggestion: grouping ? $"Write the number without digit grouping: {ungrouped}." : $"Write the number without spaces or separators: {ungrouped}.");
         }
 
         // 1e999999999: the exponent of text is limited, never read as zero or infinity.
