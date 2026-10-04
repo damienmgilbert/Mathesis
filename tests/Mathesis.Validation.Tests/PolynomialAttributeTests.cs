@@ -256,6 +256,34 @@ public class PolynomialAttributeTests
     }
 
     [TestMethod]
+    public void NamingTheOffendingPartCostsLittleMoreThanTheCheckItself()
+    {
+        // Naming the culprit canonicalized every subtree again at every level: 2.7 s here, against 0.5 s for the same tree as a valid polynomial.
+        var notPolynomial = string.Concat(Enumerable.Repeat("(1e100000*1e100000) + (", 20)) + "sin(x)" + new string(')', 20);
+        var polynomial = string.Concat(Enumerable.Repeat("(1e100000*1e100000) + (", 20)) + "x" + new string(')', 20);
+        _ = X.Check(polynomial);
+
+        long Fastest(string text)
+        {
+            var fastest = long.MaxValue;
+            for (var i = 0; i < 2; i++)
+            {
+                var watch = Stopwatch.StartNew();
+                _ = X.Check(text);
+                fastest = Math.Min(fastest, watch.ElapsedMilliseconds);
+            }
+
+            return fastest;
+        }
+
+        var check = Fastest(polynomial);
+        var named = Fastest(notPolynomial);
+
+        Assert.AreEqual(NotPolynomial("sin(x)"), X.Check(notPolynomial)!.ErrorMessage);
+        Assert.IsTrue(named <= 3 * check + 100, $"naming the culprit took {named} ms, the check of the same tree {check} ms");
+    }
+
+    [TestMethod]
     public void NestedConstantPowersCannotOverflowTheExpansionGuard()
     {
         // The bound on coefficient bits saturates at long.MaxValue; degree times bits must not wrap around and let an astronomically large expansion start.

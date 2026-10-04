@@ -170,13 +170,27 @@ public sealed class PolynomialExpressionAttribute : MathValidationAttribute
     {
         // Descend while some part is itself not polynomial; symbols are never the culprit here (other variables were reported already).
         // A power is named whole (e^x, x^pi, x^(1/2)) unless its base contains the variable and fails on its own (sin(x)^2 names sin(x)).
-        bool Fails(Expr part) => part is not Symbol && Measure(Normalizer.Canonical(part), x) is null;
+        // Each test canonicalizes a part again, so the descent may canonicalize at most twice the leaves of the whole expression.
+        var budget = 2L * raw.LeafCount;
+        bool Fails(Expr part)
+        {
+            if (part is Symbol) return false;
+            budget -= part.LeafCount;
+            return budget >= 0 && Measure(Normalizer.Canonical(part), x) is null;
+        }
+
         var node = raw;
         while ((node is Apply { Operator.Id: "pow", Arguments: [var b, _] }
             ? (b.FreeSymbols.Any(s => s.Name == x.Name) && Fails(b) ? b : null)
             : node.Children.FirstOrDefault(Fails)) is { } failing)
         {
             node = failing;
+        }
+
+        // Out of budget: take the first part that has no place in a polynomial at all (a function, a constant, a binder, a literal), found without canonicalizing.
+        if (budget < 0)
+        {
+            node = node.Walk().Select(w => w.Expr).FirstOrDefault(e => e is not (Number or Symbol or Apply { Operator.Id: "add" or "sub" or "mul" or "neg" or "div" or "pow" })) ?? node;
         }
 
         if (ExpressionText.TryDescribe(node, 60, out var text)) return text;
