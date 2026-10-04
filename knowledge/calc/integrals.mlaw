@@ -356,8 +356,6 @@ law inv-log "Antiderivative of 1/ln x"
   course:    Calculus
   tags:      antiderivative | non-elementary
   explain:   "∫ d{x}/ln {x} = li({x}) + C; the antiderivative is not elementary."
-  verify:    none
-  rationale: "The logarithmic integral li has no elementary evaluation and no closed form; the check needs a special-function library with the principal-value definition at x = 1 (planned for the special-functions milestone)."
 
 domain calc.int "Integration techniques"
 

@@ -158,12 +158,21 @@ internal static class LawVerifier
         // Probe the conditions with more samples that violate them.
         if (condition is not null && valid > 0 && violatingHolds + violatingFails < 20)
         {
-            for (var i = 0; i < 4000 && violatingHolds + violatingFails < 60 && indefinite is null; i++)
+            // Probing is best effort: it stops after 500 violating samples in a row at which the statement is undefined (a divergent series, say),
+            // since sums and integrals make each probe expensive.
+            var undefinedInARow = 0;
+            for (var i = 0; i < 4000 && violatingHolds + violatingFails < 60 && undefinedInARow < 500 && indefinite is null; i++)
             {
                 var env = Draw(entry, random, complexMode, evalComplex, tame);
                 var conditionHolds = evaluator.Truth(condition, env);
                 var value = evaluator.Truth(statement, env);
-                if (conditionHolds != false || value is null) continue;
+                if (conditionHolds != false) continue;
+                if (value is null)
+                {
+                    undefinedInARow++;
+                    continue;
+                }
+                undefinedInARow = 0;
                 if (value == true) violatingHolds++;
                 else violatingFails++;
             }

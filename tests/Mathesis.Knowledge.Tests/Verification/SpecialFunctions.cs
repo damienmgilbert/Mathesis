@@ -74,6 +74,28 @@ internal static class SpecialFunctions
         return result + Math.Log(x) - 0.5 / x - f * (1.0 / 12 - f * (1.0 / 120 - f * (1.0 / 252 - f * (1.0 / 240 - f * (1.0 / 132)))));
     }
 
+    /// <summary>
+    /// The logarithmic integral li(x), the principal value of the integral of 1/ln t from 0 to x, for x &gt; 0 and x ≠ 1:
+    /// li(x) = γ + ln|ln x| + Σ (ln x)ⁿ/(n·n!) (Abramowitz and Stegun 5.1.10 with li(x) = Ei(ln x)). Undefined (NaN) when |ln x| &gt; 30,
+    /// where the alternating terms of the series cancel to nothing in double precision.
+    /// </summary>
+    public static double Li(double x)
+    {
+        if (!(x > 0) || x == 1 || double.IsInfinity(x)) return double.NaN;
+        var u = Math.Log(x);
+        if (Math.Abs(u) > 30) return double.NaN;
+        var power = 1.0; // u^n / n!
+        var sum = 0.0;
+        for (var n = 1; n < 400; n++)
+        {
+            power *= u / n;
+            var add = power / n;
+            sum += add;
+            if (Math.Abs(add) < 1e-17 * Math.Abs(sum)) break;
+        }
+        return 0.57721566490153286 + Math.Log(Math.Abs(u)) + sum;
+    }
+
     /// <summary>The principal branch W₀ of the Lambert W function for x ≥ −1/e (Halley iteration).</summary>
     public static double LambertW(double x)
     {

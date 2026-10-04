@@ -434,6 +434,7 @@ internal sealed class LawEvaluator
         "lambertw" => SpecialFunctions.LambertW(x),
         "factorial" => x >= 0 && x == Math.Floor(x) && x < 171 ? SpecialFunctions.Factorial((int)x) : double.NaN,
         "si" => Si(x),
+        "li" => SpecialFunctions.Li(x),
         _ => null,
     };
 
@@ -624,6 +625,46 @@ internal sealed class LawEvaluator
                 {
                     var lo = Eval(b.Data[0], env);
                     var hi = Eval(b.Data[1], env);
+                    if (b.Binder == Binder.Sum && !IsNaN(lo) && lo.Real == Math.Floor(lo.Real) && double.IsPositiveInfinity(hi.Real) && hi.Imaginary == 0)
+                    {
+                        // An infinite sum is the limit of its partial sums. Terms are added until eight in a row are negligible against the sum, which
+                        // puts the tail of a geometric-like or factorial series far below the comparison tolerance. A series whose terms stop shrinking, or
+                        // that has not settled within MaxSeriesTerms terms (x near the radius of convergence, conditionally convergent endpoints), is
+                        // undefined at this sample and the sample is skipped: the verifier never guesses a sum it has not seen converge.
+                        const int MaxSeriesTerms = 4000;
+                        var partial = Complex<double>.Zero;
+                        var negligible = 0;
+                        Span<double> sizes = stackalloc double[MaxSeriesTerms];
+
+                        // One environment serves every term: copying it per term dominates the cost of long sums.
+                        var name = b.Bound[0].Name;
+                        var inner = env.With(name, lo);
+                        for (var k = 0; k < MaxSeriesTerms; k++)
+                        {
+                            inner.Values[name] = new Complex<double>((long)lo.Real + k);
+                            var term = Eval(b.Body, inner);
+                            if (IsNaN(term)) return NaN;
+                            Note(term);
+                            partial += term;
+                            sizes[k] = term.Magnitude;
+                            negligible = sizes[k] <= 1e-16 * partial.Magnitude ? negligible + 1 : 0;
+                            if (negligible == 8) return partial;
+
+                            // A series whose largest term has not shrunk from one block of 64 terms to the next (after 128 terms to grow, as the terms of
+                            // x^n/n! do before they fall) is divergent or too slow to settle: stop early instead of running to the term limit.
+                            if (k >= 191 && (k + 1) % 64 == 0)
+                            {
+                                double latest = 0, previous = 0;
+                                for (var j = 0; j < 64; j++)
+                                {
+                                    latest = Math.Max(latest, sizes[k - j]);
+                                    previous = Math.Max(previous, sizes[k - 64 - j]);
+                                }
+                                if (latest >= previous) return NaN;
+                            }
+                        }
+                        return NaN;
+                    }
                     if (IsNaN(lo) || IsNaN(hi) || lo.Real != Math.Floor(lo.Real) || hi.Real != Math.Floor(hi.Real) || hi.Real - lo.Real > 100_000) return NaN;
                     var acc = b.Binder == Binder.Sum ? Complex<double>.Zero : Complex<double>.One;
                     for (var k = (long)lo.Real; k <= (long)hi.Real; k++)

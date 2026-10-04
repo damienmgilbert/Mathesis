@@ -1,4 +1,7 @@
 using Mathesis.Knowledge.Tests.Verification;
+using Mathesis.Numbers;
+using Mathesis.Numerics.Integration;
+using Mathesis.Symbolics;
 
 namespace Mathesis.Knowledge.Tests;
 
@@ -122,6 +125,95 @@ public class LawVerifierTests
         Assert.AreEqual(VerifyOutcome.Passed, Verify("law a \"A\"\n  vars: x\n  statement: integrate(x^2, x) = x^3/3 + 7\n  sample: x in (-2, 2)\n" + Tail).Outcome);
         var wrong = Verify("law a \"A\"\n  vars: x\n  statement: integrate(x^2, x) = x^3/2\n  sample: x in (-2, 2)\n" + Tail);
         Assert.AreEqual(VerifyOutcome.Failed, wrong.Outcome);
+    }
+
+    [TestMethod]
+    public void InfiniteSumsAreLimitsOfPartialSumsAndAreOnlyDefinedWhereTheySettle()
+    {
+        static double Sum(string text, double x)
+        {
+            var env = new Env { Values = new() { ["x"] = new Complex<double>(x) } };
+            return new LawEvaluator().Eval(Expr.Parse(text), env).Real;
+        }
+
+        Assert.AreEqual(2.0, Sum("sum(x^n, n, 0, oo)", 0.5), 1e-13);
+        Assert.AreEqual(Math.E, Sum("sum(x^n/factorial(n), n, 0, oo)", 1), 1e-14);
+        Assert.AreEqual(Math.Sin(0.7), Sum("sum((-1)^n*x^(2*n + 1)/factorial(2*n + 1), n, 0, oo)", 0.7), 1e-14);
+
+        // Divergent series, and series that have not settled within the term limit (terms that shrink algebraically), are undefined, never guessed.
+        Assert.IsTrue(double.IsNaN(Sum("sum(x^n, n, 0, oo)", 1)), "terms that stay at 1");
+        Assert.IsTrue(double.IsNaN(Sum("sum(x^n, n, 0, oo)", 1.01)), "terms that grow");
+        Assert.IsTrue(double.IsNaN(Sum("sum(x^n, n, 0, oo)", -2)), "terms that grow and alternate");
+        Assert.IsTrue(double.IsNaN(Sum("sum(1/n, n, 1, oo)", 0)), "the harmonic series");
+        Assert.IsTrue(double.IsNaN(Sum("sum(1/n^2, n, 1, oo)", 0)), "convergent, but the tail is still about 1/N after the term limit");
+        Assert.IsTrue(double.IsNaN(Sum("sum((-1)^(n + 1)/n, n, 1, oo)", 0)), "conditionally convergent");
+
+        // A term that is undefined (here 1/0) makes the sum undefined.
+        Assert.IsTrue(double.IsNaN(Sum("sum(1/(n - 3)^2, n, 0, oo)", 0)));
+    }
+
+    [TestMethod]
+    public void InfiniteSeriesLawsAreCheckedWhereTheyConvergeAndFailWhenWrong()
+    {
+        Assert.AreEqual(VerifyOutcome.Passed, Verify("law a \"A\"\n  vars: x\n  statement: 1/(1 - x) = sum(x^n, n, 0, oo)\n  where: abs(x) < 1\n" + Tail).Outcome);
+
+        // Without the condition the law is still checked where the series converges (the other samples are undefined and skipped).
+        Assert.AreEqual(VerifyOutcome.Passed, Verify("law a \"A\"\n  vars: x\n  statement: 1/(1 - x) = sum(x^n, n, 0, oo)\n" + Tail).Outcome);
+
+        // A series that never converges verifies nothing, and says so.
+        Assert.AreEqual(VerifyOutcome.Inconclusive, Verify("law a \"A\"\n  vars: x\n  statement: x = sum(1, n, 0, oo)\n" + Tail).Outcome);
+    }
+
+    [TestMethod]
+    public void WrongMaclaurinSeriesAreRejected()
+    {
+        // Each case is a catalog series (knowledge/calc/series.mlaw) with one plausible mistake.
+        (string Vars, string Statement, string? Where)[] wrong =
+        [
+            ("x", "e^x = sum(x^n/factorial(n + 1), n, 0, oo)", null),
+            ("x", "sin(x) = sum(x^(2*n + 1)/factorial(2*n + 1), n, 0, oo)", null),
+            ("x", "sin(x) = sum((-1)^n*x^(2*n + 1)/factorial(2*n), n, 0, oo)", null),
+            ("x", "cos(x) = sum((-1)^n*x^(2*n)/factorial(2*n + 1), n, 0, oo)", null),
+            ("x", "1/(1 - x) = sum(x^n, n, 1, oo)", "abs(x) < 1"),
+            ("x", "ln(1 + x) = sum((-1)^n*x^n/n, n, 1, oo)", "x > -1 and x <= 1"),
+            ("x", "arctan(x) = sum((-1)^n*x^(2*n + 1)/(2*n), n, 1, oo)", "abs(x) <= 1"),
+            ("x, k", "(1 + x)^k = sum(binomial(k, n + 1)*x^n, n, 0, oo)", "abs(x) < 1"),
+            ("x", "sinh(x) = sum((-1)^n*x^(2*n + 1)/factorial(2*n + 1), n, 0, oo)", null),
+            ("x", "cosh(x) = sum(x^(2*n)/factorial(2*n + 1), n, 0, oo)", null),
+        ];
+        foreach (var (vars, statement, where) in wrong)
+        {
+            var report = Verify($"law a \"A\"\n  vars: {vars}\n  statement: {statement}\n" + (where is null ? "" : $"  where: {where}\n") + Tail);
+            Assert.AreEqual(VerifyOutcome.Failed, report.Outcome, $"{statement}: {report.Outcome} {report.Message}");
+        }
+    }
+
+    [TestMethod]
+    public void IntegralsWithBoundsAreEvaluatedWithTheIntegrandOfTheirVariable()
+    {
+        // f is evaluated at the integration variable x, so a wrong law fails (with f taken at a fixed point both integrals below would be f(a)·(b − a)).
+        const string Vars = "  vars: f: function(R -> R), a, b, x\n";
+        Assert.AreEqual(VerifyOutcome.Passed, Verify("law a \"A\"\n" + Vars + "  statement: integrate(f, x, b, a) = -integrate(f, x, a, b)\n" + Tail).Outcome);
+        Assert.AreEqual(VerifyOutcome.Failed, Verify("law a \"A\"\n" + Vars + "  statement: integrate(f, x, b, a) = integrate(f, x, a, b)\n" + Tail).Outcome);
+        Assert.AreEqual(VerifyOutcome.Passed, Verify("law a \"A\"\n" + Vars + "  statement: integrate(f, x, a, a) = 0\n" + Tail).Outcome);
+        Assert.AreEqual(VerifyOutcome.Failed, Verify("law a \"A\"\n" + Vars + "  statement: integrate(f, x, a, b) = 0\n" + Tail).Outcome);
+    }
+
+    [TestMethod]
+    public void TheLogarithmicIntegralMatchesItsKnownValuesAndItsDerivative()
+    {
+        // li(2) and the Ramanujan-Soldner constant μ (li(μ) = 0) from the reference tables (DLMF 6.2(ii), Abramowitz and Stegun 5.1).
+        Assert.AreEqual(1.0451637801174927848, SpecialFunctions.Li(2), 1e-14);
+        Assert.AreEqual(0.0, SpecialFunctions.Li(1.4513692348833810503), 1e-14);
+        foreach (var x in new[] { 0, 1, -3, double.PositiveInfinity, double.NaN, 1e-20, 1e20 }) Assert.IsTrue(double.IsNaN(SpecialFunctions.Li(x)), $"li({x}) is undefined here");
+
+        // li' = 1/ln: differences of li equal the integral of 1/ln t over intervals that avoid the pole at 1, on either side of it.
+        foreach (var (a, b) in new[] { (2.0, 10.0), (1.01, 1.5), (30.0, 31.0), (0.1, 0.9), (0.3, 0.97), (0.0001, 0.5) })
+        {
+            var integral = Quadrature.GaussKronrod<double>(t => 1 / Math.Log(t), a, b);
+            Assert.IsTrue(integral.Converged);
+            Assert.AreEqual(integral.Value, SpecialFunctions.Li(b) - SpecialFunctions.Li(a), 1e-9 * Math.Max(1, Math.Abs(integral.Value)), $"li({b}) - li({a})");
+        }
     }
 
     [TestMethod]
