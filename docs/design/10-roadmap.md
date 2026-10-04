@@ -1,6 +1,6 @@
 # 10 Roadmap
 
-The full scope is eight milestones. Milestone 1 is `PLAN.md`; each later milestone gets its own plan file, drafted by Claude Code from this roadmap and the domain docs once the previous milestone ships.
+The full scope is nine milestones. Milestone 1 is `PLAN.md`; each later milestone gets its own plan file, drafted by Claude Code from this roadmap and the domain docs once the previous milestone ships.
 
 ## Milestones
 
@@ -14,8 +14,9 @@ The full scope is eight milestones. Milestone 1 is `PLAN.md`; each later milesto
 | 6 | Finite Mathematics and discrete | Discrete, Knowledge, Mathesis | Finite Mathematics, number theory, graph theory | ≈ 2,700 | 1 (5 for Markov and LP steps) |
 | 7 | Numerical Analysis depth | Numerics, LinearAlgebra, Core | Numerical Analysis; `BigFloat`, validated interval methods, special functions | ≈ 3,000 | 1 |
 | 8 | Ecosystem | Extensions, Symbolics | DI, AI tools, MathML/MathJSON interop, localization | — | 1 |
+| 9 | Input validation | Validation (new) | Validation attributes for forms (no catalog change) | — | 1 |
 
-Milestones 3, 6 and 7 can run in parallel with 2, 4 and 5 once Milestone 1 is done.
+Milestones 3, 6 and 7 can run in parallel with 2, 4 and 5 once Milestone 1 is done. Milestone 9 depends only on Milestone 1 and can run in parallel with 2–8.
 
 ## Milestone 1: Foundation
 
@@ -87,6 +88,14 @@ Delivered by `PLAN.md`.
 - MathML (presentation and content) and MathJSON round trips.
 - Localized explanation templates.
 - Integration samples for the step-by-step solver app (idea #14) and graphing calculator (idea #30).
+
+## Milestone 9: Input validation
+
+Delivered by `PLAN-M9.md`.
+
+- `Mathesis.Validation`: seven `System.ComponentModel.DataAnnotations` attributes (`RationalNumber`, `ExactRange`, `NonZero`, `MathExpression`, `MathEquation`, `PolynomialExpression`, `MathMatrix`) that check numbers, expressions, equations, polynomials and matrices, with stable result codes, source spans, suggestions and embedded default messages.
+- No UI-framework reference: every UI stack that consumes DataAnnotations gets the attributes for free (ADR-15).
+- **Exit:** the Plan M9 phase checks pass; the attributes work through `Validator.TryValidateObject` on form models; the AOT smoke app is clean.
 
 ## Future domains
 

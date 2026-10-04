@@ -1,13 +1,13 @@
 # 02 Architecture
 
-Mathesis is eight packages in five layers. Lower layers never reference higher ones, and the mathematics itself (laws, theorems, formulas) lives in a data catalog that the generic engines read at run time.
+Mathesis is ten packages in five layers. Lower layers never reference higher ones, and the mathematics itself (laws, theorems, formulas) lives in a data catalog that the generic engines read at run time.
 
 ## Layers
 
 ```text
-Layer 4  Mathesis (engines + façade)     Mathesis.Logic        Mathesis.Extensions (optional)
-           Algebra, Trigonometry,          propositions, sets,    DI registration, options,
-           Functions, Calculus,            proof kernel,          ILogger tracing,
+Layer 4  Mathesis (engines + façade)     Mathesis.Logic        Mathesis.Extensions (optional)    Mathesis.Validation (optional)
+           Algebra, Trigonometry,          propositions, sets,    DI registration, options,         DataAnnotations attributes
+           Functions, Calculus,            proof kernel,          ILogger tracing,                  for math input
            DifferentialEquations,          tactics, SAT           Microsoft.Extensions.AI tools
            Solving, Simplification,
            Explanation
@@ -40,6 +40,7 @@ Layer 0  Mathesis.Core  ── number tower (BigRational, Complex<T>, Dual<T>, I
 | `Mathesis.Logic` | Symbolics, Knowledge | none |
 | `Mathesis` | all of the above except Extensions | none |
 | `Mathesis.Extensions` | Mathesis | `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Options`, `Microsoft.Extensions.Logging.Abstractions`, `Microsoft.Extensions.AI.Abstractions` |
+| `Mathesis.Validation` | Symbolics | none (`System.ComponentModel.DataAnnotations` is part of the shared framework) |
 
 `Mathesis.Symbolics` defines the rewrite *engine* but contains no mathematical laws beyond operator definitions and automatic simplification. Laws come from `Mathesis.Knowledge` through the `IKnowledgeBase` interface (defined in Symbolics, implemented in Knowledge). This breaks the cycle "the catalog needs the parser, the simplifier needs the catalog."
 
@@ -164,5 +165,9 @@ Core packages take no logging dependency. Derivations are the trace. `Mathesis.E
 | ADR-12 | Logging | No logging dependency in core packages | `Microsoft.Extensions.Logging.Abstractions` everywhere | Smallest dependency graph; derivations already trace |
 | ADR-13 | Core result types vs. Expr | `Outcome<T>` and `Provisos` in Core carry `IMathObject` / `IDerivation` marker interfaces that Symbolics implements (2026-10-01) | Move `Outcome<T>` to Symbolics, or an `Outcome<T>` without expressions | Numerics and LinearAlgebra, which sit below Symbolics, can still return `Outcome<T>`; Core stays dependency-free |
 | ADR-14 | Elementary functions on `Dual<T>` and `Complex<T>` | C# 14 extension members constrained on `IFloatingPointIeee754<T>` (2026-10-02) | Implementing `IExponentialFunctions<T>`, `ITrigonometricFunctions<T>`… on the struct | A struct cannot implement an interface only for some `T`; generic code that needs `Dual<T>` takes the operator interfaces and calls `Dual<T>.Sin(x)` directly |
+| ADR-15 | Validation package | `Mathesis.Validation`: layer 4, optional, references Symbolics only, `net10.0` only, no UI-framework reference (2026-10-04) | Put it in `Mathesis.Extensions`, or one package per UI framework | The attributes are plain BCL types every UI stack already consumes; no workloads or `-windows` TFMs; avoids the `Xamarin.*` transitive packages the policy check rejects |
+| ADR-16 | One verdict, two entry points | Each attribute computes its verdict once and exposes it through `IsValid(object?)` and `IsValid(object?, ValidationContext)`; failures are `MathValidationResult` with code, span and suggestion (2026-10-04) | Override only the context overload | Verified on .NET 10.0.401: a context-only attribute throws `NullReferenceException` from `IsValid(value)` and `Validate(value, name)`; a `ValidationResult` subclass survives `Validator.TryValidateObject` and `TryValidateProperty` |
+| ADR-17 | Cross-property rules | `IValidatableObject` (and each attribute's typed `Check`) (2026-10-04) | A `CompareAttribute`-style attribute naming another property | Resolving a property by name needs reflection (`RequiresUnreferencedCode`), which G8 forbids |
+| ADR-18 | Sync only, .NET 10 surface | Synchronous validation; never use `AsyncValidationAttribute`, `IAsyncValidatableObject` or `Validator.*Async` (2026-10-04) | Adopt the async types | They ship in .NET 11 only; validation here is parse-and-inspect and does no I/O |
 
 Record new decisions in this table as they are made, with the date in the commit message.

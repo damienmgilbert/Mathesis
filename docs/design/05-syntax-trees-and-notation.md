@@ -153,6 +153,7 @@ The same linear notation is used in the parser, in `.mlaw` catalog files, and in
 ### Conventions the parser applies
 
 - **Decimals are exact.** `0.1` is the rational 1/10 with a decimal display hint. Floats come only from numeric evaluation, `N(…)`, or C# `double` values.
+- **Culture.** Input is culture-invariant: `.` is the decimal point and `,` separates arguments, whatever `CultureInfo.CurrentCulture` says. `0,5`, `1,000` and `1 000` are not numbers (syntax errors), and `1_000` is not 1000 (it reads as 1 times a symbol). U+2212 (−) is accepted as minus. Culture affects only how messages format their values.
 - **Implicit multiplication.** `2x`, `3(x + 1)`, `(x + 1)(x − 1)`, `x y`, `2 sin x`. With the default option `SingleLetterVariables`, `xy` means `x·y`, except for known function and constant names and Greek letter names (`theta`, `alpha`).
 - **Function application without parentheses.** `sin x` means `sin(x)`; `sin 2x` means `sin(2x)`; `sin x cos x` means `sin(x)·cos(x)`.
 - **Powers of functions.** `sin^2 x` means `(sin x)^2`. `sin^-1 x` means `arcsin x` (textbook convention); write `(sin x)^-1` or `1/sin x` for the reciprocal.

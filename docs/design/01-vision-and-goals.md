@@ -36,7 +36,7 @@ Each goal has a test that decides whether it is met.
 - **A complete decision procedure for "is this zero?"** Richardson's theorem (1968) shows zero-equivalence is undecidable for expressions built from π, ln 2, eˣ, sin x and |x|. Mathesis uses exact normal forms where they exist (polynomials, rational functions, many algebraic and exp-log expressions) and reports `ProbablyZero` with a stated confidence elsewhere.
 - **A full proof assistant.** The logic kernel checks propositional, first-order and equational proofs, ring identities and induction over ℕ. It does not replace Lean or Coq, and it does not search for proofs of arbitrary first-order statements, which is only semi-decidable.
 - **Complete symbolic integration.** Rational functions get a complete algorithm. Elementary functions get table lookup, heuristics and parts of the Risch algorithm; anything else returns `Unevaluated`.
-- **Rendering, plotting or UI.** Mathesis produces data (trees, LaTeX, MathML, sample points, phase-portrait vectors). Apps such as the solver app (idea #14) and graphing calculator (idea #30) draw it.
+- **Rendering, plotting or UI.** Mathesis produces data (trees, LaTeX, MathML, sample points, phase-portrait vectors). Apps such as the solver app (idea #14) and graphing calculator (idea #30) draw it. The validation attributes of `Mathesis.Validation` carry rules and messages as data; drawing an error state stays in the app.
 - **Physical units.** Dimensional analysis is a separate library (idea #15).
 
 ## Design principles

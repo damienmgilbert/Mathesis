@@ -6,6 +6,7 @@
     <Project Path="src/Mathesis.Symbolics/Mathesis.Symbolics.csproj" />
     <Project Path="src/Mathesis.Knowledge/Mathesis.Knowledge.csproj" />
     <Project Path="src/Mathesis/Mathesis.csproj" />
+    <Project Path="src/Mathesis.Validation/Mathesis.Validation.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Mathesis.Testing/Mathesis.Testing.csproj" />
@@ -15,6 +16,7 @@
     <Project Path="tests/Mathesis.Symbolics.Tests/Mathesis.Symbolics.Tests.csproj" />
     <Project Path="tests/Mathesis.Knowledge.Tests/Mathesis.Knowledge.Tests.csproj" />
     <Project Path="tests/Mathesis.Tests/Mathesis.Tests.csproj" />
+    <Project Path="tests/Mathesis.Validation.Tests/Mathesis.Validation.Tests.csproj" />
   </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/AotSmoke/AotSmoke.csproj" />

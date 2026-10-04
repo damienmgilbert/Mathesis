@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>DataAnnotations validation attributes for mathematical input: exact numbers, ranges, expressions, equations, polynomials and matrices, with error codes, source spans and suggestions.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Mathesis.Symbolics/Mathesis.Symbolics.csproj" />
+  </ItemGroup>
+
+</Project>

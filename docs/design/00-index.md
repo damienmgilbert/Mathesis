@@ -15,7 +15,7 @@ These docs define the architecture, types, notation, knowledge catalog and per-d
 | [07 Engines](07-engines.md) | Matching, rewriting, simplification, assumptions, zero testing, polynomial, calculus and solving engines, explanations, compilation |
 | [08 Features and abilities](08-features-and-abilities.md) | The public API surface by domain, with milestones |
 | [09 Verification](09-verification.md) | How correctness is established: property, catalog, metamorphic, corpus and runtime checks |
-| [10 Roadmap](10-roadmap.md) | Eight milestones from Foundation to Ecosystem, with exit criteria |
+| [10 Roadmap](10-roadmap.md) | Nine milestones from Foundation to Input validation, with exit criteria |
 
 ## Domain docs
 

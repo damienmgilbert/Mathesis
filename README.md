@@ -12,7 +12,7 @@ Mathesis is a dependency-light .NET 10 library that represents mathematics as da
 dotnet add package Mathesis
 ```
 
-The `Mathesis` package brings the other five (`Mathesis.Core`, `Mathesis.Numerics`, `Mathesis.LinearAlgebra`, `Mathesis.Symbolics`, `Mathesis.Knowledge`). It targets .NET 10.
+The `Mathesis` package brings the other five (`Mathesis.Core`, `Mathesis.Numerics`, `Mathesis.LinearAlgebra`, `Mathesis.Symbolics`, `Mathesis.Knowledge`). It targets .NET 10. `Mathesis.Validation` is optional and is not part of the `Mathesis` package.
 
 | Package | What it holds |
 | --- | --- |
@@ -22,6 +22,7 @@ The `Mathesis` package brings the other five (`Mathesis.Core`, `Mathesis.Numeric
 | `Mathesis.Symbolics` | The expression tree, parser, printers, normalizer, assumptions, pattern matching, rewrite engine, power series |
 | `Mathesis.Knowledge` | The catalog of verified laws, formulas and theorems |
 | `Mathesis` | `Cas`: simplify, differentiate, integrate, limits, series, solve, linear algebra; step explanations |
+| `Mathesis.Validation` | `System.ComponentModel.DataAnnotations` attributes that validate numbers, expressions, equations, polynomials and matrices typed into forms (optional; references `Mathesis.Symbolics`) |
 
 ## Conventions
 
