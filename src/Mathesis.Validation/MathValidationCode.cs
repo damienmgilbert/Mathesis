@@ -40,7 +40,7 @@ public enum MathValidationCode
     /// <summary>The expression does not make sense mathematically. <c>{1}</c> is the sort checker's explanation.</summary>
     IllSorted,
 
-    /// <summary>The expression has another shape than required. <c>{1}</c> is the shape expected, <c>{2}</c> the shape found.</summary>
+    /// <summary>The expression has another shape than required. <c>{1}</c> is the shape expected, <c>{2}</c> the shape found, both as English phrases such as "an equation" or "a statement".</summary>
     WrongShape,
 
     /// <summary>The expression uses a variable that is not allowed. <c>{1}</c> names the variables.</summary>
