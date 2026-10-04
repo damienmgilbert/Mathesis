@@ -569,9 +569,11 @@ internal sealed class LatexEngine
     private string ParseSubscriptText()
     {
         Next();
+        string text;
+        TextSpan span;
         if (Peek().IsChar('{'))
         {
-            Next();
+            var open = Next();
             var sb = new System.Text.StringBuilder();
             while (!Peek().IsChar('}'))
             {
@@ -579,12 +581,21 @@ internal sealed class LatexEngine
                 if (t.Kind == LatexKind.End) throw Fail("Unterminated subscript.", t.Span, ["'}'"]);
                 sb.Append(t.Kind == LatexKind.Command && Greek.TryGetValue(t.Text, out var g) ? g : t.Text);
             }
-            Next();
-            return sb.ToString();
+            var close = Next();
+            text = sb.ToString();
+            span = new TextSpan(open.Span.Start, close.Span.End - open.Span.Start);
         }
-        var single = Next();
-        if (single.Kind == LatexKind.End) throw Fail("Expected a subscript.", single.Span, ["subscript"]);
-        return single.Text;
+        else
+        {
+            var single = Next();
+            if (single.Kind == LatexKind.End) throw Fail("Expected a subscript.", single.Span, ["subscript"]);
+            text = single.Text;
+            span = single.Span;
+        }
+
+        // The subscript becomes part of the symbol name, which allows only letters, digits, '_' and primes.
+        if (!Symbol.IsValidName("_" + text)) throw Fail($"The subscript '{text}' cannot be part of a variable name: use letters, digits and '_'.", span);
+        return text;
     }
 
     private Expr ParseCommandAtom(LatexToken t)
@@ -830,6 +841,7 @@ internal sealed class LatexEngine
         if (command.Text == "mathrm" && name == "i") return Sym.I;
         if (FunctionMacros.TryGetValue(name, out var known)) return ParseFunction(command, known);
         if (Operators.TryGetByName(name, out _)) return ParseFunction(command, name);
+        if (!Symbol.IsValidName(name)) throw Fail($"'{name}' is not a valid name: use letters, digits, '_' and primes, starting with a letter or '_'.", command.Span);
         if (Peek().IsChar('('))
         {
             var args = ParseParenthesizedArguments();
