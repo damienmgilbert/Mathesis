@@ -51,7 +51,8 @@ public abstract class MathValidationAttribute : ValidationAttribute
 
     /// <summary>
     /// The longest text, in characters, that is examined; longer text fails with <see cref="MathValidationCode.TooLong"/> before it is parsed.
-    /// Defaults to 1,000; must be between 1 and 100,000. Typed values are not affected.
+    /// Defaults to 1,000; must be between 1 and 100,000. Typed values are not affected. Keep the default for form input: at 100,000 characters
+    /// a numeric attribute measured up to a quarter of a second on hostile text, under a millisecond at 1,000.
     /// </summary>
     public int MaxLength { get; init; } = 1_000;
 
