@@ -455,6 +455,89 @@ public class ParserTests
         Assert.IsFalse(Parser.Parse("0e100001").Success);
     }
 
+    // ----- Display hints of scientific literals -----
+
+    // Expected hints were recorded from the lexer before its display-digit loop was replaced.
+    [TestMethod]
+    [DataRow("1.5e-3", NumberDisplayKind.Decimal, 4)]
+    [DataRow("1.50e-3", NumberDisplayKind.Decimal, 4)]
+    [DataRow("2.5e2", NumberDisplayKind.Decimal, 1)]
+    [DataRow("1e-5", NumberDisplayKind.Decimal, 5)]
+    [DataRow("123.456e-2", NumberDisplayKind.Decimal, 5)]
+    [DataRow("0.000100e1", NumberDisplayKind.Decimal, 3)]
+    [DataRow("1500e-3", NumberDisplayKind.Decimal, 1)]
+    [DataRow("5.0e-1", NumberDisplayKind.Decimal, 1)]
+    [DataRow(".5e-1", NumberDisplayKind.Decimal, 2)]
+    [DataRow("1E-2", NumberDisplayKind.Decimal, 2)]
+    [DataRow("25e-1", NumberDisplayKind.Decimal, 1)]
+    [DataRow("2.50e+1", NumberDisplayKind.Decimal, 2)]
+    [DataRow("0.5e1", NumberDisplayKind.Decimal, 1)]
+    [DataRow("7e0", NumberDisplayKind.Default, 0)]
+    [DataRow("1e5", NumberDisplayKind.Default, 0)]
+    [DataRow("0.25", NumberDisplayKind.Decimal, 2)]
+    [DataRow("3.140", NumberDisplayKind.Decimal, 3)]
+    [DataRow("12", NumberDisplayKind.Default, 0)]
+    [DataRow("0.1e-1", NumberDisplayKind.Decimal, 2)]
+    [DataRow("100.25e-2", NumberDisplayKind.Decimal, 4)]
+    [DataRow("1.0e-1", NumberDisplayKind.Decimal, 1)]
+    [DataRow("999e-3", NumberDisplayKind.Decimal, 3)]
+    [DataRow("123456789.987654321e-9", NumberDisplayKind.Decimal, 18)]
+    [DataRow("1e-399", NumberDisplayKind.Decimal, 399)]
+    [DataRow("1.5e-398", NumberDisplayKind.Decimal, 399)]
+    [DataRow("1e-400", NumberDisplayKind.Decimal, 400)]
+    [DataRow("1e-401", NumberDisplayKind.Decimal, 400)]
+    [DataRow("1e-500", NumberDisplayKind.Decimal, 400)]
+    public void ScientificLiteralsKeepTheirDisplayHint(string literal, NumberDisplayKind kind, int digits)
+    {
+        var number = (Number)P(literal);
+        Assert.AreEqual(kind, number.Display.Kind, literal);
+        Assert.AreEqual(digits, number.Display.Digits, literal);
+    }
+
+    [TestMethod]
+    public void DisplayHintsMatchTheFewestExactFractionalDigitsOnRandomLiterals()
+    {
+        // The oracle is the loop the lexer used to run: the fewest fractional digits d, at most 400, with Round(d) == value.
+        var gen = new Gen(Seed + 2);
+        var random = gen.Random;
+        for (var i = 0; i < 3000; i++)
+        {
+            var integerPart = new string(Enumerable.Range(0, random.Next(0, 5)).Select(_ => (char)('0' + random.Next(10))).ToArray());
+            var fractionPart = new string(Enumerable.Range(0, random.Next(integerPart.Length == 0 ? 1 : 0, 7)).Select(_ => (char)('0' + random.Next(random.Next(3) == 0 ? 10 : 2))).ToArray());
+            var exponent = random.Next(-60, 61);
+            var literal = integerPart + (fractionPart.Length > 0 ? "." + fractionPart : string.Empty)
+                + (random.Next(2) == 0 ? "e" : "E") + (exponent < 0 ? "-" : exponent > 0 && random.Next(2) == 0 ? "+" : string.Empty) + Math.Abs(exponent);
+
+            var value = BigRational.Parse(literal);
+            var expected = !value.IsInteger
+                ? NumberDisplay.Decimal(Enumerable.Range(0, 401).First(d => d == 400 || value.Round(d) == value))
+                : fractionPart.Length > 0 ? NumberDisplay.Decimal(fractionPart.Length) : NumberDisplay.Default;
+
+            var number = (Number)P(literal);
+            Assert.AreEqual(value, number.Value, $"seed {Seed + 2}, case {i}: {literal}");
+            Assert.AreEqual(expected, number.Display, $"seed {Seed + 2}, case {i}: {literal}");
+        }
+    }
+
+    [TestMethod]
+    public void TinyAndHugeExponentLiteralsParseQuickly()
+    {
+        // Warm up so JIT time is not measured; "1e-100000" used to take about 0.6 s because of the display-digit loop.
+        P("1e-5 + 1e5");
+        foreach (var text in new[] { "1e-100000", "x + 1e100000 + 1e-100000", "9.99e-99999", "0.5e-100000" })
+        {
+            var clock = Stopwatch.StartNew();
+            var parsed = Parser.Parse(text);
+            clock.Stop();
+            Assert.IsTrue(parsed.Success, $"'{text}': {(parsed.Success ? string.Empty : parsed.Errors[0])}");
+            Assert.IsTrue(clock.Elapsed < TimeSpan.FromMilliseconds(250), $"parsing '{text}' took {clock.Elapsed.TotalMilliseconds:F0} ms");
+        }
+
+        var tiny = (Number)P("1e-100000");
+        Assert.AreEqual(NumberDisplay.Decimal(400), tiny.Display);
+        Assert.AreEqual(System.Numerics.BigInteger.Pow(10, 100_000), tiny.Value.Denominator);
+    }
+
     [TestMethod]
     public void ErrorsCarryExpectedTokensAndSuggestions()
     {
