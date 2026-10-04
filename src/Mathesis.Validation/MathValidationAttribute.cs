@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Reflection;
 
 namespace Mathesis.Validation;
 
@@ -178,6 +179,11 @@ public abstract class MathValidationAttribute : ValidationAttribute
         catch (InvalidOperationException ex)
         {
             return $"{name}: {ex.Message}";
+        }
+        catch (TargetInvocationException ex)
+        {
+            // The message property of ErrorMessageResourceType threw; the base class reads it by reflection.
+            return $"{name}: reading {ErrorMessageResourceType?.Name}.{ErrorMessageResourceName} failed: {ex.InnerException?.Message ?? ex.Message}";
         }
 
         if (custom is not null && !ReferenceEquals(custom, DefaultMessage) && !string.IsNullOrWhiteSpace(custom))

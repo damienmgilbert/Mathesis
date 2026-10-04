@@ -64,3 +64,10 @@ public static class CustomMessages
     /// <summary>A template with the display name and the first detail.</summary>
     public static string Replaced => "Custom: {0} / {1}";
 }
+
+/// <summary>A resource type whose message cannot be read, as with a broken resource store.</summary>
+public static class ThrowingMessages
+{
+    /// <summary>Always throws.</summary>
+    public static string Broken => throw new NotSupportedException("The message store is offline.");
+}

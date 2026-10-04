@@ -333,6 +333,21 @@ public class MathValidationAttributeTests
     }
 
     [TestMethod]
+    public void AMessageResourceThatThrowsIsAConfigurationErrorAndGetConfigurationErrorDoesNotThrow()
+    {
+        var probe = new ProbeAttribute { ErrorMessageResourceType = typeof(ThrowingMessages), ErrorMessageResourceName = nameof(ThrowingMessages.Broken) };
+
+        var text = probe.GetConfigurationError();
+
+        Assert.IsNotNull(text);
+        StringAssert.StartsWith(text, "ProbeAttribute: ");
+        StringAssert.Contains(text, "The message store is offline.");
+        Assert.AreEqual(text, probe.GetConfigurationError(), "asking again gives the same text");
+        Assert.AreEqual(text, Assert.ThrowsExactly<InvalidOperationException>(() => probe.IsValid(null)).Message);
+        Assert.AreEqual(text, Assert.ThrowsExactly<InvalidOperationException>(() => probe.Check("1")).Message);
+    }
+
+    [TestMethod]
     public void FormatSpecifiersThatNumbersRejectAreConfigurationErrors()
     {
         // TooLong fills {1} with an int limit, NonNumericEntry fills {1} and {2} with a row and a column, DegreeTooHigh fills {2} with the maximum.
