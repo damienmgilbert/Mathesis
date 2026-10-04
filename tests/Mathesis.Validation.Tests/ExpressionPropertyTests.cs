@@ -101,7 +101,7 @@ public class ExpressionPropertyTests
 
     // ----- fuzzing -----
 
-    private static readonly string[] TextTokens =
+    internal static readonly string[] TextTokens =
     [
         "0", "1", "2", "10", "3.14", ".5", "1e5", "1e-7", "x", "y", "z", "xy", "theta", "alpha", "f", "g", "foo", "pi", "e", "I", "oo", "inf", "sin", "cos", "tan", "ln", "log", "sqrt", "exp",
         "sum", "product", "integrate", "limit", "diff", "det", "forall", "exists", "in", "and", "or", "not", "mod", "true", "R", "N",
@@ -109,14 +109,14 @@ public class ExpressionPropertyTests
         "√", "∫", "∑", "π", "≤", "≥", "≠", "∈", "∞", "·", "×", "÷", "²", "−", "θ", "٣", "😀", "\u0000",
     ];
 
-    private static readonly string[] LatexTokens =
+    internal static readonly string[] LatexTokens =
     [
         @"\frac", @"\dfrac", @"\sqrt", @"\sin", @"\cos", @"\ln", @"\log", @"\int", @"\sum", @"\prod", @"\lim", @"\infty", @"\pi", @"\theta", @"\cdot", @"\times", @"\le", @"\ge", @"\ne", @"\in", @"\mathbb",
         @"\left(", @"\right)", @"\begin{pmatrix}", @"\end{pmatrix}", @"\begin{cases}", @"\end{cases}", @"\\", @"&", @"\,", @"\unknown", @"\operatorname", @"\binom", @"\overline", @"\vec",
         "{", "}", "^", "_", "(", ")", "[", "]", "=", "<", "+", "-", "*", "/", "0", "1", "2", "x", "y", "n", "k", "dx", " ", ",", "'", "|",
     ];
 
-    private static string RandomStream(Gen gen, string[] tokens, int maxLength)
+    internal static string RandomStream(Gen gen, string[] tokens, int maxLength)
     {
         var length = gen.Random.Next(0, maxLength + 1);
         var stream = new StringBuilder();
@@ -125,7 +125,7 @@ public class ExpressionPropertyTests
     }
 
     /// <summary>One to five random edits of <paramref name="text"/>: delete, insert a token, replace, truncate, duplicate a piece, swap, or repeat a character.</summary>
-    private static void Damage(Gen gen, StringBuilder text, string[] tokens)
+    internal static void Damage(Gen gen, StringBuilder text, string[] tokens)
     {
         var random = gen.Random;
         for (var mutations = random.Next(1, 6); mutations > 0 && text.Length > 0; mutations--)
@@ -144,7 +144,7 @@ public class ExpressionPropertyTests
         }
     }
 
-    private static string Mutate(Gen gen, List<string> corpus)
+    internal static string Mutate(Gen gen, List<string> corpus)
     {
         var random = gen.Random;
         var text = new StringBuilder(corpus[random.Next(corpus.Count)]);
@@ -157,7 +157,7 @@ public class ExpressionPropertyTests
     }
 
     /// <summary>A printed random expression, damaged a little, so that a good share of the inputs are still valid LaTeX.</summary>
-    private static string MutateLatex(Gen gen)
+    internal static string MutateLatex(Gen gen)
     {
         var text = new StringBuilder(gen.RandomExpr(3).ToLatex());
         if (gen.Random.Next(4) != 0) Damage(gen, text, LatexTokens);

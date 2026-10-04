@@ -127,16 +127,7 @@ public class MathExpressionAttribute : MathValidationAttribute
 
         if (Shape != ExpressionShape.Any)
         {
-            // Any is the kind of a relation or logical statement that is not an equation, an inequality or an interval: it matches no requirement.
-            var (kind, found) = expr switch
-            {
-                IntervalLiteral => (ExpressionShape.Interval, "an interval"),
-                Apply { Operator.Id: "eq", Arguments.Length: 2 } => (ExpressionShape.Equation, "an equation"),
-                Apply { Operator.Id: "ne" or "lt" or "le" or "gt" or "ge", Arguments.Length: 2 } => (ExpressionShape.Inequality, "an inequality"),
-                Apply { Operator.Family: OperatorFamily.Relation or OperatorFamily.Logic } or Bind { Binder: Binder.ForAll or Binder.Exists or Binder.ExistsUnique } or Constant { Id: ConstantId.True or ConstantId.False }
-                    => (ExpressionShape.Any, "a statement"),
-                _ => (ExpressionShape.Expression, "an expression"),
-            };
+            var (kind, found) = ClassifyShape(expr);
             if (kind != Shape)
             {
                 var expected = Shape switch
@@ -199,6 +190,38 @@ public class MathExpressionAttribute : MathValidationAttribute
         return null;
     }
 
+    /// <summary>
+    /// The shape of <paramref name="expr"/> and an English phrase for it. <see cref="ExpressionShape.Any"/> stands for a relation or logical statement that is
+    /// not an equation, an inequality or an interval, so it matches no requirement.
+    /// </summary>
+    internal static (ExpressionShape Kind, string Phrase) ClassifyShape(Expr expr) => expr switch
+    {
+        IntervalLiteral => (ExpressionShape.Interval, "an interval"),
+        Apply { Operator.Id: "eq", Arguments.Length: 2 } => (ExpressionShape.Equation, "an equation"),
+        Apply { Operator.Id: "ne" or "lt" or "le" or "gt" or "ge", Arguments.Length: 2 } => (ExpressionShape.Inequality, "an inequality"),
+        Apply { Operator.Family: OperatorFamily.Relation or OperatorFamily.Logic } or Bind { Binder: Binder.ForAll or Binder.Exists or Binder.ExistsUnique } or Constant { Id: ConstantId.True or ConstantId.False }
+            => (ExpressionShape.Any, "a statement"),
+        _ => (ExpressionShape.Expression, "an expression"),
+    };
+
+    /// <summary>
+    /// Reads a configured variable name the way input is read, so "theta" and "θ" are one symbol while "e" and "x+1" are not variables.
+    /// Returns the problem for <paramref name="property"/>, or <c>null</c> with the symbol's name in <paramref name="resolved"/>.
+    /// </summary>
+    internal static string? ResolveName(string property, string? name, InputFormat format, ParserOptions options, out string resolved)
+    {
+        resolved = string.Empty;
+        if (string.IsNullOrWhiteSpace(name)) return $"{property} contains an empty name.";
+        var parsed = format == InputFormat.Latex ? LatexParser.Parse(name, options) : Parser.Parse(name, options);
+        if (parsed.Expr is not Symbol { DeclaredSort: not FunctionSort } symbol)
+        {
+            return $"{property} contains '{name}', which is not a variable name{(parsed.Expr is Constant ? " (it is a constant)" : string.Empty)}.";
+        }
+
+        resolved = symbol.Name;
+        return null;
+    }
+
     /// <summary>The configured variable names as the parser reads them, and the first problem with them.</summary>
     private sealed record ResolvedNames(HashSet<string>? Allowed, HashSet<string>? Required, string? Problem);
 
@@ -206,20 +229,13 @@ public class MathExpressionAttribute : MathValidationAttribute
     {
         var options = _parserOptions.Value;
 
-        // A name is read like the input is: "theta" and "θ" are one symbol, "e" and "x+1" are not variables.
         string? Resolve(string property, string[] names, out HashSet<string> resolved)
         {
             resolved = new HashSet<string>(StringComparer.Ordinal);
             foreach (var name in names)
             {
-                if (string.IsNullOrWhiteSpace(name)) return $"{property} contains an empty name.";
-                var parsed = Format == InputFormat.Latex ? LatexParser.Parse(name, options) : Parser.Parse(name, options);
-                if (parsed.Expr is not Symbol { DeclaredSort: not FunctionSort } symbol)
-                {
-                    return $"{property} contains '{name}', which is not a variable name{(parsed.Expr is Constant ? " (it is a constant)" : string.Empty)}.";
-                }
-
-                resolved.Add(symbol.Name);
+                if (ResolveName(property, name, Format, options, out var symbolName) is { } problem) return problem;
+                resolved.Add(symbolName);
             }
 
             return null;
