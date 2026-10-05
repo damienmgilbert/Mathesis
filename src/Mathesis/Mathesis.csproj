@@ -10,6 +10,7 @@
     <ProjectReference Include="../Mathesis.LinearAlgebra/Mathesis.LinearAlgebra.csproj" />
     <ProjectReference Include="../Mathesis.Symbolics/Mathesis.Symbolics.csproj" />
     <ProjectReference Include="../Mathesis.Knowledge/Mathesis.Knowledge.csproj" />
+	<ProjectReference Include="../Mathesis.Validation/Mathesis.Validation.csproj" />
   </ItemGroup>
 
 </Project>
