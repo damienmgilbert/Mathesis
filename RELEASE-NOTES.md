@@ -1,6 +1,6 @@
 # Release notes
 
-## Unreleased
+## 0.2.0
 
 ### Mathesis.Validation (Milestone 9, `PLAN-M9.md`)
 
@@ -14,6 +14,10 @@ A new optional package with seven `System.ComponentModel.DataAnnotations` attrib
 - **AOT:** `samples/AotSmoke` validates with all seven attributes through the trim-safe entry points (a `ValidationContext` with a display name and `GetValidationResult`); `Validator` and `new ValidationContext(instance)` use reflection and are not trim-safe.
 
 Known limits: an equation or inequality is a single relation, as `Solve` reads it, so `1 < x < 5` is a statement; polynomial coefficients must be rational, and an expression whose written degree exceeds 256 is reported with that degree instead of being expanded; messages and parser texts are English (localization is Milestone 8); async validation needs .NET 11 and is not offered.
+
+### Documentation
+
+- ADR-19 and docs 03, 04, 07 and 10 describe the planned `Jet<T>` number type and the downstream work items MW1 to MW3 for the Technesis library. No code change.
 
 ### Fixes
 
