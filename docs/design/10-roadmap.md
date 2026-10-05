@@ -97,6 +97,16 @@ Delivered by `PLAN-M9.md`.
 - No UI-framework reference: every UI stack that consumes DataAnnotations gets the attributes for free (ADR-15).
 - **Exit:** the Plan M9 phase checks pass; the attributes work through `Validator.TryValidateObject` on form models; the AOT smoke app is clean.
 
+## Downstream work items (Technesis)
+
+The Technesis control and motion library (a separate repository that consumes the published Mathesis packages) needs one Mathesis change; the rest of its numerics incubate in Technesis and move here later only through the milestones above (Schur and eigen, SVD and `expm`: Milestone 5 or 7; FFT, stiff ODEs, QP, special functions: Milestone 7). Decided 2026-10-05: a new number type goes to Mathesis first, an algorithm may incubate downstream (ADR-19).
+
+| ID | Work item | Notes |
+| --- | --- | --- |
+| MW1 | `Jet<T> : IFloatingPointIeee754<Jet<T>>` in `Mathesis.Core`, aligned with `HyperDual<T>` | Design is in docs 02 (ADR-19) and 04. Implementation waits for the Technesis prototype that fixes the representation; ships as a Mathesis 0.2.0 phase with a `num.diff.forward-ad` extension, property tests (gradients of 20 elementary functions to 1e−14, nested-jet Hessian) and the AOT gate |
+| MW2 | `Compile<T>` kernel-table entry for `Jet<double>` | After MW1 |
+| MW3 | Jet-friendly overloads in `Roots` and `Minimize` | After MW1 |
+
 ## Future domains
 
 Not in the nine requested domains, but the architecture leaves room for them as catalog domains and engines: Euclidean and coordinate geometry (congruence and similarity, circle theorems, constructions), abstract algebra (groups, rings, fields, Galois theory), real and complex analysis, number theory beyond Milestone 6, inferential statistics, topology, differential geometry, and tensor calculus.

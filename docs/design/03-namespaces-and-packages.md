@@ -9,7 +9,7 @@ Namespaces follow mathematical domains; packages follow layers. A domain can spa
 | Namespace | Contents |
 | --- | --- |
 | `Mathesis` | `Outcome<T>`, `Truth`, `MathError`, `Verification`, `Budget`, `Tolerance`, `Provisos`, `IMathObject`, `IDerivation`, `NumberField`, `CurriculumLevel` |
-| `Mathesis.Numbers` | `BigRational`, `Complex<T>`, `Dual<T>`, `HyperDual<T>`, `Interval<T>`, `ModInt<TModulus>`, `IModulus`, `ModInteger` (runtime modulus), `BigFloat`, `ContinuedFraction`, `NumberTraits<T>`, `IExactNumber` |
+| `Mathesis.Numbers` | `BigRational`, `Complex<T>`, `Dual<T>`, `HyperDual<T>`, `Jet<T>`, `Interval<T>`, `ModInt<TModulus>`, `IModulus`, `ModInteger` (runtime modulus), `BigFloat`, `ContinuedFraction`, `NumberTraits<T>`, `IExactNumber` |
 | `Mathesis.Polynomials` | `Polynomial<T>` (dense univariate), `SparsePolynomial<T>` (multivariate), `Monomial`, `MonomialOrder` (lex, grlex, grevlex), `RationalFunction<T>`, `PolynomialAlgorithms` (division, GCD, extended GCD, square-free, resultant, discriminant, Sturm sequence, root bounds, Taylor shift) |
 | `Mathesis.Structures` | Runtime algebraic structures: `IMagma<T>`, `IMonoid<T>`, `IGroup<T>`, `IRing<T>`, `IField<T>`, `PermutationGroup`, `CyclicGroup`, `DihedralGroup`, `IntegersModN`, `GaloisField` (later milestone) |
 
@@ -20,7 +20,7 @@ Namespaces follow mathematical domains; packages follow layers. A domain can spa
 | `Mathesis.Numerics` | Shared result records (`RootResult<T>`, `QuadratureResult<T>`, `DerivativeResult<T>`, `OdeSolution<T>` …), `Convergence`, `StoppingCriteria`, and the static class `Roots` (see the next row) |
 | `Mathesis.Numerics.FloatingPoint` | Ulp distance, machine constants, compensated (Kahan/Neumaier) and pairwise summation, two-sum/two-product, accurate `Hypot`, `Expm1`, `Log1p` |
 | `Roots` (static class in `Mathesis.Numerics`; a `Mathesis.Numerics.Roots` namespace would shadow it and break `Roots.Brent(...)`) | Bisection, false position (Illinois), secant, Newton, Halley, Brent, Ridders, fixed-point iteration, Muller, Aberth–Ehrlich, Jenkins–Traub |
-| `Mathesis.Numerics.Differentiation` | Finite differences of any order and accuracy, Richardson extrapolation, complex-step derivative, forward-mode automatic differentiation over `Dual<T>` |
+| `Mathesis.Numerics.Differentiation` | Finite differences of any order and accuracy, Richardson extrapolation, complex-step derivative, forward-mode automatic differentiation over `Dual<T>` and `Jet<T>` |
 | `Mathesis.Numerics.Integration` | Newton–Cotes, Romberg, Gauss–Legendre/Laguerre/Hermite/Chebyshev, adaptive Gauss–Kronrod, tanh-sinh, Monte Carlo and quasi-Monte Carlo (Halton, Sobol), multidimensional cubature |
 | `Mathesis.Numerics.Interpolation` (factory class `Interpolate`, for the same shadowing reason) | Lagrange, barycentric, Newton divided differences, Neville, Hermite, cubic splines (natural, clamped, not-a-knot), B-splines, Akima, rational (Floater–Hormann) |
 | `Mathesis.Numerics.Approximation` | Least-squares polynomial fit, Chebyshev series, Padé, minimax (Remez) |

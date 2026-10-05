@@ -175,7 +175,7 @@ Every candidate is substituted back exactly; a rejection is itself a step with i
 
 - `Evaluate(expr)` exact: rationals, exact constants kept symbolic, special values from the catalog.
 - `N(expr, digits)`: `double` up to 15 digits, `BigFloat` beyond (Milestone 7).
-- `Compile<T>(expr, params)`: post-order instruction array (`LoadVar`, `LoadConst`, `Add n`, `Mul n`, `Pow`, `Call op`) run by a span-based interpreter. `T` can be `double`, `Complex<double>`, `Interval<double>`, `Dual<double>` (value and derivative in one pass) or `BigFloat`.
+- `Compile<T>(expr, params)`: post-order instruction array (`LoadVar`, `LoadConst`, `Add n`, `Mul n`, `Pow`, `Call op`) run by a span-based interpreter. `T` can be `double`, `Complex<double>`, `Interval<double>`, `Dual<double>` (value and derivative in one pass), `Jet<double>` (value and gradient in one pass; planned, ADR-19) or `BigFloat`.
 - Vectorized evaluation over `Span<double>` uses `TensorPrimitives` for whole-array operations.
 
 ## Performance practices
