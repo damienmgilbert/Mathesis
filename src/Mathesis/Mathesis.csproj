@@ -2,21 +2,8 @@
 
   <PropertyGroup>
     <Description>A computer algebra library for .NET with step-by-step explanations: simplify, differentiate, integrate, solve and look up the law behind every step.</Description>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Mathesis</Title>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <IncludeSymbols>True</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <PackageIcon>MathesisIcon.png</PackageIcon>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\Assets\MathesisIcon.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
-
 
 	<ItemGroup>
 		<ProjectReference Include="../Mathesis.Core/Mathesis.Core.csproj" />

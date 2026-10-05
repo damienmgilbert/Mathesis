@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>Mathesis Core</Title>
     <Description>Exact numbers (BigRational, complex, dual, interval), results with budgets and provisos, polynomials and the shared contracts of Mathesis.</Description>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>

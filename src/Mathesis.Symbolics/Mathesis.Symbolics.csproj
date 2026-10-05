@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>Mathesis Symbolics</Title>
     <Description>The Mathesis expression tree: parser, printers, normalizer, assumptions, pattern matching, rewrite engine and power series.</Description>
     <!-- Names such as Float, Decimal, Integer and Operator come from docs/design/04 and 05 and are part of the public vocabulary. -->
     <NoWarn>$(NoWarn);CA1720;CA1716</NoWarn>

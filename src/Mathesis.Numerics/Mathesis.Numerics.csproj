@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>Mathesis Numerics</Title>
     <Description>Numerical analysis for Mathesis: root finding, quadrature, differentiation, interpolation, optimization and ODE solvers over generic floating-point types.</Description>
   </PropertyGroup>
 

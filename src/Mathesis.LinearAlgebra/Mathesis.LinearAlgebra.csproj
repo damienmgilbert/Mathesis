@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>Mathesis Linear Algebra</Title>
     <Description>Dense vectors and matrices for Mathesis with exact row reduction, determinants and inverses over the rationals and numeric decompositions.</Description>
   </PropertyGroup>
 

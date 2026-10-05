@@ -24,11 +24,17 @@
     <RepositoryUrl>https://github.com/damienmgilbert/Mathesis</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>mathematics;computer-algebra;symbolic;calculus;algebra;education;numerics</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageIcon>MathesisIcon.png</PackageIcon>
     <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts/packages</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)src'))">
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="/" Visible="false" />
+    <None Include="$(MSBuildThisFileDirectory)src/Assets/MathesisIcon.png" Pack="true" PackagePath="/" Visible="false" />
   </ItemGroup>
 
   <PropertyGroup Condition="$(MSBuildProjectDirectory.StartsWith('$(MSBuildThisFileDirectory)tests'))">
