@@ -1,26 +1,26 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Mathesis.Core/Mathesis.Core.csproj" />
-    <Project Path="src/Mathesis.Numerics/Mathesis.Numerics.csproj" />
-    <Project Path="src/Mathesis.LinearAlgebra/Mathesis.LinearAlgebra.csproj" />
-    <Project Path="src/Mathesis.Symbolics/Mathesis.Symbolics.csproj" />
     <Project Path="src/Mathesis.Knowledge/Mathesis.Knowledge.csproj" />
-    <Project Path="src/Mathesis/Mathesis.csproj" />
+    <Project Path="src/Mathesis.LinearAlgebra/Mathesis.LinearAlgebra.csproj" />
+    <Project Path="src/Mathesis.Numerics/Mathesis.Numerics.csproj" />
+    <Project Path="src/Mathesis.Symbolics/Mathesis.Symbolics.csproj" />
     <Project Path="src/Mathesis.Validation/Mathesis.Validation.csproj" />
+    <Project Path="src/Mathesis/Mathesis.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Mathesis.Testing/Mathesis.Testing.csproj" />
     <Project Path="tests/Mathesis.Core.Tests/Mathesis.Core.Tests.csproj" />
-    <Project Path="tests/Mathesis.Numerics.Tests/Mathesis.Numerics.Tests.csproj" />
-    <Project Path="tests/Mathesis.LinearAlgebra.Tests/Mathesis.LinearAlgebra.Tests.csproj" />
-    <Project Path="tests/Mathesis.Symbolics.Tests/Mathesis.Symbolics.Tests.csproj" />
     <Project Path="tests/Mathesis.Knowledge.Tests/Mathesis.Knowledge.Tests.csproj" />
+    <Project Path="tests/Mathesis.LinearAlgebra.Tests/Mathesis.LinearAlgebra.Tests.csproj" />
+    <Project Path="tests/Mathesis.Numerics.Tests/Mathesis.Numerics.Tests.csproj" />
+    <Project Path="tests/Mathesis.Symbolics.Tests/Mathesis.Symbolics.Tests.csproj" />
+    <Project Path="tests/Mathesis.Testing/Mathesis.Testing.csproj" />
     <Project Path="tests/Mathesis.Tests/Mathesis.Tests.csproj" />
     <Project Path="tests/Mathesis.Validation.Tests/Mathesis.Validation.Tests.csproj" />
   </Folder>
   <Folder Name="/samples/">
-    <Project Path="samples/AotSmoke/AotSmoke.csproj" />
     <File Path="samples/repl.cs" />
+    <Project Path="samples/AotSmoke/AotSmoke.csproj" />
   </Folder>
   <Folder Name="/eng/">
     <File Path="eng/policy-check.cs" />

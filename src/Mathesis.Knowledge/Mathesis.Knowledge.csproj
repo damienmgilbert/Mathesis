@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Mathesis.Symbolics/Mathesis.Symbolics.csproj" />
+    <ProjectReference Include="..\Mathesis.LinearAlgebra\Mathesis.LinearAlgebra.csproj" />
   </ItemGroup>
 
   <ItemGroup>
