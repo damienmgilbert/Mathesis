@@ -8,6 +8,8 @@ Mathesis is a dependency-light .NET 10 library that represents mathematics as da
 
 ## Install
 
+Mathesis is published on [NuGet](https://www.nuget.org/packages/Mathesis) as seven packages ([![NuGet](https://img.shields.io/nuget/v/Mathesis.svg)](https://www.nuget.org/packages/Mathesis)).
+
 ```text
 dotnet add package Mathesis
 ```
@@ -16,13 +18,13 @@ The `Mathesis` package brings the other five (`Mathesis.Core`, `Mathesis.Numeric
 
 | Package | What it holds |
 | --- | --- |
-| `Mathesis.Core` | Exact numbers (`BigRational`, complex, dual, interval), `Outcome<T>`, `Budget`, provisos, polynomials |
-| `Mathesis.Numerics` | Root finding, quadrature, differentiation, interpolation, optimization, ODE solvers |
-| `Mathesis.LinearAlgebra` | Dense matrices and vectors, exact row reduction, determinants, inverses, decompositions |
-| `Mathesis.Symbolics` | The expression tree, parser, printers, normalizer, assumptions, pattern matching, rewrite engine, power series |
-| `Mathesis.Knowledge` | The catalog of verified laws, formulas and theorems |
-| `Mathesis` | `Cas`: simplify, differentiate, integrate, limits, series, solve, linear algebra; step explanations |
-| `Mathesis.Validation` | `System.ComponentModel.DataAnnotations` attributes that validate numbers, expressions, equations, polynomials and matrices typed into forms (optional; references `Mathesis.Symbolics`) |
+| [`Mathesis.Core`](https://www.nuget.org/packages/Mathesis.Core) | Exact numbers (`BigRational`, complex, dual, interval), `Outcome<T>`, `Budget`, provisos, polynomials |
+| [`Mathesis.Numerics`](https://www.nuget.org/packages/Mathesis.Numerics) | Root finding, quadrature, differentiation, interpolation, optimization, ODE solvers |
+| [`Mathesis.LinearAlgebra`](https://www.nuget.org/packages/Mathesis.LinearAlgebra) | Dense matrices and vectors, exact row reduction, determinants, inverses, decompositions |
+| [`Mathesis.Symbolics`](https://www.nuget.org/packages/Mathesis.Symbolics) | The expression tree, parser, printers, normalizer, assumptions, pattern matching, rewrite engine, power series |
+| [`Mathesis.Knowledge`](https://www.nuget.org/packages/Mathesis.Knowledge) | The catalog of verified laws, formulas and theorems |
+| [`Mathesis`](https://www.nuget.org/packages/Mathesis) | `Cas`: simplify, differentiate, integrate, limits, series, solve, linear algebra; step explanations |
+| [`Mathesis.Validation`](https://www.nuget.org/packages/Mathesis.Validation) | `System.ComponentModel.DataAnnotations` attributes that validate numbers, expressions, equations, polynomials and matrices typed into forms (optional; references `Mathesis.Symbolics`) |
 
 ## Conventions
 
