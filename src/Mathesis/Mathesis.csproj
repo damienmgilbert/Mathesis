@@ -11,16 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\MathesisIcon.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Assets\MathesisIcon.png">
+    <None Include="..\Assets\MathesisIcon.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
+
 
 	<ItemGroup>
 		<ProjectReference Include="../Mathesis.Core/Mathesis.Core.csproj" />
