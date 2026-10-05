@@ -459,6 +459,8 @@ LowerBound: Lower bound must be in the range (-100, 100].
 
 `samples/AotSmoke` is a console app that parses, simplifies with steps, differentiates, integrates, solves, looks up the catalog and validates input with the seven attributes; it is published with NativeAOT in the release gate (`dotnet publish samples/AotSmoke -c Release -r <rid>`, which needs the platform's C++ toolchain).
 
+[MathesisMauiApp](https://github.com/damienmgilbert/MathesisMauiApp) is a separate .NET MAUI showcase app (Windows, Android, iOS, Mac Catalyst) that uses the published `Mathesis` NuGet package. It has a page for each of the seven validation attributes, plus pages for the computer algebra system, the numerics, and the catalog. Clone it and run it to try the library in a real form-based UI. It needs the .NET MAUI workload, which is why it lives outside this repository.
+
 ## Build and test
 
 ```text
