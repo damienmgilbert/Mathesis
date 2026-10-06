@@ -1,5 +1,18 @@
 # Release notes
 
+## 0.3.0
+
+### `Jet<T>` (ADR-19, work item MW1)
+
+`Mathesis.Numbers.Jet<T> : IFloatingPointIeee754<Jet<T>>` is a multivariable forward-mode automatic-differentiation number: a value and its gradient with respect to up to 16 variables (`Jet<T>.Lanes`), stored inline (`[InlineArray(16)]`), so arithmetic allocates nothing. Unlike `Dual<T>` it is accepted by every `IFloatingPointIeee754<T>` algorithm (`Roots`, `Quadrature`, `OdeSolver`), so one generic function runs on `double` and on `Jet<double>`.
+
+- **`JetDifferentiation`** (`Mathesis.Numerics.Differentiation`): `Gradient`, `Jacobian`, `Hessian` and `Derivative`, with the delegates `JetScalarFunction<T>` and `JetVectorFunction<T>`. More than 16 variables run in chunked passes; second derivatives nest, `Jet<Jet<double>>`.
+- **Semantics** ("Jet semantics" in `docs/design/04-type-system.md`): relational operators and classification look at the value only, so generic code branches as it does on `double`; `Equals` and `GetHashCode` are structural; a constant has no gradient, so `Constant(2) × Variable(∞)` has gradient 2 rather than NaN; `Abs` takes `g` at both +0 and −0; `Sqrt` at 0 returns the chain-rule result.
+- **Catalog:** `num.diff.forward-ad-gradient` and `num.diff.forward-ad-hessian` in `docs/design/domains/d9-numerical-analysis.md`; `num.diff.forward-ad` is narrowed to `Dual<T>` (one variable).
+- **Tests:** 43 conformance tests (24 elementary functions, nested-jet Hessians, three Jacobian workloads against N-pass `Dual<double>` to 1e−14 and Richardson differences to 1e−8, zero allocation per Jacobian).
+- **AOT:** `samples/AotSmoke` checks a gradient and the 20-variable chunked path.
+- **Origin:** the representation was fixed by a prototype in the Technesis repository (`docs/design/spikes/jet-prototype.md` there). The speed claim is "single pass, allocation-free"; above 16 variables N passes of `Dual<T>` are faster. The generic scalar loops do not use `Vector<T>`.
+
 ## 0.2.1
 
 Repackaged; no code change since 0.2.0.

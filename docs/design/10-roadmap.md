@@ -103,7 +103,7 @@ The Technesis control and motion library (a separate repository that consumes th
 
 | ID | Work item | Notes |
 | --- | --- | --- |
-| MW1 | `Jet<T> : IFloatingPointIeee754<Jet<T>>` in `Mathesis.Core`, aligned with `HyperDual<T>` | Design is in docs 02 (ADR-19) and 04. Implementation waits for the Technesis prototype that fixes the representation; ships as a Mathesis 0.2.0 phase with a `num.diff.forward-ad` extension, property tests (gradients of 20 elementary functions to 1e−14, nested-jet Hessian) and the AOT gate |
+| MW1 | `Jet<T> : IFloatingPointIeee754<Jet<T>>` in `Mathesis.Core`, aligned with `HyperDual<T>` | Design is in docs 02 (ADR-19) and 04. The Technesis prototype fixed the representation (inline, 16 lanes); implemented from the Technesis hand-off `docs/design/spikes/jet-handoff.md` and shipped as Mathesis 0.3.0 with the `num.diff.forward-ad-gradient` and `num.diff.forward-ad-hessian` entries, the conformance suite (gradients of 24 elementary functions to 1e−14, nested-jet Hessians) and the AOT gate |
 | MW2 | `Compile<T>` kernel-table entry for `Jet<double>` | After MW1 |
 | MW3 | Jet-friendly overloads in `Roots` and `Minimize` | After MW1 |
 

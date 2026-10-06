@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using Mathesis;
 using Mathesis.Explanation;
+using Mathesis.Numbers;
+using Mathesis.Numerics.Differentiation;
 using Mathesis.Solving;
 using Mathesis.Symbolics;
 using Mathesis.Validation;
@@ -80,5 +82,21 @@ Check("resx message", message?.ErrorMessage == "Probability must be in the range
 
 var configuration = new ExactRangeAttribute("5", "1").GetConfigurationError();
 Check("configuration", configuration == "ExactRangeAttribute: The minimum 5 is above the maximum 1.", configuration ?? "no error");
+
+// Jet<T>: one forward pass gives the value and the whole gradient, including the chunked path above 16 variables.
+var jetGradient = new double[2];
+var jetValue = JetDifferentiation.Gradient<double>(v => v[0] * v[1] + Jet<double>.Sin(v[0]), [1.0, 2.0], jetGradient);
+Check("jet gradient", Math.Abs(jetValue - (2 + Math.Sin(1))) < 1e-15 && Math.Abs(jetGradient[0] - (2 + Math.Cos(1))) < 1e-15 && Math.Abs(jetGradient[1] - 1) < 1e-15, $"{jetValue}; {jetGradient[0]}, {jetGradient[1]}");
+
+var wideInputs = new double[20];
+Array.Fill(wideInputs, 0.5);
+var wideGradient = new double[20];
+var wideValue = JetDifferentiation.Gradient<double>(v =>
+{
+    var sum = Jet<double>.Zero;
+    foreach (var component in v) sum += component * component;
+    return sum;
+}, wideInputs, wideGradient);
+Check("jet gradient (20 variables)", Math.Abs(wideValue - 5) < 1e-15 && wideGradient.All(g => Math.Abs(g - 1) < 1e-15), $"{wideValue}; {wideGradient[0]} … {wideGradient[19]}");
 
 return failures == 0 ? 0 : 1;

@@ -3,7 +3,7 @@
 Numerical analysis supplies every approximate answer Mathesis gives and, just as important, the error estimate attached to it. Algorithms are generic over `IFloatingPointIeee754<T>` (so `float`, `double`, `Half` and later `BigFloat` all work), return result records instead of throwing on non-convergence, and carry the theorems that say when they converge and how fast.
 
 - **Prefix:** `num` · **Course tag:** `NumericalAnalysis` · **Completed in:** Milestone 7 (core in Milestone 1)
-- **Packages:** `Mathesis.Numerics`, `Mathesis.LinearAlgebra`, `Mathesis.Core` (`Interval<T>`, `Dual<T>`, `BigFloat`)
+- **Packages:** `Mathesis.Numerics`, `Mathesis.LinearAlgebra`, `Mathesis.Core` (`Interval<T>`, `Dual<T>`, `Jet<T>`, `BigFloat`)
 
 ## Scope
 
@@ -96,7 +96,9 @@ Floating-point arithmetic and error analysis; root finding; interpolation and ap
 | num.diff.optimal-step | theorem | Optimal step size | Balancing truncation and rounding: `h ≈ sqrt(u)*max(1, abs(x))` for forward differences, `h ≈ root(u, 3)*max(1, abs(x))` for central | |
 | num.diff.richardson | method | Richardson extrapolation | For an O(h²) method: `D ≈ (4D(h/2) - D(h))/3`, error O(h⁴) | |
 | num.diff.complex-step | formula | Complex-step derivative | `f'(x) ≈ im(f(x + I*h))/h` with no subtractive cancellation (h ≈ 1e−20 works) | f analytic, real on ℝ |
-| num.diff.forward-ad | theorem | Forward-mode automatic differentiation | `f(a + b*ε) = f(a) + b*f'(a)*ε` with ε² = 0 gives derivatives exact to rounding | `Dual<T>` |
+| num.diff.forward-ad | theorem | Forward-mode automatic differentiation | `f(a + b*ε) = f(a) + b*f'(a)*ε` with ε² = 0 gives derivatives exact to rounding | `Dual<T>` (one variable) |
+| num.diff.forward-ad-gradient | theorem | Multivariable forward-mode automatic differentiation | With εᵢ*εⱼ = 0, `f(a + Σ bᵢ*εᵢ) = f(a) + Σ bᵢ*∂ᵢf(a)*εᵢ`: one pass over `f` gives the whole gradient, exact to rounding | `Jet<T>`; f differentiable at a |
+| num.diff.forward-ad-hessian | method | Hessian by nested jets | Evaluating f on `Jet<Jet<T>>` with the outer and inner gradients seeded at the same point gives the Hessian, symmetric to rounding | `Jet<Jet<T>>`; f ∈ C² near a |
 
 ## Numerical integration
 

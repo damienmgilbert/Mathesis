@@ -13,7 +13,7 @@ All number types are immutable `readonly struct`s unless noted, and implement .N
 | `Complex<T>` where `T : INumber<T>` | ℚ(i) when `T = BigRational`; ℂ approximations when `T` is floating point | `INumberBase<T>`, `ISignedNumber<T>` | When `T` is exact | `System.Numerics.Complex` is `double`-only; transcendental members exist only when `T : IFloatingPointIeee754<T>` (C# 14 extension members: `Magnitude`, `Phase`, `FromPolar`, `Exp`, `Log`, `Sqrt` so far). `Abs` needs a square root, so it throws `NotSupportedException` for exact `T`; use `NormSquared`. Text form `(re, im)` |
 | `Dual<T>` | a + bε with ε² = 0 | `INumberBase<T>`; elementary functions (`Sin`, `Exp`, `Log`, `Sqrt`, `Pow`, …) as C# 14 extension members when `T : IFloatingPointIeee754<T>` (ADR-14) | No | Forward-mode automatic differentiation. Text form `(value, derivative)` |
 | `HyperDual<T>` | a + bε₁ + cε₂ + dε₁ε₂ | as `Dual<T>` | No | Exact first and second derivatives numerically |
-| `Jet<T>` where `T : IFloatingPointIeee754<T>` | Value plus a gradient: multivariable first-order forward-mode AD; nested jets give Hessians | `IFloatingPointIeee754<Jet<T>>` (ADR-19) | No | Planned. Unlike `Dual<T>` it is accepted by every `IFloatingPointIeee754<T>` algorithm (`Roots`, `Quadrature`, `OdeSolver`, `Minimize`), so one generic function runs on `double` and on `Jet<double>`. The representation (inline fixed-dimension array or run-time length) is chosen by a prototype in the Technesis repository before implementation. Text form `(value; g₀, g₁, …)` |
+| `Jet<T>` where `T : IFloatingPointIeee754<T>` | Value plus a gradient: multivariable first-order forward-mode AD; nested jets give Hessians | `IFloatingPointIeee754<Jet<T>>` (ADR-19) | No | Unlike `Dual<T>` it is accepted by every `IFloatingPointIeee754<T>` algorithm (`Roots`, `Quadrature`, `OdeSolver`; `Minimize` follows MW3), so one generic function runs on `double` and on `Jet<double>`. Value, active-lane count and 16 inline gradient lanes (`Jet<T>.Lanes`); allocation-free; `Constant` has no gradient. See "Jet semantics" below. Text form `(value; g₀, g₁, …)` |
 | `Interval<T>` where `T : IFloatingPointIeee754<T>` | Closed interval [lo, hi] | `INumberBase<T>` | Enclosure | Outward rounding with `T.BitDecrement`/`T.BitIncrement`; guaranteed enclosures for validated numerics and assumption reasoning |
 | `ModInt<TModulus>` where `TModulus : IModulus` | ℤ/nℤ with the modulus fixed at compile time | `INumberBase<T>`, `IExactNumber` | Yes | `UInt128` products; division only when `TModulus.IsPrime` (a field) |
 | `ModInteger` (class) | ℤ/nℤ with a run-time `BigInteger` modulus | operators | Yes | For number-theory problems with large moduli |
@@ -25,8 +25,27 @@ Components of `Complex<T>` and `Dual<T>` are formatted and parsed with the invar
 
 `NumberTraits<T>.IsExact` tells generic algorithms whether to pivot for stability (floating point) or for exactness (first non-zero pivot, fraction-free elimination). It is true for `BigInteger`, `BigRational`, `ModInt<T>`, `Complex<T>` of an exact `T`, and any type implementing the marker interface `IExactNumber`.
 
-### Generic-math constraints by algorithm family
+### Jet semantics
 
+`Jet<T>` follows the rules of `Dual<T>` for gradients but differs from it where generic algorithms need `double`-like behaviour (ADR-19; evidence in the Technesis prototype report). Each row has a test in the conformance suite.
+
+| Member group | Value | Gradient |
+| --- | --- | --- |
+| `+ − × ÷`, unary minus | as `T` | sum, product and quotient rules |
+| `Sqrt`, `Cbrt`, `RootN`, `Pow`, `Exp*`, `Log*`, trigonometric and hyperbolic functions and inverses, `Atan2`, `Hypot`, `FusedMultiplyAdd`, `Lerp` | as `T` | chain rule; where the derivative is infinite or undefined the formula's result (±∞ or NaN) is returned, as IEEE arithmetic would (`Sqrt` of `Variable(0)` has gradient +∞) |
+| `Abs` | as `T` | `g` at both +0 and −0, `−g` for negative values (`Dual<T>` differs at −0) |
+| `Min`, `Max`, `MinMagnitude`, `MaxMagnitude`, `Clamp` | as `T` | gradient of the selected operand; ties select the first operand; `Clamp` takes the bound's gradient when it clamps |
+| `Floor`, `Ceiling`, `Round`, `Truncate` | as `T` | zero |
+| `CopySign` | as `T` | gradient of the magnitude operand, negated when the sign flips |
+| `ScaleB`, `ILogB`, `BitIncrement`, `BitDecrement`, estimates, `Ieee754Remainder` | as `T` | `ScaleB` scales by `2ⁿ`; `BitIncrement`/`BitDecrement` pass the gradient through; estimates use the derivative of the function they estimate; remainder uses `gx − gy·round(x/y)` |
+| `<`, `<=`, `>`, `>=`, `==`, `!=` | compare values only | none |
+| `IsNaN`, `IsInfinity`, `IsFinite`, `IsNegative`, `IsZero`, … | of the value only; `IsGradientFinite` reports the gradient | none |
+| `Equals`, `GetHashCode` | structural: value, dimension and gradient | |
+| Constants | `Constant(c)` has dimension 0 and no gradient; a structural zero is never multiplied, so `Constant(2) × Variable(∞)` has gradient 2, not NaN | |
+| Dimensions | operands of different non-zero dimension throw `ArgumentException`; a constant combines with any dimension; at most `Jet<T>.Lanes` (16) variables per jet | |
+| Text form | `(value; g₀, g₁, …)`; a constant prints `(value)` | |
+
+### Generic-math constraints by algorithm family
 | Family | Constraint | Accepts |
 | --- | --- | --- |
 | Floating-point numerics (roots, quadrature, ODEs, FFT) | `T : IFloatingPointIeee754<T>` | `float`, `double`, `Half`, `NFloat`, later `BigFloat` |

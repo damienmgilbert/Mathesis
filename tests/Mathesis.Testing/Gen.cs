@@ -23,6 +23,12 @@ public sealed class Gen
     /// <summary>The underlying random source.</summary>
     public Random Random { get; }
 
+    /// <summary>A uniformly random integer in [<paramref name="low"/>, <paramref name="high"/>].</summary>
+    public int WholeNumber(int low, int high) => Random.Next(low, high + 1);
+
+    /// <summary>Prefixes <paramref name="failingCase"/> with the seed, for assertion messages.</summary>
+    public string Describe(string failingCase) => $"seed {Seed}: {failingCase}";
+
     /// <summary>A uniformly random integer with up to <paramref name="maxBits"/> bits and a random sign.</summary>
     public BigInteger WholeNumber(int maxBits = 64)
     {
