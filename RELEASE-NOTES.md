@@ -1,5 +1,9 @@
 # Release notes
 
+## 0.2.1
+
+Repackaged; no code change since 0.2.0.
+
 ## 0.2.0
 
 ### Mathesis.Validation (Milestone 9, `PLAN-M9.md`)
